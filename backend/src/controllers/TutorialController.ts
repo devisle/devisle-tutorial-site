@@ -7,6 +7,9 @@ import ITutorial from "./interfaces/ITutorial";
  * @author ale8k
  */
 export default class TutorialController {
+    /**
+     * HTTP method handlers
+     */
     public static get: (req: Request, res: Response) => void = TutorialController.getAllTutorials;
     public static post: (req: Request, res: Response) => void = TutorialController.createBaseTutorial;
 

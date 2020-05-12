@@ -1,4 +1,5 @@
 import Tutorial from "../classes/Tutorial";
+import ITutorial from "../interfaces/ITutorial";
 
 /**
  * A static helper service responsible for:
@@ -21,6 +22,18 @@ export default class TutorialDbService {
             },
             body: JSON.stringify(new Tutorial(name, "").toJSON())
         });
+    }
+
+    /**
+     * Gets all tutorials
+     * @returns returns a resolved promise with {@link tutorialArr Tutorial[]}
+     * Note, this can be undefined in the case of DB failure.
+     */
+    public static getAllTutorials(): Promise<ITutorial[]> {
+        return fetch("http://127.0.0.1:3000/tutorial", {
+            method: "GET",
+            mode: "cors",
+        }).then((d) => d.json());
     }
 
 }

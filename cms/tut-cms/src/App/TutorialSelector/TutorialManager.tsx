@@ -1,11 +1,8 @@
 import React, { Component, RefObject } from "react";
-import { Subject } from "rxjs";
 import ITutorial from "../../interfaces/ITutorial";
 import Modal from "react-modal";
 import "./TutorialManager.scss";
 import TutorialDbService from "../../services/TutorialDbService";
-
-
 
 interface ITutorialManagerState {
     tutorialList: ITutorial[];
@@ -27,6 +24,15 @@ export default class TutorialManager extends Component<{}, ITutorialManagerState
 
         this.toggleCreatorModal = this.toggleCreatorModal.bind(this);
         this.createTutorial = this.createTutorial.bind(this);
+        this.renderTutorialList = this.renderTutorialList.bind(this);
+        this.rerenderTutList = this.rerenderTutList.bind(this);
+    }
+
+    /**
+     * Update the tutorial selection list upon mount
+     */
+    public componentDidMount(): void {
+        this.rerenderTutList();
     }
 
     /**
@@ -37,7 +43,6 @@ export default class TutorialManager extends Component<{}, ITutorialManagerState
             modalToggle: !this.state.modalToggle
         });
     }
-
 
     /**
      * Creates a base tutorial document with only a name
@@ -51,11 +56,40 @@ export default class TutorialManager extends Component<{}, ITutorialManagerState
         }
         TutorialDbService.createTutorial(nameStr).then(() => {
             console.log("Posted successfully");
+            this.rerenderTutList();
             this.toggleCreatorModal(e);
         }, () => {
             console.log("Post failed");
         });
         
+    }
+    /**
+     * Conditionally renders the tutorial card list
+     * @returns {JSX.Element | JSX.Element[]} the loading or list of tuts
+     */
+    private renderTutorialList(): JSX.Element | JSX.Element[] {
+        const respJSX = (<div style={{ height: "40px", textAlign: "center", marginTop: "5vh" }}>Loading...</div>);
+        if (this.state.tutorialList.length !== 0) {
+            return this.state.tutorialList.map(tut => {
+                return(
+                    <div className="tutorial-card" key={tut._id}>
+                        <p>{tut.name}</p>
+                    </div>
+                );
+            });
+        }
+        return (respJSX);
+    }
+
+    /**
+     * Rerenders the tutorial list with a fresh set of data from the API
+     */
+    private rerenderTutList(): void {
+        TutorialDbService.getAllTutorials().then((d) => {
+            this.setState({
+                tutorialList: d
+            });
+        });
     }
 
     /**
@@ -67,6 +101,7 @@ export default class TutorialManager extends Component<{}, ITutorialManagerState
         return (
             <div className="TutorialManager">
                 <button className="create-btn" onClick={this.toggleCreatorModal}>Create tutorial</button>
+                {this.renderTutorialList()}
                 <Modal
                     isOpen={this.state.modalToggle}
                     className="creator-modal"
