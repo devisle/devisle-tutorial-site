@@ -36,4 +36,23 @@ export default class TutorialDbService {
         }).then((d) => d.json());
     }
 
+    /**
+     * Updates a tutorial
+     * @param {Tutorial} tutorial the tutorial to update 
+     */
+    public static saveTutorial(tutorial: ITutorial): void {
+        if (window.confirm("Are you sure you want to save? (This will overwrite the tutorial)")) {
+            fetch("http://127.0.0.1:3000/tutorial", {
+                method: "PUT",
+                mode: "cors",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(tutorial)
+            });
+        } else {
+            console.log("Aborted saved");
+        }
+    }
+
 }

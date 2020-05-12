@@ -9,6 +9,7 @@ import "./Editor.scss";
 import ITutorial from "../../interfaces/ITutorial";
 import { Subject } from "rxjs";
 import Tutorial from "../../classes/Tutorial";
+import TutorialDbService from "../../services/TutorialDbService";
 
 /**
  * Type returned from each editor change
@@ -46,10 +47,13 @@ export default class Editor extends Component<IEditorProps, { tutorial: ITutoria
         this._plugin$.subscribe(d => {
             switch (d) {
                 case "SAVE":
+                    TutorialDbService.saveTutorial(this.state.tutorial);
                     break;
                 case "DELETE":
+                    // Delete removes from draft store & live collection
                     break;
                 case "PUBLISH":
+                    // Publish takes current tutorial and stores in the 'live' collection
                     break;
             }
         });
@@ -65,8 +69,6 @@ export default class Editor extends Component<IEditorProps, { tutorial: ITutoria
     public componentWillMount(): void {
         // Update state on each emit of change
         this._tutorialManager$.subscribe(d => {
-            console.log("FIRED");
-            console.log(d.name)
             this.setState({
                 tutorial: d
             });

@@ -71,4 +71,13 @@ export default class DbService {
         );
     }
 
+    /**
+     * Updates a single document in a given collection
+     * @param {string} collectionName collection name
+     * @param {T} data the data to write over
+     */
+    public static async updateSingleDocument<T>(collectionName: string, data: T): Promise<void> {
+
+    }
+
 }
