@@ -1,11 +1,12 @@
 import React from "react";
-import { PluginComponent } from "react-markdown-editor-lite";
+import { PluginComponent, PluginProps } from "react-markdown-editor-lite";
+import { Subject } from "rxjs";
 
 /**
  *
  */
 interface IDeletePluginProps {
-
+    plugin$: Subject<string>;
 }
 
 /**
@@ -22,6 +23,16 @@ export default class DeletePlugin extends PluginComponent<IDeletePluginProps> {
      * Where to render, left/right
      */
     public static align = "right";
+    /**
+     * The plugin subject store, emits when to delete back to the editor
+     */
+    private _plugin$: Subject<string>;
+
+    constructor(props: PluginProps) {
+        super(props);
+
+        this._plugin$ = this.getConfig("plugin$");
+    }
 
     /**
      * Render

@@ -1,11 +1,12 @@
 import React from "react";
-import { PluginComponent } from "react-markdown-editor-lite";
+import { PluginComponent, PluginProps } from "react-markdown-editor-lite";
+import { Subject } from "rxjs";
 
 /**
  * Interface will define API local/endpoint to save/retrieve from
  */
 interface ISavePluginProps {
-
+    plugin$: Subject<string>;
 }
 
 /**
@@ -22,6 +23,24 @@ export default class SavePlugin extends PluginComponent<ISavePluginProps> {
      * Where to render, left/right
      */
     public static align = "right";
+    /**
+     * The plugin subject store, emits when to save back to the editor
+     */
+    private _plugin$: Subject<string>;
+
+    constructor(props: PluginProps) {
+        super(props);
+
+        this._plugin$ = this.getConfig("plugin$");
+        this.handleSave = this.handleSave.bind(this);
+    }
+
+    /**
+     * 
+     */
+    private handleSave(e: React.MouseEvent<HTMLSpanElement, MouseEvent>): void {
+        this._plugin$.next("SAVE");
+    }
 
     /**
      * Render
@@ -31,7 +50,7 @@ export default class SavePlugin extends PluginComponent<ISavePluginProps> {
             <span
                 className="button button-type-counter"
                 title="Counter"
-                onClick={() => console.log("boop")}
+                onClick={(e) => this.handleSave(e)}
             >
                 Save
             </span>

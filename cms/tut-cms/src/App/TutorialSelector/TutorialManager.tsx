@@ -3,6 +3,12 @@ import ITutorial from "../../interfaces/ITutorial";
 import Modal from "react-modal";
 import "./TutorialManager.scss";
 import TutorialDbService from "../../services/TutorialDbService";
+import { Subject } from "rxjs";
+
+interface ITutorialManagerProps {
+    tutorialManager$: Subject<ITutorial>;
+    activeTutorial: ITutorial | null;
+}
 
 interface ITutorialManagerState {
     tutorialList: ITutorial[];
@@ -13,8 +19,8 @@ interface ITutorialManagerState {
  * The tutorial manager bar
  * @author ale8k
  */
-export default class TutorialManager extends Component<{}, ITutorialManagerState> {
-    constructor(props: {}) {
+export default class TutorialManager extends Component<ITutorialManagerProps, ITutorialManagerState> {
+    constructor(props: ITutorialManagerProps) {
         super(props);
 
         this.state = {
@@ -26,6 +32,7 @@ export default class TutorialManager extends Component<{}, ITutorialManagerState
         this.createTutorial = this.createTutorial.bind(this);
         this.renderTutorialList = this.renderTutorialList.bind(this);
         this.rerenderTutList = this.rerenderTutList.bind(this);
+        this.handleCardClick = this.handleCardClick.bind(this);
     }
 
     /**
@@ -63,6 +70,16 @@ export default class TutorialManager extends Component<{}, ITutorialManagerState
         });
         
     }
+
+    /**
+     * Emits the tutorial stored on this card to the App, used in rendering the correct editor
+     * @param {React.MouseEvent<HTMLDivElement>} e users mouse event 
+     * @param {ITutorial} tut the tutorial to emit through the {@link subject ITutorialManagerProps.tutorialManager$}
+     */
+    private handleCardClick(e: React.MouseEvent<HTMLDivElement, MouseEvent>, tut: ITutorial): void {
+        this.props.tutorialManager$.next(tut);
+    }
+
     /**
      * Conditionally renders the tutorial card list
      * @returns {JSX.Element | JSX.Element[]} the loading or list of tuts
@@ -72,8 +89,10 @@ export default class TutorialManager extends Component<{}, ITutorialManagerState
         if (this.state.tutorialList.length !== 0) {
             return this.state.tutorialList.map(tut => {
                 return(
-                    <div className="tutorial-card" key={tut._id}>
-                        <p>{tut.name}</p>
+                    <div className="tutorial-card" key={tut._id} onClick={(e) => {
+                        this.handleCardClick(e, tut);
+                    }}>
+                        <p style={tut === this.props.activeTutorial ? {color: "blue"} : {}}>{tut.name}</p>
                     </div>
                 );
             });

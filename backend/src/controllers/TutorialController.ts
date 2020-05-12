@@ -43,6 +43,7 @@ export default class TutorialController {
                 }
             );
         } else {
+            console.log(req.body)
             res.send({ response: "BAD", reason: "INCORRECT FORMATTING"});
         }
     }
@@ -52,9 +53,9 @@ export default class TutorialController {
      * @param {any} data the unknown data type
      */
     private static structureCheck(data: any): data is ITutorial {
-        if (Object.keys(data).length === 2) {
-            if (typeof data.content === "string" && typeof data.name === "string") {
-                if (data.content !== undefined && data.name !== undefined) {
+        if (Object.keys(data).length === 3) {
+            if (typeof data.html === "string" && typeof data.name === "string" && typeof data.markdown === "string") {
+                if (data.html !== undefined && data.name !== undefined && data.markdown !== undefined) {
                     return true;
                 }
             }

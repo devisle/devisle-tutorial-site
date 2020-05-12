@@ -1,4 +1,5 @@
 export default interface ITutorial {
     name: string;
-    content: string;
+    html: string;
+    markdown: string;
 }

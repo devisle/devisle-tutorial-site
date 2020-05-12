@@ -20,7 +20,7 @@ export default class TutorialDbService {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(new Tutorial(name, "").toJSON())
+            body: JSON.stringify(new Tutorial(name, "", "").toJSON())
         });
     }
 

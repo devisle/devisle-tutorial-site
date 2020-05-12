@@ -12,11 +12,16 @@ export default class Tutorial implements ITutorial {
     /**
      * The HTML for this tutorial
      */
-    private _content: string;
+    private _html: string;
+    /**
+     * The markdown for this tutorial
+     */
+    private _markdown: string;
 
-    constructor(name: string, content: string) {
+    constructor(name: string, html: string, markdown: string) {
         this._name = name;
-        this._content = content;
+        this._html = html;
+        this._markdown = markdown;
     }
 
     /**
@@ -39,24 +44,39 @@ export default class Tutorial implements ITutorial {
     /**
      * Gets the HTML
      */
-    public get content(): string {
-        return this._content;
+    public get html(): string {
+        return this._html;
     }
 
     /**
      * Sets the HTML for this tutorial
      */
-    public set content(value: string) {
-        this._content = value;
+    public set html(value: string) {
+        this._html = value;
+    }
+
+    /**
+     * Gets the markdown
+     */
+    public get markdown(): string {
+        return this._markdown;
+    }
+
+    /**
+     * Sets the markdown for this tutorial
+     */
+    public set markdown(value: string) {
+        this._markdown= value;
     }
     
     /**
      * Returns the correct property naming format when parsing to JSON
      */
-    public toJSON(): { name: string, content: string } {
+    public toJSON(): { name: string, html: string, markdown: string } {
         return {
             name: this.name,
-            content: this.content
+            html: this.html,
+            markdown: this.markdown
         };
     }
     
