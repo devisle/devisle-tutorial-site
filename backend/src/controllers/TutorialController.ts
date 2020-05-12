@@ -11,12 +11,17 @@ export default class TutorialController {
     public static post: (req: Request, res: Response) => void = TutorialController.createBaseTutorial;
 
     /**
-     *
+     * Grabs all the {@link tutorialDocs ITutorial[]} and returns them from this route
      * @param {Request} req the users request obj
      * @param {Response} res our res obj
      */
     private static async getAllTutorials(req: Request, res: Response): Promise<void> {
-        res.send("got me");
+        await TutorialController.getAllTutorialDocuments("tutorials").then(
+            (tutArr) => {
+                res.send(tutArr);
+            }
+        );
+
     }
 
     /**
@@ -71,8 +76,8 @@ export default class TutorialController {
      * @return {Promise<ITutorial[]>} a promise containing all of the tutorial documents
      * @todo add parsing logic to filter other documents
      */
-    public static async getAllTutorialDocuments(collectionName: string): Promise<ITutorial[]> {
-        return DbService.getAllDocuments<ITutorial>(collectionName);
+    public static async getAllTutorialDocuments(collectionName: string): Promise<void | ITutorial[]> {
+        return await DbService.getAllDocuments<ITutorial>(collectionName);
     }
 
 }

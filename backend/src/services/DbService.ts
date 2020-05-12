@@ -52,20 +52,16 @@ export default class DbService {
      * Gets all documents in a collection of type
      * @param {string} collectionName collection name
      */
-    public static async getAllDocuments<T>(collectionName: string): Promise<T[]> {
-        let response: T[] = [];
-        await MongoClient.connect(DbService._dbUrl).then(
-            async (client) => {
+    public static async getAllDocuments<T>(collectionName: string): Promise<void | T[]> {
+        return await MongoClient.connect(DbService._dbUrl).then(
+            (client) => {
+                console.log("Connected successfully to db");
                 const db = client.db(DbService._dbName);
-                await db.collection(collectionName).find({}).toArray(
-                    (err, docs: T[]) => {
-                        if (err) {
-                            throw new Error("Failed to get docs" + err);
-                        } else {
-                            response = docs;
-                        }
-                    }
-                );
+                const collection = db.collection(collectionName).find({}).toArray();
+                client.close().then(() => {
+                    console.log("connection closed successfully");
+                });
+                return collection;
             },
             async (err) => {
                 if (err) {
@@ -73,7 +69,6 @@ export default class DbService {
                 }
             }
         );
-        return Promise.resolve(response);
     }
 
 }
