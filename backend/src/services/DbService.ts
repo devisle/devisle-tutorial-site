@@ -1,4 +1,5 @@
 import MongoClient from "mongodb";
+import ITutorial from "src/controllers/interfaces/ITutorial";
 
 /**
  * Static helper class resposible for handling all DB operations
@@ -19,24 +20,43 @@ export default class DbService {
     }
 
     /**
+     * Creates a tutorial document within a given collection
+     * @param {string} collectionName collection name
+     * @param {ITutorial} tutorial any object type to be parsed and created as a document
+     * @return {Promise<boolean>} a promise from the {@link createDoc DbService.createDocument<T>}
+     * determining if the document inserted correctly
+     */
+    public static async createTutorialDocument(collectionName: string, tutorial: ITutorial): Promise<boolean> {
+        return DbService.createDocument<ITutorial>(collectionName, tutorial);
+    }
+
+    /**
      * Creates a document within a given collection
      * @param {string} collectionName collection name
-     * @param {Object} data any object type to be parsed and created as a document
+     * @param {T} data any object type to be parsed and created as a document
+     * @return {Promise<boolean>} a promise determining if the document inserted correctly
      */
-    public static async createDocument(collectionName: string, data: Object): Promise<void> {
-        await MongoClient.connect(DbService._dbUrl, (err, client) => {
-            if (err) {
-                throw new Error("DB connection failed" + err);
+    private static async createDocument<T>(collectionName: string, data: T): Promise<boolean> {
+        let response: boolean = false;
+        await MongoClient.connect(DbService._dbUrl).then(
+            async (client) => {
+                console.log("Connected successfully to db");
+                const db = client.db(DbService._dbName);
+                await db.collection(collectionName).insertOne(data).then(() => {
+                    response = true;
+                });
+                client.close().then(() => {
+                    console.log("connection closed successfully");
+                });
+            },
+            (err) => {
+                if (err) {
+                    throw new Error("DB connection failed" + err);
+                }
             }
-            console.log("Connected successfully to db");
-            const db = client.db(DbService._dbName);
-            db.collection(collectionName).insertOne(data, (error, resp) => {
-                console.log(resp);
-            });
-
-            client.close().then(() => {
-                console.log("connection closed successfully");
-            });
+        );
+        return new Promise((resolve, reject) => {
+            response ? resolve() : reject();
         });
     }
 
