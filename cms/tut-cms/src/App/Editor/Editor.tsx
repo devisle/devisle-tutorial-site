@@ -8,6 +8,7 @@ import "react-markdown-editor-lite/lib/index.css";
 import "./Editor.scss";
 import ITutorial from "../../interfaces/ITutorial";
 import { Subject } from "rxjs";
+import Tutorial from "../../classes/Tutorial";
 
 /**
  * Type returned from each editor change
@@ -15,18 +16,15 @@ import { Subject } from "rxjs";
 type EditorOnChange = { text: string, html: string };
 
 interface IEditorProps {
-    tutorial: ITutorial;
+    tutorialManager$: Subject<ITutorial>;
+    initialTutorial: ITutorial;
 }
 
 /**
  * A selfcontained edit/view for markdown
  * @author ale8k
  */
-export default class Editor extends Component<IEditorProps, {}> {
-    /**
-     * Class store for plugins to access the modified tutorial
-     */
-    public tutorial: ITutorial;
+export default class Editor extends Component<IEditorProps, { tutorial: ITutorial }> {
     /**
      * The markdown parser to be passed to our markdown editor
      */
@@ -36,20 +34,43 @@ export default class Editor extends Component<IEditorProps, {}> {
      * emit an option to be done with the locally stored tutorial here {@link tutorial Editor.tutorial}
      */
     private _plugin$: Subject<string> = new Subject<string>();
+    /**
+     * The tutorial manager subject, to handle a full-rerender on tutorial change
+     */
+    private _tutorialManager$: Subject<ITutorial>;
 
     constructor(props: IEditorProps) {
         super(props);
-        this.tutorial = this.props.tutorial;
+        this._tutorialManager$ = this.props.tutorialManager$;
         this.handleEditorChange = this.handleEditorChange.bind(this);
         this._plugin$.subscribe(d => {
-            console.log(d);
+            switch (d) {
+                case "SAVE":
+                    break;
+                case "DELETE":
+                    break;
+                case "PUBLISH":
+                    break;
+            }
         });
+        this.state = {
+            tutorial: this.props.initialTutorial
+        };
+        
     }
 
     /**
      * Setup plugins upon mount
      */
     public componentWillMount(): void {
+        // Update state on each emit of change
+        this._tutorialManager$.subscribe(d => {
+            console.log("FIRED");
+            console.log(d.name)
+            this.setState({
+                tutorial: d
+            });
+        });
         MdEditor.use(SavePlugin, { plugin$: this._plugin$ });
         MdEditor.use(DeletePlugin, { plugin$: this._plugin$ });
         MdEditor.use(PublishPlugin, { plugin$: this._plugin$ });
@@ -59,9 +80,14 @@ export default class Editor extends Component<IEditorProps, {}> {
      * Updates the field ref containing this tutorial
      * @param {EditorOnChange} param0 an object containing the raw text and text parsed with html
      */
-    private handleEditorChange({text, html}: EditorOnChange): void {
-        this.tutorial.html = html;
-        this.tutorial.markdown = text;
+    private handleEditorChange({ text, html }: EditorOnChange): void {
+        this.setState({
+            tutorial: {
+                name: this.state.tutorial.name,
+                html,
+                markdown: text
+            }
+        });
     }
 
     /**
@@ -71,7 +97,7 @@ export default class Editor extends Component<IEditorProps, {}> {
         return (
             <div className="Editor">
                 <MdEditor
-                    value={""}
+                    value={this.state.tutorial.markdown}
                     style={{ height: "100vh" }}
                     renderHTML={(text) => this._mdParser.render(text)}
                     onChange={(e: EditorOnChange) => this.handleEditorChange(e)}

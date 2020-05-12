@@ -5,8 +5,9 @@ import { Subject } from "rxjs";
 import "./App.scss";
 import ITutorial from "../interfaces/ITutorial";
 
+
 interface IAppState {
-    activeTutorial: ITutorial | null;
+    initialTutorial: ITutorial | null;
 }
 
 /**
@@ -25,12 +26,16 @@ export default class App extends Component<{}, IAppState> {
         super(props);
         this._tutorialManager$.subscribe((d) => {
             this.setState({
-                activeTutorial: d
+                initialTutorial: d
             });
         });
-
+        /**
+         * The initial tutorial is here because our subscriber can't subscribe
+         * in time to register the initial first clicked tutorial, so we send it here in this initial
+         * state set just above ^
+         */
         this.state = {
-            activeTutorial: null
+            initialTutorial: null
         };
     }
     /**
@@ -39,10 +44,10 @@ export default class App extends Component<{}, IAppState> {
     public render(): JSX.Element {
         return (
             <div className="App">
-                <TutorialManager tutorialManager$={this._tutorialManager$} activeTutorial={this.state.activeTutorial}/>
+                <TutorialManager tutorialManager$={this._tutorialManager$} initialTutorial={this.state.initialTutorial}/>
                 <div className="editor-container">
                     {
-                        this.state.activeTutorial ? <Editor tutorial={this.state.activeTutorial}/> : <div>Select a card</div>
+                        this.state.initialTutorial ? <Editor initialTutorial={this.state.initialTutorial} tutorialManager$={this._tutorialManager$}/> : <div>Select a card</div>
                     }
                 </div>
             </div>

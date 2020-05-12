@@ -7,7 +7,7 @@ import { Subject } from "rxjs";
 
 interface ITutorialManagerProps {
     tutorialManager$: Subject<ITutorial>;
-    activeTutorial: ITutorial | null;
+    initialTutorial: ITutorial | null;
 }
 
 interface ITutorialManagerState {
@@ -92,7 +92,7 @@ export default class TutorialManager extends Component<ITutorialManagerProps, IT
                     <div className="tutorial-card" key={tut._id} onClick={(e) => {
                         this.handleCardClick(e, tut);
                     }}>
-                        <p style={tut === this.props.activeTutorial ? {color: "blue"} : {}}>{tut.name}</p>
+                        <p style={tut === this.props.initialTutorial ? {color: "blue"} : {}}>{tut.name}</p>
                     </div>
                 );
             });
