@@ -23,6 +23,8 @@ export default class TutorialController {
      * @param {Response} res our res obj
      */
     private static async postRequest(req: Request, res: Response): Promise<void> {
+        console.log(req.body);
+        //await DbService.createDocument("tutorials", { shitcunt: "shits on the floorrr"});
         res.send("posted");
     }
 

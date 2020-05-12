@@ -50,4 +50,14 @@ export default class Tutorial implements ITutorial {
         this._content = value;
     }
     
+    /**
+     * Returns the correct property naming format when parsing to JSON
+     */
+    public toJSON(): { name: string, content: string } {
+        return {
+            name: this.name,
+            content: this.content
+        };
+    }
+    
 }

@@ -1,5 +1,7 @@
 import dotenv from "dotenv";
 import express, { Application } from "express";
+import cors from "cors";
+import bodyParser from "body-parser";
 import routes from "./routes/index";
 
 /**
@@ -21,6 +23,8 @@ class Server {
     constructor() {
         dotenv.config();
         this._app = express();
+        this._app.use(cors());
+        this._app.use(bodyParser());
         this._port = process.env.PORT || 3000;
         this.registerRoutes();
     }

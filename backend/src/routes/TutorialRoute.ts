@@ -24,9 +24,9 @@ export default class TutorialRoute implements IRoute {
 
     /**
      * A method callback which can be passed into the router.use() middleware implementer function
-     * @param req the HTTP request object
-     * @param res the response object
-     * @param next express.next() function to proceed in the middleware chain
+     * @param {Request<ParamsDictionary>} req the HTTP request object
+     * @param {Response<String>} res the response object
+     * @param {NextFunction} next express.next() function to proceed in the middleware chain
      */
     private exampleMiddleware(req: Request<ParamsDictionary>, res: Response<String>, next: NextFunction): void {
         // do stuff

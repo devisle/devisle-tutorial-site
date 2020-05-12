@@ -3,6 +3,7 @@ import { Subject } from "rxjs";
 import ITutorial from "../../interfaces/ITutorial";
 import Modal from "react-modal";
 import "./TutorialManager.scss";
+import TutorialDbService from "../../services/TutorialDbService";
 
 
 
@@ -37,12 +38,24 @@ export default class TutorialManager extends Component<{}, ITutorialManagerState
         });
     }
 
+
     /**
-     * 
+     * Creates a base tutorial document with only a name
+     * @param {React.MouseEvent<HTMLButtonElement, MouseEvent>} e mouse event emitted by user 
+     * @param {RefObject<HTMLInputElement>} name reference to users typed input value for the name
      */
     private createTutorial(e: React.MouseEvent<HTMLButtonElement, MouseEvent>, name: RefObject<HTMLInputElement>): void {
+        const nameStr = name.current?.value;
+        if (!nameStr) {
+            throw new Error("Tutorial name cannot be undefined");
+        }
+        TutorialDbService.createTutorial(nameStr).then(() => {
+            console.log("Posted successfully");
+            this.toggleCreatorModal(e);
+        }, () => {
+            console.log("Post failed");
+        });
         
-        //this.toggleCreatorModal(e);
     }
 
     /**
