@@ -1,5 +1,4 @@
 import MongoClient from "mongodb";
-import ITutorial from "src/controllers/interfaces/ITutorial";
 
 /**
  * Static helper class resposible for handling all DB operations
@@ -20,23 +19,12 @@ export default class DbService {
     }
 
     /**
-     * Creates a tutorial document within a given collection
-     * @param {string} collectionName collection name
-     * @param {ITutorial} tutorial any object type to be parsed and created as a document
-     * @return {Promise<boolean>} a promise from the {@link createDoc DbService.createDocument<T>}
-     * determining if the document inserted correctly
-     */
-    public static async createTutorialDocument(collectionName: string, tutorial: ITutorial): Promise<boolean> {
-        return DbService.createDocument<ITutorial>(collectionName, tutorial);
-    }
-
-    /**
      * Creates a document within a given collection
      * @param {string} collectionName collection name
      * @param {T} data any object type to be parsed and created as a document
      * @return {Promise<boolean>} a promise determining if the document inserted correctly
      */
-    private static async createDocument<T>(collectionName: string, data: T): Promise<boolean> {
+    public static async createDocument<T>(collectionName: string, data: T): Promise<boolean> {
         let response: boolean = false;
         await MongoClient.connect(DbService._dbUrl).then(
             async (client) => {
@@ -49,7 +37,7 @@ export default class DbService {
                     console.log("connection closed successfully");
                 });
             },
-            (err) => {
+            async (err) => {
                 if (err) {
                     throw new Error("DB connection failed" + err);
                 }
@@ -58,6 +46,34 @@ export default class DbService {
         return new Promise((resolve, reject) => {
             response ? resolve() : reject();
         });
+    }
+
+    /**
+     * Gets all documents in a collection of type
+     * @param {string} collectionName collection name
+     */
+    public static async getAllDocuments<T>(collectionName: string): Promise<T[]> {
+        let response: T[] = [];
+        await MongoClient.connect(DbService._dbUrl).then(
+            async (client) => {
+                const db = client.db(DbService._dbName);
+                await db.collection(collectionName).find({}).toArray(
+                    (err, docs: T[]) => {
+                        if (err) {
+                            throw new Error("Failed to get docs" + err);
+                        } else {
+                            response = docs;
+                        }
+                    }
+                );
+            },
+            async (err) => {
+                if (err) {
+                    throw new Error("DB connection failed" + err);
+                }
+            }
+        );
+        return Promise.resolve(response);
     }
 
 }

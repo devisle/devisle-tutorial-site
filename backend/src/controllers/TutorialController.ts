@@ -1,15 +1,13 @@
 import { Request, Response } from "express";
 import DbService from "../services/DbService";
 import ITutorial from "./interfaces/ITutorial";
-import CommandResult from "mongodb";
-import { Resolver } from "dns";
 
 /**
  * Tutorial route controller
  * @author ale8k
  */
 export default class TutorialController {
-    public static get: (req: Request, res: Response) => void = TutorialController.getRequest;
+    public static get: (req: Request, res: Response) => void = TutorialController.getAllTutorials;
     public static post: (req: Request, res: Response) => void = TutorialController.createBaseTutorial;
 
     /**
@@ -17,7 +15,7 @@ export default class TutorialController {
      * @param {Request} req the users request obj
      * @param {Response} res our res obj
      */
-    private static async getRequest(req: Request, res: Response): Promise<void> {
+    private static async getAllTutorials(req: Request, res: Response): Promise<void> {
         res.send("got me");
     }
 
@@ -28,16 +26,16 @@ export default class TutorialController {
      */
     private static async createBaseTutorial(req: Request, res: Response): Promise<void> {
         if (TutorialController.structureCheck(req.body)) {
-            await DbService.createTutorialDocument("tutorials", req.body).then(
+            await TutorialController.createTutorialDocument("tutorials", req.body).then(
                 () => {
-                    res.send("Document created and saved successfully");
+                    res.send({ response: "OK", reason: "" });
                 },
                 () => {
-                    res.send("Something went wrong");
+                    res.send({ response: "BAD", reason: "DB FAILURE" });
                 }
             );
         } else {
-            res.send("Tutorial formatted incorrectly");
+            res.send({ response: "BAD", reason: "INCORRECT FORMATTING"});
         }
     }
 
@@ -54,6 +52,27 @@ export default class TutorialController {
             }
         }
         return false;
+    }
+
+    /**
+     * Creates a tutorial document within a given collection
+     * @param {string} collectionName collection name
+     * @param {ITutorial} tutorial any object type to be parsed and created as a document
+     * @return {Promise<boolean>} a promise from the {@link createDoc DbService.createDocument<T>}
+     * determining if the document inserted correctly
+     */
+    public static async createTutorialDocument(collectionName: string, tutorial: ITutorial): Promise<boolean> {
+        return DbService.createDocument<ITutorial>(collectionName, tutorial);
+    }
+
+    /**
+     * Gets all tutorial documents out of a given collection
+     * @param {string} collectionName collection name
+     * @return {Promise<ITutorial[]>} a promise containing all of the tutorial documents
+     * @todo add parsing logic to filter other documents
+     */
+    public static async getAllTutorialDocuments(collectionName: string): Promise<ITutorial[]> {
+        return DbService.getAllDocuments<ITutorial>(collectionName);
     }
 
 }
