@@ -1,4 +1,5 @@
-import MongoClient from "mongodb";
+import MongoClient, { MongoError, UpdateWriteOpResult } from "mongodb";
+import { Subject } from "rxjs";
 
 /**
  * Static helper class resposible for handling all DB operations
@@ -15,55 +16,51 @@ export default class DbService {
     private static _dbName = "tutorial";
 
     constructor() {
-        console.log("boo from service!");
+        console.log("Db service initialised!");
+    }
+
+    /**
+     * Gets all documents in a collection of type
+     * @param {string} collectionName collection name
+     * @param {Subject<string>} response$ the subject to emit the response of the query back to the controller handler
+     * @todo handle find error & fix force cast
+     */
+    public static getAllDocuments<T>(collectionName: string, response$: Subject<T>): void {
+        MongoClient.connect(DbService._dbUrl).then(
+            (client) => {
+                console.log("Connected successfully to db");
+                client.db(DbService._dbName).collection(collectionName).find({}).toArray((err, result) => {
+                    response$.next(result as unknown as T); // forcefully cast the result to T
+                });
+                client.close();
+            },
+            (err) => {
+                if (err) {
+                    throw new Error("DB connection failed" + err);
+                }
+            }
+        );
     }
 
     /**
      * Creates a document within a given collection
      * @param {string} collectionName collection name
      * @param {T} data any object type to be parsed and created as a document
-     * @return {Promise<boolean>} a promise determining if the document inserted correctly
+     * @param {Subject<string>} response$ the subject to emit the response of the query back to the controller handler
      */
-    public static async createDocument<T>(collectionName: string, data: T): Promise<boolean> {
-        let response: boolean = false;
-        await MongoClient.connect(DbService._dbUrl).then(
-            async (client) => {
-                console.log("Connected successfully to db");
-                const db = client.db(DbService._dbName);
-                await db.collection(collectionName).insertOne(data).then(() => {
-                    response = true;
-                });
-                client.close().then(() => {
-                    console.log("connection closed successfully");
-                });
-            },
-            async (err) => {
-                if (err) {
-                    throw new Error("DB connection failed" + err);
-                }
-            }
-        );
-        return new Promise((resolve, reject) => {
-            response ? resolve() : reject();
-        });
-    }
-
-    /**
-     * Gets all documents in a collection of type
-     * @param {string} collectionName collection name
-     */
-    public static async getAllDocuments<T>(collectionName: string): Promise<void | T[]> {
-        return await MongoClient.connect(DbService._dbUrl).then(
+    public static createDocument<T>(collectionName: string, data: T, response$: Subject<string | MongoError>): void {
+        MongoClient.connect(DbService._dbUrl).then(
             (client) => {
                 console.log("Connected successfully to db");
-                const db = client.db(DbService._dbName);
-                const collection = db.collection(collectionName).find({}).toArray();
-                client.close().then(() => {
-                    console.log("connection closed successfully");
+                client.db(DbService._dbName).collection(collectionName).insertOne(data).then((d) => {
+                    response$.next("SUCCESSFUL CREATION");
+                },
+                (err: MongoError) => {
+                    response$.next(err);
                 });
-                return collection;
+                client.close();
             },
-            async (err) => {
+            (err) => {
                 if (err) {
                     throw new Error("DB connection failed" + err);
                 }
@@ -75,9 +72,33 @@ export default class DbService {
      * Updates a single document in a given collection
      * @param {string} collectionName collection name
      * @param {T} data the data to write over
+     * @param {Subject<string | MongoError>} response$ the subject to emit the response of the query back to the controller handler
      */
-    public static async updateSingleDocument<T>(collectionName: string, data: T): Promise<void> {
-
+    public static updateSingleDocument(collectionName: string, predicate: object, newValue: object,
+            response$: Subject<string | MongoError>): void {
+        MongoClient.connect(DbService._dbUrl).then(
+            (client) => {
+                console.log("Connected successfully to db");
+                client.db(DbService._dbName).collection(collectionName).updateOne(
+                    predicate,
+                    newValue,
+                    (err: MongoError, response: UpdateWriteOpResult) => {
+                        if (err !== null) {
+                            response$.next("UPDATED FAILED");
+                            throw new Error("Update failed" + err);
+                        } else {
+                            response$.next(JSON.stringify(response.result));
+                        }
+                    }
+                );
+                client.close();
+            },
+            (err) => {
+                if (err) {
+                    throw new Error("DB connection failed" + err);
+                }
+            }
+        );
     }
 
 }

@@ -18,8 +18,7 @@ export default class TutorialRoute implements IRoute {
         this.router.use(this.exampleMiddleware);
         this.router.get("/tutorial/", TutorialController.get); // get all? or by id?
         this.router.post("/tutorial/", TutorialController.post); // create a tutorial
-        this.router.put("/tutorial/:id"); // update a tutorial
-        this.router.patch("/tutorial/:id");// fix small piece of tutorial
+        this.router.put("/tutorial/", TutorialController.put); // update a tutorial
     }
 
     /**

@@ -1,9 +1,14 @@
 import { Request, Response } from "express";
 import DbService from "../services/DbService";
 import ITutorial from "./interfaces/ITutorial";
+import { ObjectId, Db, MongoError } from "mongodb";
+import { Subject } from "rxjs";
 
 /**
  * Tutorial route controller
+ * - Uses event driven async responses for db queries
+ * - This is done via wiring a {@link subject Subject<T>} through the service methods
+ * @todo maybe use single subject, test performance
  * @author ale8k
  */
 export default class TutorialController {
@@ -11,20 +16,21 @@ export default class TutorialController {
      * HTTP method handlers
      */
     public static get: (req: Request, res: Response) => void = TutorialController.getAllTutorials;
-    public static post: (req: Request, res: Response) => void = TutorialController.createBaseTutorial;
+    public static post: (req: Request, res: Response) => void = TutorialController.createTutorial;
+    public static put: (req: Request, res: Response) => void = TutorialController.updateTutorialByID;
 
     /**
-     * Grabs all the {@link tutorialDocs ITutorial[]} and returns them from this route
+     * Grabs all the {@link tutorialDocs ITutorial[]} and resoonds
      * @param {Request} req the users request obj
      * @param {Response} res our res obj
      */
-    private static async getAllTutorials(req: Request, res: Response): Promise<void> {
-        await TutorialController.getAllTutorialDocuments("tutorials").then(
-            (tutArr) => {
-                res.send(tutArr);
-            }
-        );
-
+    private static getAllTutorials(req: Request, res: Response): void {
+        const response$ = new Subject<ITutorial[]>();
+        const sub = response$.subscribe((d) => {
+            sub.unsubscribe();
+            res.send(d);
+        });
+        DbService.getAllDocuments<ITutorial[]>("tutorials", response$);
     }
 
     /**
@@ -32,25 +38,44 @@ export default class TutorialController {
      * @param {Request} req the users request obj
      * @param {Response} res our res obj
      */
-    private static async createBaseTutorial(req: Request, res: Response): Promise<void> {
+    private static createTutorial(req: Request, res: Response): void {
+        const response$ = new Subject<string | MongoError>();
+        const sub = response$.subscribe((d) => {
+            sub.unsubscribe();
+            res.send(d);
+        });
         if (TutorialController.structureCheck(req.body)) {
-            await TutorialController.createTutorialDocument("tutorials", req.body).then(
-                () => {
-                    res.send({ response: "OK", reason: "" });
-                },
-                () => {
-                    res.send({ response: "BAD", reason: "DB FAILURE" });
-                }
-            );
-        } else {
-            console.log(req.body)
-            res.send({ response: "BAD", reason: "INCORRECT FORMATTING"});
+            DbService.createDocument<ITutorial>("tutorials", req.body as ITutorial, response$);
         }
+    }
+
+    /**
+     * Updates a tutorial by it's {@link _Id ObjectId}
+     * @param {Request} req the users request obj
+     * @param {Response} res our res obj
+     */
+    private static async updateTutorialByID(req: Request, res: Response): Promise<void> {
+        const response$ = new Subject<string | MongoError>();
+        const sub = response$.subscribe((d) => {
+            sub.unsubscribe();
+            res.send(d);
+        });
+        const tutorial = req.body as ITutorial;
+        const atomicSetup = {
+            $set: {
+                name: tutorial.name,
+                html: tutorial.html,
+                markdown: tutorial.markdown
+            } as ITutorial
+        };
+        const predicateId = { _id: new ObjectId(tutorial._id) };
+        DbService.updateSingleDocument("tutorials", predicateId, atomicSetup, response$);
     }
 
     /**
      * Checks the incoming tutorial object structure to be of type {@link ITutorial ITutorial}
      * @param {any} data the unknown data type
+     * @returns {boolean} whether or not the data passed the structural check
      */
     private static structureCheck(data: any): data is ITutorial {
         if (Object.keys(data).length === 3) {
@@ -61,27 +86,6 @@ export default class TutorialController {
             }
         }
         return false;
-    }
-
-    /**
-     * Creates a tutorial document within a given collection
-     * @param {string} collectionName collection name
-     * @param {ITutorial} tutorial any object type to be parsed and created as a document
-     * @return {Promise<boolean>} a promise from the {@link createDoc DbService.createDocument<T>}
-     * determining if the document inserted correctly
-     */
-    public static async createTutorialDocument(collectionName: string, tutorial: ITutorial): Promise<boolean> {
-        return DbService.createDocument<ITutorial>(collectionName, tutorial);
-    }
-
-    /**
-     * Gets all tutorial documents out of a given collection
-     * @param {string} collectionName collection name
-     * @return {Promise<ITutorial[]>} a promise containing all of the tutorial documents
-     * @todo add parsing logic to filter other documents
-     */
-    public static async getAllTutorialDocuments(collectionName: string): Promise<void | ITutorial[]> {
-        return await DbService.getAllDocuments<ITutorial>(collectionName);
     }
 
 }
