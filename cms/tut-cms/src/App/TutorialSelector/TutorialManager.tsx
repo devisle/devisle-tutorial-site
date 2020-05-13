@@ -6,7 +6,7 @@ import TutorialDbService from "../../services/TutorialDbService";
 import { Subject } from "rxjs";
 
 interface ITutorialManagerProps {
-    tutorialManager$: Subject<ITutorial>;
+    tutorialManager$: Subject<ITutorial | string>;
     initialTutorial: ITutorial | null;
 }
 
@@ -30,8 +30,8 @@ export default class TutorialManager extends Component<ITutorialManagerProps, IT
 
         this.toggleCreatorModal = this.toggleCreatorModal.bind(this);
         this.createTutorial = this.createTutorial.bind(this);
-        this.renderTutorialList = this.renderTutorialList.bind(this);
-        this.rerenderTutList = this.rerenderTutList.bind(this);
+        this.renderTutorialCardList = this.renderTutorialCardList.bind(this);
+        this.rerenderTutorialCardList = this.rerenderTutorialCardList.bind(this);
         this.handleCardClick = this.handleCardClick.bind(this);
     }
 
@@ -39,7 +39,13 @@ export default class TutorialManager extends Component<ITutorialManagerProps, IT
      * Update the tutorial selection list upon mount
      */
     public componentDidMount(): void {
-        this.rerenderTutList();
+        this.rerenderTutorialCardList();
+        this.props.tutorialManager$.subscribe(d => {
+            if (d === "RESET LIST") {
+                console.log("list updated");
+                this.rerenderTutorialCardList();
+            }
+        });
     }
 
     /**
@@ -63,7 +69,7 @@ export default class TutorialManager extends Component<ITutorialManagerProps, IT
         }
         TutorialDbService.createTutorial(nameStr).then(() => {
             console.log("Posted successfully");
-            this.rerenderTutList();
+            this.rerenderTutorialCardList();
             this.toggleCreatorModal(e);
         }, () => {
             console.log("Post failed");
@@ -78,13 +84,14 @@ export default class TutorialManager extends Component<ITutorialManagerProps, IT
      */
     private handleCardClick(e: React.MouseEvent<HTMLDivElement, MouseEvent>, tut: ITutorial): void {
         this.props.tutorialManager$.next(tut);
+        this.rerenderTutorialCardList();;
     }
 
     /**
      * Conditionally renders the tutorial card list
      * @returns {JSX.Element | JSX.Element[]} the loading or list of tuts
      */
-    private renderTutorialList(): JSX.Element | JSX.Element[] {
+    private renderTutorialCardList(): JSX.Element | JSX.Element[] {
         const respJSX = (<div style={{ height: "40px", textAlign: "center", marginTop: "5vh" }}>Loading...</div>);
         if (this.state.tutorialList.length !== 0) {
             return this.state.tutorialList.map(tut => {
@@ -103,8 +110,9 @@ export default class TutorialManager extends Component<ITutorialManagerProps, IT
     /**
      * Rerenders the tutorial list with a fresh set of data from the API
      */
-    private rerenderTutList(): void {
+    private rerenderTutorialCardList(): void {
         TutorialDbService.getAllTutorials().then((d) => {
+            console.log(d);
             this.setState({
                 tutorialList: d
             });
@@ -120,7 +128,7 @@ export default class TutorialManager extends Component<ITutorialManagerProps, IT
         return (
             <div className="TutorialManager">
                 <button className="create-btn" onClick={this.toggleCreatorModal}>Create tutorial</button>
-                {this.renderTutorialList()}
+                {this.renderTutorialCardList()}
                 <Modal
                     isOpen={this.state.modalToggle}
                     className="creator-modal"

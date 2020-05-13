@@ -41,6 +41,7 @@ export default class TutorialDbService {
      * @param {Tutorial} tutorial the tutorial to update 
      */
     public static saveTutorial(tutorial: ITutorial): void {
+        console.log(tutorial);
         if (window.confirm("Are you sure you want to save? (This will overwrite the tutorial)")) {
             fetch("http://127.0.0.1:3000/tutorial", {
                 method: "PUT",
@@ -49,7 +50,7 @@ export default class TutorialDbService {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify(tutorial)
-            });
+            }).then(d => d.json()).then(console.log);
         } else {
             console.log("Aborted saved");
         }

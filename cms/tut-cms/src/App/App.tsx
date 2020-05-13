@@ -20,14 +20,16 @@ export default class App extends Component<{}, IAppState> {
      * Transfer subject from manager -> editor selection,
      * emits the tutorial to be used in props
      */
-    private _tutorialManager$: Subject<ITutorial> = new Subject<ITutorial>();
+    private _tutorialManager$: Subject<ITutorial | string> = new Subject<ITutorial | string>();
 
     constructor(props: {}) {
         super(props);
         this._tutorialManager$.subscribe((d) => {
-            this.setState({
-                initialTutorial: d
-            });
+            if (d !== "RESET LIST") {
+                this.setState({
+                    initialTutorial: d as ITutorial
+                });
+            }
         });
         /**
          * The initial tutorial is here because our subscriber can't subscribe

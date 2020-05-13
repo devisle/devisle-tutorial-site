@@ -17,7 +17,7 @@ import TutorialDbService from "../../services/TutorialDbService";
 type EditorOnChange = { text: string, html: string };
 
 interface IEditorProps {
-    tutorialManager$: Subject<ITutorial>;
+    tutorialManager$: Subject<ITutorial | string>;
     initialTutorial: ITutorial;
 }
 
@@ -38,7 +38,7 @@ export default class Editor extends Component<IEditorProps, { tutorial: ITutoria
     /**
      * The tutorial manager subject, to handle a full-rerender on tutorial change
      */
-    private _tutorialManager$: Subject<ITutorial>;
+    private _tutorialManager$: Subject<ITutorial | string>;
 
     constructor(props: IEditorProps) {
         super(props);
@@ -48,6 +48,7 @@ export default class Editor extends Component<IEditorProps, { tutorial: ITutoria
             switch (d) {
                 case "SAVE":
                     TutorialDbService.saveTutorial(this.state.tutorial);
+                    this._tutorialManager$.next("RESET LIST");
                     break;
                 case "DELETE":
                     // Delete removes from draft store & live collection
@@ -69,10 +70,13 @@ export default class Editor extends Component<IEditorProps, { tutorial: ITutoria
     public componentWillMount(): void {
         // Update state on each emit of change
         this._tutorialManager$.subscribe(d => {
-            this.setState({
-                tutorial: d
-            });
+            if (d !== "RESET LIST") {
+                this.setState({
+                    tutorial: d as ITutorial
+                });
+            }
         });
+
         MdEditor.use(SavePlugin, { plugin$: this._plugin$ });
         MdEditor.use(DeletePlugin, { plugin$: this._plugin$ });
         MdEditor.use(PublishPlugin, { plugin$: this._plugin$ });
@@ -85,6 +89,7 @@ export default class Editor extends Component<IEditorProps, { tutorial: ITutoria
     private handleEditorChange({ text, html }: EditorOnChange): void {
         this.setState({
             tutorial: {
+                _id: this.state.tutorial._id,
                 name: this.state.tutorial.name,
                 html,
                 markdown: text
