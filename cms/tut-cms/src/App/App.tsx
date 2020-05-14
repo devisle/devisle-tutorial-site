@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import Editor from "./Editor/Editor";
-import "./App.scss";
 import ITutorial from "../interfaces/ITutorial";
 import TutorialDbService from "../services/TutorialDbService";
 import TutorialSelector from "./TutorialSelector/TutorialSelector";
 import { NotificationContainer } from "react-notifications";
+// CSS
+import "./App.scss";
 
 interface IAppState {
     tutorialList: ITutorial[];
