@@ -7,25 +7,24 @@ import PublishPlugin from "./Editor-Plugins/PublishPlugin";
 import "react-markdown-editor-lite/lib/index.css";
 import "./Editor.scss";
 import ITutorial from "../../interfaces/ITutorial";
-import { Subject } from "rxjs";
-import Tutorial from "../../classes/Tutorial";
+import { Subject, Subscription } from "rxjs";
 import TutorialDbService from "../../services/TutorialDbService";
 
 /**
- * Type returned from each editor change
+ * Type returned from editor change
  */
 type EditorOnChange = { text: string, html: string };
 
 interface IEditorProps {
-    tutorialManager$: Subject<ITutorial | string>;
-    initialTutorial: ITutorial;
+    rerenderParent: Function;
+    tutorial: ITutorial;
 }
 
 /**
  * A selfcontained edit/view for markdown
  * @author ale8k
  */
-export default class Editor extends Component<IEditorProps, { tutorial: ITutorial }> {
+export default class Editor extends Component<IEditorProps, {}> {
     /**
      * The markdown parser to be passed to our markdown editor
      */
@@ -36,65 +35,80 @@ export default class Editor extends Component<IEditorProps, { tutorial: ITutoria
      */
     private _plugin$: Subject<string> = new Subject<string>();
     /**
-     * The tutorial manager subject, to handle a full-rerender on tutorial change
+     * Holds the current state of content within the editor
      */
-    private _tutorialManager$: Subject<ITutorial | string>;
+    private _cachedTutorial: ITutorial;
+    /**
+     * The subscription all {@link plugin$ Editor.plugin$} response events
+     */
+    private _pluginSub: Subscription;
 
     constructor(props: IEditorProps) {
         super(props);
-        this._tutorialManager$ = this.props.tutorialManager$;
-        this.handleEditorChange = this.handleEditorChange.bind(this);
-        this._plugin$.subscribe(d => {
+        // Set the cached tutorial
+        this._cachedTutorial = this.props.tutorial;
+        // Set up plugin event sub
+        this._pluginSub = this._plugin$.subscribe(d => {
             switch (d) {
                 case "SAVE":
-                    TutorialDbService.saveTutorial(this.state.tutorial);
-                    this._tutorialManager$.next("RESET LIST");
-                    break;
-                case "DELETE":
-                    // Delete removes from draft store & live collection
-                    break;
-                case "PUBLISH":
-                    // Publish takes current tutorial and stores in the 'live' collection
+                    this.saveTutorial();
                     break;
             }
         });
-        this.state = {
-            tutorial: this.props.initialTutorial
-        };
-        
+
+        this.handleEditorChange = this.handleEditorChange.bind(this);
+        this.saveTutorial = this.saveTutorial.bind(this);
+    }
+
+    /**
+     * debug
+     */
+    componentDidUpdate(): void {
+        this._cachedTutorial = this.props.tutorial;
+        console.log("updated current cached tut is", this._cachedTutorial);
     }
 
     /**
      * Setup plugins upon mount
+     * @todo find alternative for componentWillMount, we just need to run this once...
+     * Ideally before it's mounted.
      */
     public componentWillMount(): void {
-        // Update state on each emit of change
-        this._tutorialManager$.subscribe(d => {
-            if (d !== "RESET LIST") {
-                this.setState({
-                    tutorial: d as ITutorial
-                });
-            }
-        });
-
         MdEditor.use(SavePlugin, { plugin$: this._plugin$ });
         MdEditor.use(DeletePlugin, { plugin$: this._plugin$ });
         MdEditor.use(PublishPlugin, { plugin$: this._plugin$ });
     }
 
     /**
-     * Updates the field ref containing this tutorial
+     * Clean up plugin subscription
+     */
+    public componentWillUnmount(): void {
+        this._pluginSub.unsubscribe();
+    }
+
+    /**
+     * Saves a tutorial
+     */
+    private saveTutorial(): void {
+        TutorialDbService.saveTutorial(this._cachedTutorial).then(response => {
+            if (response.ok) {
+                TutorialDbService.getAllTutorials().then(tutorials => {
+                    this.props.rerenderParent({
+                        tutorialList: tutorials
+                    });
+                });
+            }
+        });
+    }
+
+    /**
+     * Updates the cached tutorial with the current editor content
      * @param {EditorOnChange} param0 an object containing the raw text and text parsed with html
      */
     private handleEditorChange({ text, html }: EditorOnChange): void {
-        this.setState({
-            tutorial: {
-                _id: this.state.tutorial._id,
-                name: this.state.tutorial.name,
-                html,
-                markdown: text
-            }
-        });
+        this._cachedTutorial.markdown = text;
+        this._cachedTutorial.html = html;
+        console.log(this._cachedTutorial);
     }
 
     /**
@@ -104,7 +118,7 @@ export default class Editor extends Component<IEditorProps, { tutorial: ITutoria
         return (
             <div className="Editor">
                 <MdEditor
-                    value={this.state.tutorial.markdown}
+                    value={this.props.tutorial.markdown}
                     style={{ height: "100vh" }}
                     renderHTML={(text) => this._mdParser.render(text)}
                     onChange={(e: EditorOnChange) => this.handleEditorChange(e)}

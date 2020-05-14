@@ -1,56 +1,72 @@
 import React, { Component } from "react";
 import Editor from "./Editor/Editor";
-import TutorialManager from "./TutorialSelector/TutorialManager";
-import { Subject } from "rxjs";
 import "./App.scss";
 import ITutorial from "../interfaces/ITutorial";
+import TutorialDbService from "../services/TutorialDbService";
+import TutorialSelector from "./TutorialSelector/TutorialSelector";
 
 
 interface IAppState {
-    initialTutorial: ITutorial | null;
+    tutorialList: ITutorial[];
+    activeTutorial: ITutorial | null;
 }
 
 /**
- * Basic entry point,
- * has only two components, the tutorial selector/creator and the editor for the tutorials
+ * App
  * @author ale8k
  */
 export default class App extends Component<{}, IAppState> {
-    /**
-     * Transfer subject from manager -> editor selection,
-     * emits the tutorial to be used in props
-     */
-    private _tutorialManager$: Subject<ITutorial | string> = new Subject<ITutorial | string>();
-
     constructor(props: {}) {
         super(props);
-        this._tutorialManager$.subscribe((d) => {
-            if (d !== "RESET LIST") {
-                this.setState({
-                    initialTutorial: d as ITutorial
-                });
-            }
-        });
-        /**
-         * The initial tutorial is here because our subscriber can't subscribe
-         * in time to register the initial first clicked tutorial, so we send it here in this initial
-         * state set just above ^
-         */
+
         this.state = {
-            initialTutorial: null
+            tutorialList: [],
+            activeTutorial: null
         };
+
+        this.rerender = this.rerender.bind(this);
     }
+
+    /**
+     * Get the initial call of tutorials
+     */
+    public componentDidMount(): void {
+        TutorialDbService.getAllTutorials().then((tutorials => {
+            this.setState({
+                tutorialList: tutorials
+            });
+        }));
+    }
+
+    /**
+     * DEBUG
+     */
+    public componentDidUpdate(): void {
+        console.log(this.state.activeTutorial);
+        //console.log(this.state.tutorialList);
+    }
+
+    /**
+     * Forces a rerender
+     * @param {IAppState} state optional param, update state if needed
+     */
+    private rerender(state?: IAppState): void {
+        if (state) {
+            this.setState(state);
+        } else {
+            this.forceUpdate();
+        }
+    }
+
     /**
      * Render
      */
     public render(): JSX.Element {
         return (
             <div className="App">
-                <TutorialManager tutorialManager$={this._tutorialManager$} initialTutorial={this.state.initialTutorial}/>
+                <TutorialSelector rerenderParent={this.rerender} tutorialList={this.state.tutorialList}/>
                 <div className="editor-container">
-                    {
-                        this.state.initialTutorial ? <Editor initialTutorial={this.state.initialTutorial} tutorialManager$={this._tutorialManager$}/> : <div>Select a card</div>
-                    }
+                    { this.state.activeTutorial ? <Editor tutorial={this.state.activeTutorial} rerenderParent={this.rerender}/> : <div>Select a tutorial</div>}
                 </div>
             </div>
         );

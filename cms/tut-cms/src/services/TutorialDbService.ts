@@ -1,6 +1,8 @@
 import Tutorial from "../classes/Tutorial";
 import ITutorial from "../interfaces/ITutorial";
 
+type MongoDbResponse = { n: number, nModified: number, ok: number };
+
 /**
  * A static helper service responsible for:
  *     Fetching/posting tutorials to the API
@@ -40,20 +42,15 @@ export default class TutorialDbService {
      * Updates a tutorial
      * @param {Tutorial} tutorial the tutorial to update 
      */
-    public static saveTutorial(tutorial: ITutorial): void {
-        console.log(tutorial);
-        if (window.confirm("Are you sure you want to save? (This will overwrite the tutorial)")) {
-            fetch("http://127.0.0.1:3000/tutorial", {
-                method: "PUT",
-                mode: "cors",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(tutorial)
-            }).then(d => d.json()).then(console.log);
-        } else {
-            console.log("Aborted saved");
-        }
+    public static saveTutorial(tutorial: ITutorial): Promise<MongoDbResponse> {
+        return fetch("http://127.0.0.1:3000/tutorial", {
+            method: "PUT",
+            mode: "cors",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(tutorial)
+        }).then(d => d.json());
     }
 
 }
