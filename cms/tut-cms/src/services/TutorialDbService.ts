@@ -5,15 +5,16 @@ type MongoDbResponse = { n: number, nModified: number, ok: number };
 
 /**
  * A static helper service responsible for:
- *     Fetching/posting tutorials to the API
- *     Creating new tutorials
- *     Modifying tutorials via the API
+ *  - Fetching/posting tutorials to the API
+ *  - Creating new tutorials
+ *  - Modifying tutorials via the API
  * @author ale8k
  */
 export default class TutorialDbService {
     /**
      * Creates an empty {@link tutorial Tutorial} with the given name
      * @param {string} name the tutorial name 
+     * @returns {Promise<Response>} JSON response
      */
     public static createTutorial(name: string): Promise<Response> {
         return fetch("http://127.0.0.1:3000/tutorial", {
@@ -41,6 +42,7 @@ export default class TutorialDbService {
     /**
      * Updates a tutorial
      * @param {Tutorial} tutorial the tutorial to update 
+     * @returns {Promise<MongoDbResponse>} returns mongodb response of an update in object
      */
     public static saveTutorial(tutorial: ITutorial): Promise<MongoDbResponse> {
         return fetch("http://127.0.0.1:3000/tutorial", {
