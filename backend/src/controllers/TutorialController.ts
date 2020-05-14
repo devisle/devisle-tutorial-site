@@ -42,7 +42,7 @@ export default class TutorialController {
         const response$ = new Subject<string | MongoError>();
         const sub = response$.subscribe((d) => {
             sub.unsubscribe();
-            res.send(d);
+            res.send(JSON.stringify(d));
         });
         if (TutorialController.structureCheck(req.body)) {
             DbService.createDocument<ITutorial>("tutorials", req.body as ITutorial, response$);

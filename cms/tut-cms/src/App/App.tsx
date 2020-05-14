@@ -4,6 +4,7 @@ import "./App.scss";
 import ITutorial from "../interfaces/ITutorial";
 import TutorialDbService from "../services/TutorialDbService";
 import TutorialSelector from "./TutorialSelector/TutorialSelector";
+import { NotificationContainer } from "react-notifications";
 
 
 interface IAppState {
@@ -44,6 +45,11 @@ export default class App extends Component<{}, IAppState> {
         //this.getTutorials();
     }
 
+    /**
+     * Gets all tutorials in our localStorage (if any) and from our API,
+     * it merges the localStorage in place of the API response tutorials and this creates
+     * our final tutorial list
+     */
     private getTutorials(): void {
         TutorialDbService.getAllTutorials().then((tutorials => {
             // Setup array store
@@ -95,6 +101,7 @@ export default class App extends Component<{}, IAppState> {
     public render(): JSX.Element {
         return (
             <div className="App">
+                <NotificationContainer/>
                 <TutorialSelector rerenderParent={this.rerender} tutorialList={this.state.tutorialList}/>
                 <div className="editor-container">
                     { 

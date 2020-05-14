@@ -3,6 +3,9 @@ import ITutorial from "../../interfaces/ITutorial";
 import Modal from "react-modal";
 import "./TutorialSelector.scss";
 import TutorialDbService from "../../services/TutorialDbService";
+import { NotificationManager } from "react-notifications";
+// CSS
+import "react-markdown-editor-lite/lib/index.css";
 
 interface ITutorialManagerProps {
     rerenderParent: Function;
@@ -55,6 +58,7 @@ export default class TutorialSelector extends Component<ITutorialManagerProps, I
         this.props.rerenderParent({
             activeTutorial: tut
         });
+        NotificationManager.info("SWITCH TO TUTORIAL: " + tut.name);
     }
 
     /**
@@ -83,13 +87,21 @@ export default class TutorialSelector extends Component<ITutorialManagerProps, I
      * @param {string} name tutorial name
      */
     private createTutorial(name: string): void {
-        TutorialDbService.createTutorial(name).then(() => {
+        TutorialDbService.createTutorial(name).then((response) => {
             this.toggleCreatorModal();
             TutorialDbService.getAllTutorials().then(tutorials => {
                 this.props.rerenderParent({
                     tutorialList: tutorials
                 });
             });
+            console.log(response);
+            return response.json();
+        }).then(response => {
+            if (response === "SUCCESSFUL CREATION") {
+                NotificationManager.success("Successfully created a tutorial", "SUCCESSFUL CREATION");
+            } else {
+                NotificationManager.error("Tutorial creation failed, see console for more info...", "CREATION FAILED", 3000);
+            }
         });
     }
 

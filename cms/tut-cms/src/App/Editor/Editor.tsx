@@ -7,7 +7,7 @@ import PublishPlugin from "./Editor-Plugins/PublishPlugin";
 import ITutorial from "../../interfaces/ITutorial";
 import { Subject, Subscription } from "rxjs";
 import TutorialDbService from "../../services/TutorialDbService";
-import { NotificationContainer, NotificationManager } from "react-notifications";
+import { NotificationManager } from "react-notifications";
 // CSS
 import "react-markdown-editor-lite/lib/index.css";
 import "./Editor.scss";
@@ -153,7 +153,6 @@ export default class Editor extends Component<IEditorProps, {}> {
     public render(): JSX.Element {
         return (
             <div className="Editor">
-                <NotificationContainer/>
                 <MdEditor
                     value={this.props.tutorial.markdown}
                     style={{ height: "100vh" }}
