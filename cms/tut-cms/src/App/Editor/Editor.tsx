@@ -104,7 +104,6 @@ export default class Editor extends Component<IEditorProps, {}> {
     private handleEditorChange({ text, html }: EditorOnChange): void {
         this._cachedTutorial.markdown = text;
         this._cachedTutorial.html = html;
-        NotificationManager.success("hi", "title");
     }
 
     /**
@@ -112,12 +111,19 @@ export default class Editor extends Component<IEditorProps, {}> {
      */
     private saveDraftTutorial(): void {
         window.localStorage.setItem(this._cachedTutorial._id as string, JSON.stringify(this._cachedTutorial));
+        NotificationManager.info("DRAFT SAVED!");
     }
     /**
      * Deletes a tutorial in the localStorage
      */
     private deleteDraftTutorial(): void {
-        window.localStorage.removeItem(this._cachedTutorial._id as string);
+        if (window.localStorage.getItem(this._cachedTutorial._id as string)) {
+            window.localStorage.removeItem(this._cachedTutorial._id as string);
+            NotificationManager.warning("Draft deleted...", "DRAFT DELETED", 2000);
+        } else {
+            NotificationManager.warning("Could not delete a draft because one does not exist...", "DRAFT DELETED FAILED", 5000);
+        }
+
     }
 
     /**
@@ -131,7 +137,12 @@ export default class Editor extends Component<IEditorProps, {}> {
         TutorialDbService.saveTutorial(this._cachedTutorial).then(response => {
             window.localStorage.removeItem(this._cachedTutorial._id as string);
             if (response.ok) {
+                NotificationManager.success("Tutorial published", "PUBLISH");
                 this.props.updateTutorialList();
+            } else {
+                NotificationManager.error("Publish failed! See console for more info", "PUBLISH", 1000, () => {
+                    console.log(response);
+                });
             }
         });
     }
