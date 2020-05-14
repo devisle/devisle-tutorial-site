@@ -1,11 +1,11 @@
 import React, { Component, RefObject } from "react";
 import ITutorial from "../../interfaces/ITutorial";
 import Modal from "react-modal";
-import "./TutorialSelector.scss";
 import TutorialDbService from "../../services/TutorialDbService";
 import { NotificationManager } from "react-notifications";
 // CSS
 import "react-markdown-editor-lite/lib/index.css";
+import "./TutorialSelector.scss";
 
 interface ITutorialManagerProps {
     rerenderParent: Function;
