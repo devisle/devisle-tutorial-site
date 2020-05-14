@@ -6,7 +6,6 @@ import TutorialDbService from "../services/TutorialDbService";
 import TutorialSelector from "./TutorialSelector/TutorialSelector";
 import { NotificationContainer } from "react-notifications";
 
-
 interface IAppState {
     tutorialList: ITutorial[];
     activeTutorial: ITutorial | null;
