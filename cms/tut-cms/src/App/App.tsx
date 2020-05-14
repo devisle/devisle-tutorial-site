@@ -93,7 +93,6 @@ export default class App extends Component<{}, IAppState> {
      * Render
      */
     public render(): JSX.Element {
-        console.log("CLICKED PUBLISH", this.state.activeTutorial);
         return (
             <div className="App">
                 <TutorialSelector rerenderParent={this.rerender} tutorialList={this.state.tutorialList}/>

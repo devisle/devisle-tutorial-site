@@ -5,7 +5,7 @@ import { Subject } from "rxjs";
 /**
  * Interface will define API local/endpoint to save/retrieve from
  */
-interface ISavePluginProps {
+interface ISaveDraftPluginProps {
     plugin$: Subject<string>;
 }
 
@@ -14,11 +14,11 @@ interface ISavePluginProps {
  * see {@link Editor Editor} for the Editor instance
  * @author ale8k
  */
-export default class SavePlugin extends PluginComponent<ISavePluginProps> {
+export default class SaveDraftPlugin extends PluginComponent<ISaveDraftPluginProps> {
     /**
      * Override for name, must be unqiue
      */
-    public static pluginName = "save";
+    public static pluginName = "draft";
     /**
      * Where to render, left/right
      */
@@ -52,7 +52,7 @@ export default class SavePlugin extends PluginComponent<ISavePluginProps> {
                 title="Counter"
                 onClick={() => this.handleSave()}
             >
-                Save
+                Save Draft
             </span>
         );
     }

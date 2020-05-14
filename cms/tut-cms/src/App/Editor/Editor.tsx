@@ -1,14 +1,17 @@
 import React, { Component } from "react";
 import MdEditor from "react-markdown-editor-lite";
 import MarkdownIt from "markdown-it";
-import SavePlugin from "./Editor-Plugins/SavePlugin";
+import SaveDraftPlugin from "./Editor-Plugins/SaveDraftPlugin";
 import DeletePlugin from "./Editor-Plugins/DeletePlugin";
 import PublishPlugin from "./Editor-Plugins/PublishPlugin";
-import "react-markdown-editor-lite/lib/index.css";
-import "./Editor.scss";
 import ITutorial from "../../interfaces/ITutorial";
 import { Subject, Subscription } from "rxjs";
 import TutorialDbService from "../../services/TutorialDbService";
+import { NotificationContainer, NotificationManager } from "react-notifications";
+// CSS
+import "react-markdown-editor-lite/lib/index.css";
+import "./Editor.scss";
+import "react-notifications/lib/notifications.css";
 
 /**
  * Type returned from editor change
@@ -51,7 +54,10 @@ export default class Editor extends Component<IEditorProps, {}> {
         this._pluginSub = this._plugin$.subscribe(d => {
             switch (d) {
                 case "SAVE":
-                    this.saveTutorial();
+                    this.saveDraftTutorial();
+                    break;
+                case "DELETE":
+                    this.deleteDraftTutorial();
                     break;
                 case "PUBLISH":
                     this.publishTutorial();
@@ -60,7 +66,8 @@ export default class Editor extends Component<IEditorProps, {}> {
         });
 
         this.handleEditorChange = this.handleEditorChange.bind(this);
-        this.saveTutorial = this.saveTutorial.bind(this);
+        this.saveDraftTutorial = this.saveDraftTutorial.bind(this);
+        this.deleteDraftTutorial = this.deleteDraftTutorial.bind(this);
         this.publishTutorial = this.publishTutorial.bind(this);
     }
 
@@ -78,7 +85,7 @@ export default class Editor extends Component<IEditorProps, {}> {
      * Ideally before it's mounted.
      */
     public componentWillMount(): void {
-        MdEditor.use(SavePlugin, { plugin$: this._plugin$ });
+        MdEditor.use(SaveDraftPlugin, { plugin$: this._plugin$ });
         MdEditor.use(DeletePlugin, { plugin$: this._plugin$ });
         MdEditor.use(PublishPlugin, { plugin$: this._plugin$ });
     }
@@ -91,10 +98,26 @@ export default class Editor extends Component<IEditorProps, {}> {
     }
 
     /**
+     * Updates the cached tutorial with the current editor content
+     * @param {EditorOnChange} param0 an object containing the raw text and text parsed with html
+     */
+    private handleEditorChange({ text, html }: EditorOnChange): void {
+        this._cachedTutorial.markdown = text;
+        this._cachedTutorial.html = html;
+        NotificationManager.success("hi", "title");
+    }
+
+    /**
      * Saves a tutorial to the localStorage
      */
-    private saveTutorial(): void {
+    private saveDraftTutorial(): void {
         window.localStorage.setItem(this._cachedTutorial._id as string, JSON.stringify(this._cachedTutorial));
+    }
+    /**
+     * Deletes a tutorial in the localStorage
+     */
+    private deleteDraftTutorial(): void {
+        window.localStorage.removeItem(this._cachedTutorial._id as string);
     }
 
     /**
@@ -114,20 +137,12 @@ export default class Editor extends Component<IEditorProps, {}> {
     }
 
     /**
-     * Updates the cached tutorial with the current editor content
-     * @param {EditorOnChange} param0 an object containing the raw text and text parsed with html
-     */
-    private handleEditorChange({ text, html }: EditorOnChange): void {
-        this._cachedTutorial.markdown = text;
-        this._cachedTutorial.html = html;
-    }
-
-    /**
      * Render
      */
     public render(): JSX.Element {
         return (
             <div className="Editor">
+                <NotificationContainer/>
                 <MdEditor
                     value={this.props.tutorial.markdown}
                     style={{ height: "100vh" }}

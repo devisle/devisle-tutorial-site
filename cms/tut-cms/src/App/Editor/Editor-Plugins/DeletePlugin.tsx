@@ -35,6 +35,13 @@ export default class DeletePlugin extends PluginComponent<IDeletePluginProps> {
     }
 
     /**
+     * Emits a "DELETE" button click
+     */
+    private handleDeleteDraft(): void {
+        this._plugin$.next("DELETE");
+    }
+
+    /**
      * Render
      */
     public render(): JSX.Element {
@@ -42,9 +49,9 @@ export default class DeletePlugin extends PluginComponent<IDeletePluginProps> {
             <span
                 className="button button-type-counter"
                 title="Counter"
-                onClick={() => console.log("boop")}
+                onClick={() => this.handleDeleteDraft()}
             >
-                Delete
+                | Delete Draft |
             </span>
         );
     }
