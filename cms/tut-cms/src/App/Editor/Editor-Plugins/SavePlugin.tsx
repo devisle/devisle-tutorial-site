@@ -36,9 +36,9 @@ export default class SavePlugin extends PluginComponent<ISavePluginProps> {
     }
 
     /**
-     * 
+     * Emits a "SAVE" button click
      */
-    private handleSave(e: React.MouseEvent<HTMLSpanElement, MouseEvent>): void {
+    private handleSave(): void {
         this._plugin$.next("SAVE");
     }
 
@@ -50,7 +50,7 @@ export default class SavePlugin extends PluginComponent<ISavePluginProps> {
             <span
                 className="button button-type-counter"
                 title="Counter"
-                onClick={(e) => this.handleSave(e)}
+                onClick={() => this.handleSave()}
             >
                 Save
             </span>

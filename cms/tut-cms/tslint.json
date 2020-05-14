@@ -12,6 +12,7 @@
 			"check-lowercase"
 		],
 		"ban-types": false,
+		"forin": false,
 		"curly": true,
 		"eofline": true,
 		"indent": [true, "spaces"],
@@ -38,6 +39,7 @@
 		"no-var-keyword": true,
 		"no-console": false,
 		"prefer-for-of": false,
+		
 		"one-line": [true,
 			"check-catch",
 			"check-else",

@@ -15,7 +15,7 @@ interface ITutorialManagerState {
 
 /**
  * The tutorial selector
- * @author ale8k
+ * @author ale8k 
  */
 export default class TutorialSelector extends Component<ITutorialManagerProps, ITutorialManagerState> {
     /**
@@ -69,7 +69,7 @@ export default class TutorialSelector extends Component<ITutorialManagerProps, I
                     <div className="tutorial-card" key={tut._id} onClick={(e) => {
                         this.handleCardClick(e, tut);
                     }}>
-                        <p style={tut._id === this._activeTutorialId ? { color: "blue" } : {}}>{tut.name}</p>
+                        <p style={tut._id === this._activeTutorialId ? { color: "blue" } : { color: "grey" }}>{tut.name}</p>
                     </div>
                 );
             });

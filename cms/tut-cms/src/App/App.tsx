@@ -25,25 +25,56 @@ export default class App extends Component<{}, IAppState> {
         };
 
         this.rerender = this.rerender.bind(this);
+        this.getTutorials = this.getTutorials.bind(this);
     }
 
     /**
      * Get the initial call of tutorials
      */
     public componentDidMount(): void {
-        TutorialDbService.getAllTutorials().then((tutorials => {
-            this.setState({
-                tutorialList: tutorials
-            });
-        }));
+        this.getTutorials();
     }
 
     /**
      * DEBUG
      */
     public componentDidUpdate(): void {
-        console.log(this.state.activeTutorial);
+        //console.log(this.state.activeTutorial);
         //console.log(this.state.tutorialList);
+        //this.getTutorials();
+    }
+
+    private getTutorials(): void {
+        TutorialDbService.getAllTutorials().then((tutorials => {
+            // Setup array store
+            const localStoreTutorials: ITutorial[] = [];
+            // Setup reference index store
+            const localStoreTutorialIds: string[] = [];
+            // Parse the JSON into our local store array
+            for (const tut in localStorage) {
+                let tutorial: string | ITutorial = localStorage[tut];
+                if (typeof tutorial === "string") {
+                    tutorial = JSON.parse(tutorial);
+                    localStoreTutorials.push(tutorial as ITutorial);
+                    localStoreTutorialIds.push((tutorial as ITutorial)._id as string);
+                } 
+            }
+
+            // Loop through all tutorials gotten from API, merge our cached in and store
+            const finalTutorialList = tutorials.map((tutorial, i) => {
+                if (localStoreTutorialIds.includes(tutorial._id as string)) {
+                    return localStoreTutorials[localStoreTutorialIds.indexOf(tutorial._id as string)];
+                } else {
+                    return tutorial;
+                }
+            });
+
+            // Finally update the state of our tutorials to the merged list
+            this.setState({
+                tutorialList: finalTutorialList,
+                activeTutorial: null
+            });
+        }));
     }
 
     /**
@@ -62,11 +93,22 @@ export default class App extends Component<{}, IAppState> {
      * Render
      */
     public render(): JSX.Element {
+        console.log("CLICKED PUBLISH", this.state.activeTutorial);
         return (
             <div className="App">
                 <TutorialSelector rerenderParent={this.rerender} tutorialList={this.state.tutorialList}/>
                 <div className="editor-container">
-                    { this.state.activeTutorial ? <Editor tutorial={this.state.activeTutorial} rerenderParent={this.rerender}/> : <div>Select a tutorial</div>}
+                    { 
+                        this.state.activeTutorial ? 
+                            <Editor 
+                                tutorial={this.state.activeTutorial} 
+                                updateTutorialList={this.getTutorials}
+                            /> 
+                                    : 
+                            <div>
+                                Select a tutorial
+                            </div>
+                    }
                 </div>
             </div>
         );

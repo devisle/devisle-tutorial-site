@@ -32,6 +32,14 @@ export default class SavePlugin extends PluginComponent<IPublishPluginProps> {
         super(props);
 
         this._plugin$ = this.getConfig("plugin$");
+        this.handleSave = this.handleSave.bind(this);
+    }
+
+    /**
+     * Emits a "PUBLISH" button click
+     */
+    private handleSave(): void {
+        this._plugin$.next("PUBLISH");
     }
 
     /**
@@ -42,7 +50,7 @@ export default class SavePlugin extends PluginComponent<IPublishPluginProps> {
             <span
                 className="button button-type-counter"
                 title="Counter"
-                onClick={() => console.log("boop")}
+                onClick={() => this.handleSave()}
             >
                 Publish
             </span>

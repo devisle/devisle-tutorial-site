@@ -16,7 +16,7 @@ import TutorialDbService from "../../services/TutorialDbService";
 type EditorOnChange = { text: string, html: string };
 
 interface IEditorProps {
-    rerenderParent: Function;
+    updateTutorialList: Function;
     tutorial: ITutorial;
 }
 
@@ -53,19 +53,23 @@ export default class Editor extends Component<IEditorProps, {}> {
                 case "SAVE":
                     this.saveTutorial();
                     break;
+                case "PUBLISH":
+                    this.publishTutorial();
+                    break;
             }
         });
 
         this.handleEditorChange = this.handleEditorChange.bind(this);
         this.saveTutorial = this.saveTutorial.bind(this);
+        this.publishTutorial = this.publishTutorial.bind(this);
     }
 
     /**
-     * debug
+     * Update our cached tutorial
      */
     componentDidUpdate(): void {
         this._cachedTutorial = this.props.tutorial;
-        console.log("updated current cached tut is", this._cachedTutorial);
+        console.log("updated current cached tut is: " + this._cachedTutorial.name);
     }
 
     /**
@@ -87,16 +91,24 @@ export default class Editor extends Component<IEditorProps, {}> {
     }
 
     /**
-     * Saves a tutorial
+     * Saves a tutorial to the localStorage
      */
     private saveTutorial(): void {
+        window.localStorage.setItem(this._cachedTutorial._id as string, JSON.stringify(this._cachedTutorial));
+    }
+
+    /**
+     * Publishes a tutorial to the database
+     * 
+     * Side effects: 
+     *  - Removes localStorage tutorial (if any) as we've completed our draft
+     *  - Re-renders {@link App App} with fresh list of tutorials (including merged localStorage ones)
+     */
+    private publishTutorial(): void {
         TutorialDbService.saveTutorial(this._cachedTutorial).then(response => {
+            window.localStorage.removeItem(this._cachedTutorial._id as string);
             if (response.ok) {
-                TutorialDbService.getAllTutorials().then(tutorials => {
-                    this.props.rerenderParent({
-                        tutorialList: tutorials
-                    });
-                });
+                this.props.updateTutorialList();
             }
         });
     }
@@ -108,7 +120,6 @@ export default class Editor extends Component<IEditorProps, {}> {
     private handleEditorChange({ text, html }: EditorOnChange): void {
         this._cachedTutorial.markdown = text;
         this._cachedTutorial.html = html;
-        console.log(this._cachedTutorial);
     }
 
     /**
