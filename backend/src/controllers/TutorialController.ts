@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import DbService from "../services/DbService";
+import DbService, { MongoDbUpdateResponse } from "../services/DbService";
 import ITutorial from "./interfaces/ITutorial";
 import { ObjectId, Db, MongoError } from "mongodb";
 import { Subject } from "rxjs";
@@ -55,7 +55,7 @@ export default class TutorialController {
      * @param {Response} res our res obj
      */
     private static async updateTutorialByID(req: Request, res: Response): Promise<void> {
-        const response$ = new Subject<string | MongoError>();
+        const response$ = new Subject<MongoError | MongoDbUpdateResponse >();
         const sub = response$.subscribe((d) => {
             sub.unsubscribe();
             res.send(d);

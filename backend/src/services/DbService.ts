@@ -1,6 +1,8 @@
 import MongoClient, { MongoError, UpdateWriteOpResult } from "mongodb";
 import { Subject } from "rxjs";
 
+export type MongoDbUpdateResponse = { ok: number; n: number; nModified: number; };
+
 /**
  * Static helper class resposible for handling all DB operations
  * @author ale8k, rakeshshubhu
@@ -42,9 +44,13 @@ export default class DbService {
     public static createDocument<T>(collectionName: string, data: T, response$: Subject<string | MongoError>): void {
         MongoClient.connect(process.env.DB_URL as string).then(
             (client) => {
-                console.log("Connected successfully to db");
-                client.db(process.env.DB_NAME as string).collection(collectionName).insertOne(data).then((d) => {
-                    response$.next("SUCCESSFUL CREATION");
+                //console.log("Connected successfully to db");
+                client.db(process.env.DB_NAME as string).collection(collectionName).insertOne(data).then(({result}) => {
+                    if (result.ok) {
+                        response$.next("SUCCESSFUL CREATION");
+                    } else {
+                        response$.next("UNSUCCESSFUL CREATION");
+                    }
                 },
                 (err: MongoError) => {
                     response$.next(err);
@@ -66,7 +72,7 @@ export default class DbService {
      * @param {Subject<string | MongoError>} response$ the subject to emit the response of the query back to the controller handler
      */
     public static updateSingleDocument(collectionName: string, predicate: object, newValue: object,
-            response$: Subject<string | MongoError>): void {
+            response$: Subject<MongoDbUpdateResponse  | MongoError>): void {
         MongoClient.connect(process.env.DB_URL as string).then(
             (client) => {
                 console.log("Connected successfully to db");
@@ -75,10 +81,10 @@ export default class DbService {
                     newValue,
                     (err: MongoError, response: UpdateWriteOpResult) => {
                         if (err !== null) {
-                            response$.next("UPDATED FAILED");
+                            response$.next(err);
                             throw new Error("Update failed" + err);
                         } else {
-                            response$.next(JSON.stringify(response.result));
+                            response$.next(response.result as MongoDbUpdateResponse);
                         }
                     }
                 );
