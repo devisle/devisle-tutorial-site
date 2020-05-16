@@ -9,11 +9,11 @@ export default class DbService {
     /**
      * Url of mongodb
      */
-    private static _dbUrl = "mongodb://localhost:27017";
+    private static _dbUrl = process.env.DB_URL as string;
     /**
      * DBName
      */
-    private static _dbName = "tutorial";
+    private static _dbName = process.env.DB_NAME as string;
 
     constructor() {
         console.log("Db service initialised!");
