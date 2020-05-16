@@ -30,7 +30,7 @@ export default class TutorialController {
             sub.unsubscribe();
             res.send(d);
         });
-        DbService.getAllDocuments<ITutorial[]>("tutorials", response$);
+        DbService.getAllDocuments<ITutorial>("tutorials", response$);
     }
 
     /**

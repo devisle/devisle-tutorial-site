@@ -1,4 +1,4 @@
-import MongoClient, { MongoError, UpdateWriteOpResult } from "mongodb";
+import MongoClient, { MongoError, UpdateWriteOpResult, DBRef } from "mongodb";
 import { Subject } from "rxjs";
 
 /**
@@ -6,15 +6,6 @@ import { Subject } from "rxjs";
  * @author ale8k
  */
 export default class DbService {
-    /**
-     * Url of mongodb
-     */
-    private static _dbUrl = process.env.DB_URL as string;
-    /**
-     * DBName
-     */
-    private static _dbName = process.env.DB_NAME as string;
-
     constructor() {
         console.log("Db service initialised!");
     }
@@ -25,12 +16,12 @@ export default class DbService {
      * @param {Subject<string>} response$ the subject to emit the response of the query back to the controller handler
      * @todo handle find error & fix force cast
      */
-    public static getAllDocuments<T>(collectionName: string, response$: Subject<T>): void {
-        MongoClient.connect(DbService._dbUrl).then(
+    public static getAllDocuments<T>(collectionName: string, response$: Subject<T[]>): void {
+        MongoClient.connect(process.env.DB_URL as string).then(
             (client) => {
                 console.log("Connected successfully to db");
-                client.db(DbService._dbName).collection(collectionName).find({}).toArray((err, result) => {
-                    response$.next(result as unknown as T); // forcefully cast the result to T
+                client.db(process.env.DB_NAME as string).collection<T>(collectionName).find({}).toArray((err, result) => {
+                    response$.next(result); // forcefully cast the result to T
                 });
                 client.close();
             },
@@ -49,10 +40,10 @@ export default class DbService {
      * @param {Subject<string>} response$ the subject to emit the response of the query back to the controller handler
      */
     public static createDocument<T>(collectionName: string, data: T, response$: Subject<string | MongoError>): void {
-        MongoClient.connect(DbService._dbUrl).then(
+        MongoClient.connect(process.env.DB_URL as string).then(
             (client) => {
                 console.log("Connected successfully to db");
-                client.db(DbService._dbName).collection(collectionName).insertOne(data).then((d) => {
+                client.db(process.env.DB_NAME as string).collection(collectionName).insertOne(data).then((d) => {
                     response$.next("SUCCESSFUL CREATION");
                 },
                 (err: MongoError) => {
@@ -76,10 +67,10 @@ export default class DbService {
      */
     public static updateSingleDocument(collectionName: string, predicate: object, newValue: object,
             response$: Subject<string | MongoError>): void {
-        MongoClient.connect(DbService._dbUrl).then(
+        MongoClient.connect(process.env.DB_URL as string).then(
             (client) => {
                 console.log("Connected successfully to db");
-                client.db(DbService._dbName).collection(collectionName).updateOne(
+                client.db(process.env.DB_NAME as string).collection(collectionName).updateOne(
                     predicate,
                     newValue,
                     (err: MongoError, response: UpdateWriteOpResult) => {
