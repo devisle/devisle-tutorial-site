@@ -1,9 +1,9 @@
-import MongoClient, { MongoError, UpdateWriteOpResult, DBRef } from "mongodb";
+import MongoClient, { MongoError, UpdateWriteOpResult } from "mongodb";
 import { Subject } from "rxjs";
 
 /**
  * Static helper class resposible for handling all DB operations
- * @author ale8k
+ * @author ale8k, rakeshshubhu
  */
 export default class DbService {
     constructor() {
