@@ -5,7 +5,9 @@ import bodyParser from "body-parser";
 import routes from "./routes/index";
 
 /**
- * The express.App main wrapper class
+ * Sets up all initial middlewares and the app instance itself
+ * @class
+ * @classdesc {@link App App} registers the routers for this server
  * @author ale8k
  */
 class Server {

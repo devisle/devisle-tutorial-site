@@ -5,6 +5,7 @@ import CMSLoginController from "../controllers/CMSLoginController";
 
 /**
  * The CMS login route
+ * @class
  * @author ale8k
  */
 export default class CMSLoginRoute implements IRoute {
@@ -16,7 +17,7 @@ export default class CMSLoginRoute implements IRoute {
     // Middleware & controller setup
     constructor() {
         this.router.use("/cms/login/", this.exampleMiddleware);
-        this.router.post("/cms/login/", CMSLoginController.post); // send new details or empty for token check
+        this.router.post("/cms/login/", CMSLoginController.userLogin); // send new details or empty for token check
     }
 
     /**

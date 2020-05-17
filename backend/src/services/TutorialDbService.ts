@@ -5,6 +5,7 @@ export type MongoDbUpdateResponse = { ok: number; n: number; nModified: number; 
 
 /**
  * Static helper class resposible for handling all tutorial based DB operations/transactions
+ * @class
  * @author ale8k, rakeshshubhu
  */
 export default class TutorialDbService {

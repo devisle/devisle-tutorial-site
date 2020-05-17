@@ -1,16 +1,18 @@
 import bcrypt from "bcrypt";
-import MongoClient, { MongoError, UpdateWriteOpResult, ObjectId } from "mongodb";
+import MongoClient, { ObjectId } from "mongodb";
 
 type user = { _id: ObjectId, username: string, password: string };
 
 /**
  * Static helper class resposible for handling the state/new state of a users login
  * for the CMS
+ * @class
  * @author ale8k, shreyas1307
  */
 export default class CMSLoginService {
     /**
      * Takes a username and password, and compares it vs the current in the DB
+     * @async
      * @param {string} username given username from req.body
      * @param {string} password given password from req.body
      * @return {Promise<boolean>} a promise determining whether the the password and username could be found,
