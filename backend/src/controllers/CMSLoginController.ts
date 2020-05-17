@@ -21,7 +21,7 @@ export default class CMSLoginController {
         const { username, password } = req.body as LoginCredentials;
 
         CMSLoginService.checkLoginCredentials(username, password).then((confirmation) => {
-            console.log("hello from chloe");
+            console.log(confirmation);
         });
 
         res.send("working");

@@ -23,7 +23,11 @@ export default class CMSLoginService {
                     const attemptedUsername = username.toLowerCase();
 
                     client.db(process.env.DB_NAME).collection("cms-users").findOne({ username: attemptedUsername }, (err, result) => {
-                        res(bcrypt.compare(password, (result as user).password));
+                        if (result === null) {
+                            res(false);
+                        } else {
+                            res(bcrypt.compare(password, (result as user).password));
+                        }
                     });
                 },
                 (err) => {
