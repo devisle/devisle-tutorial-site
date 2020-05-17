@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import DbService, { MongoDbUpdateResponse } from "../services/DbService";
+import DbService, { MongoDbUpdateResponse } from "../services/TutorialDbService";
 import ITutorial from "./interfaces/ITutorial";
 import { ObjectId, Db, MongoError } from "mongodb";
 import { Subject } from "rxjs";

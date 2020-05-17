@@ -6,6 +6,7 @@ import TutorialSelector from "./TutorialSelector/TutorialSelector";
 import { NotificationContainer } from "react-notifications";
 // CSS
 import "./App.scss";
+import Login from "./Login/Login";
 
 interface IAppState {
     tutorialList: ITutorial[];
@@ -101,6 +102,7 @@ export default class App extends Component<{}, IAppState> {
     public render(): JSX.Element {
         return (
             <div className="App">
+                <Login/>
                 <NotificationContainer/>
                 <TutorialSelector rerenderParent={this.rerender} tutorialList={this.state.tutorialList}/>
                 <div className="editor-container">

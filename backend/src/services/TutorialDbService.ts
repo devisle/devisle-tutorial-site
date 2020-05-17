@@ -4,10 +4,10 @@ import { Subject } from "rxjs";
 export type MongoDbUpdateResponse = { ok: number; n: number; nModified: number; };
 
 /**
- * Static helper class resposible for handling all DB operations
+ * Static helper class resposible for handling all tutorial based DB operations/transactions
  * @author ale8k, rakeshshubhu
  */
-export default class DbService {
+export default class TutorialDbService {
     constructor() {
         console.log("Db service initialised!");
     }

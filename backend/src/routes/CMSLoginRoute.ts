@@ -1,13 +1,13 @@
 import { Router, Request, Response, NextFunction } from "express";
 import { ParamsDictionary } from "express-serve-static-core";
 import IRoute from "./interfaces/IRoute";
-import TutorialController from "../controllers/TutorialController";
+import CMSLoginController from "../controllers/CMSLoginController";
 
 /**
- * The tutorial route
+ * The CMS login route
  * @author ale8k
  */
-export default class TutorialRoute implements IRoute {
+export default class CMSLoginRoute implements IRoute {
     /**
      * Router instance
      */
@@ -15,10 +15,8 @@ export default class TutorialRoute implements IRoute {
 
     // Middleware & controller setup
     constructor() {
-        this.router.use("/tutorial/",this.exampleMiddleware);
-        this.router.get("/tutorial/", TutorialController.get); // get all? or by id?
-        this.router.post("/tutorial/", TutorialController.post); // create a tutorial
-        this.router.put("/tutorial/", TutorialController.put); // update a tutorial
+        this.router.use("/cms/login/", this.exampleMiddleware);
+        this.router.post("/cms/login/", CMSLoginController.post); // send new details or empty for token check
     }
 
     /**
@@ -29,7 +27,7 @@ export default class TutorialRoute implements IRoute {
      */
     private exampleMiddleware(req: Request<ParamsDictionary>, res: Response<String>, next: NextFunction): void {
         // do stuff
-        console.log("I'm a middleware dude");
+        console.log("I'm a middleware in the CMS dude");
         next();
     }
 }

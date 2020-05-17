@@ -1,14 +1,13 @@
-/**
- * Handles testing each DBService action and ensure it performs the correct operation
- * This test utilises
- * @author ale8k, rakeshshubhu
- */
-
 import MongoDb, { MongoError, MongoClient } from "mongodb";
-import DbService, { MongoDbUpdateResponse } from "../DbService";
+import TutorialDbService, { MongoDbUpdateResponse } from "../TutorialDbService";
 import { Subject } from "rxjs";
 import ITutorial from "../../controllers/interfaces/ITutorial";
 
+/**
+ * Handles testing each TutorialDBService action and ensure it performs the correct operation
+ * This test utilises
+ * @author ale8k, rakeshshubhu
+ */
 describe("DbService", () => {
     let connection: MongoDb.MongoClient;
     let db: MongoDb.Db;
@@ -49,7 +48,7 @@ describe("DbService", () => {
             expect(d).toHaveLength(1);
             done();
         });
-        DbService.getAllDocuments<ITutorial>("tutorials", response$);
+        TutorialDbService.getAllDocuments<ITutorial>("tutorials", response$);
     });
 
     it("should insert a document into a collection and give us a 'SUCCESSFUL CREATION' response from the subject", async (done) => {
@@ -61,7 +60,7 @@ describe("DbService", () => {
                 done();
             });
         });
-        DbService.createDocument<ITutorial>("tutorials", insertData, response$);
+        TutorialDbService.createDocument<ITutorial>("tutorials", insertData, response$);
     });
 
     it("should update single document", async (done) => {
@@ -84,7 +83,7 @@ describe("DbService", () => {
         const modified: ITutorial = JSON.parse(JSON.stringify(data));
         modified.name = "blah blah";
 
-        DbService.updateSingleDocument("tutorials", { _id: data._id }, { $set: modified }, response$);
+        TutorialDbService.updateSingleDocument("tutorials", { _id: data._id }, { $set: modified }, response$);
     });
 
 });
