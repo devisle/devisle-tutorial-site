@@ -7,10 +7,12 @@ import { NotificationContainer } from "react-notifications";
 // CSS
 import "./App.scss";
 import Login from "./Login/Login";
+import AuthService from "../services/AuthService";
 
 interface IAppState {
     tutorialList: ITutorial[];
     activeTutorial: ITutorial | null;
+    loggedIn: boolean;
 }
 
 /**
@@ -23,18 +25,21 @@ export default class App extends Component<{}, IAppState> {
 
         this.state = {
             tutorialList: [],
-            activeTutorial: null
+            activeTutorial: null,
+            loggedIn: false
         };
 
         this.rerender = this.rerender.bind(this);
+        this.updateUserLoginState = this.updateUserLoginState.bind(this);
         this.getTutorials = this.getTutorials.bind(this);
+        this.renderEditorInstance = this.renderEditorInstance.bind(this);
     }
 
     /**
-     * Get the initial call of tutorials
+     * Get the initial call of tutorials upon successful login
      */
     public componentDidMount(): void {
-        this.getTutorials();
+        this.updateUserLoginState();
     }
 
     /**
@@ -44,6 +49,18 @@ export default class App extends Component<{}, IAppState> {
         //console.log(this.state.activeTutorial);
         //console.log(this.state.tutorialList);
         //this.getTutorials();
+    }
+
+    private updateUserLoginState(): void {
+        AuthService.checkUserIsLoggedIn().then((d) => {
+            console.log("User is logged in?:", d.loggedIn);
+            if (d.loggedIn) {
+                this.getTutorials();
+            }
+            this.setState({
+                loggedIn: d.loggedIn
+            });
+        });
     }
 
     /**
@@ -96,13 +113,9 @@ export default class App extends Component<{}, IAppState> {
         }
     }
 
-    /**
-     * Render
-     */
-    public render(): JSX.Element {
+    private renderEditorInstance(): JSX.Element {
         return (
-            <div className="App">
-                <Login/>
+            <div>
                 <NotificationContainer/>
                 <TutorialSelector rerenderParent={this.rerender} tutorialList={this.state.tutorialList}/>
                 <div className="editor-container">
@@ -118,6 +131,17 @@ export default class App extends Component<{}, IAppState> {
                             </div>
                     }
                 </div>
+            </div>
+        );
+    }
+
+    /**
+     * Render
+     */
+    public render(): JSX.Element {
+        return (
+            <div className="App">
+                { !this.state.loggedIn ? <Login updateUserLoginState={this.updateUserLoginState}/> : this.renderEditorInstance()}
             </div>
         );
     }

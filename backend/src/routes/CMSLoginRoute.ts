@@ -18,6 +18,7 @@ export default class CMSLoginRoute implements IRoute {
     constructor() {
         this.router.use("/cms/login/", this.exampleMiddleware);
         this.router.post("/cms/login/", CMSLoginController.userLogin); // send new details or empty for token check
+        this.router.get("/cms/login/confirm/", CMSLoginController.confirmUsedIsLoggedIn); // confirms a users JWT
     }
 
     /**

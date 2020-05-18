@@ -1,13 +1,17 @@
 import React, { Component, FormEvent, RefObject } from "react";
-import UserLoginHandler from "../../handlers/UserLoginHandler";
+import AuthService from "../../services/AuthService";
+
+interface ILoginProps {
+    updateUserLoginState: Function;
+}
 
 /**
  * Login screen
  * @author ale8k
  */
-export default class Login extends Component<{}, {}> {
+export default class Login extends Component<ILoginProps, {}> {
 
-    constructor(props: {}) {
+    constructor(props: ILoginProps) {
         super(props);
 
         this.attemptLogin = this.attemptLogin.bind(this);
@@ -15,27 +19,17 @@ export default class Login extends Component<{}, {}> {
 
     /**
      * Attempts to log a CMS user into the CMS
+     *
      * @param {FormEvent<HTMLFormElement>} event the event returned from a submit click
      * @param {RefObject<HTMLInputElement>[]} inputRefs an array containing each input element ref object
      */
     private async attemptLogin(event: FormEvent<HTMLFormElement>, [usernameRef, passwordRef]: RefObject<HTMLInputElement>[]): Promise<void> {
         event.preventDefault();
-        const username = usernameRef.current?.value;
-        const password = passwordRef.current?.value;
-        console.log(process.env.REACT_APP_SERVER_URI);
-        const response = await fetch(process.env.REACT_APP_SERVER_URI + "/cms/login/", {
-            method: "POST",
-            mode: "cors",
-            credentials: "include",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            },
-            body: JSON.stringify({ username, password })
-        }).then(d => {
-            return d.json();
-        }).then(console.log);
-        
+        const username = usernameRef.current?.value as string;
+        const password = passwordRef.current?.value as string;
+        await AuthService.login(username, password).then(loggedIn => {
+            this.props.updateUserLoginState();
+        });
     }
 
     /**
