@@ -1,8 +1,9 @@
 .App {
   display: flex;
 
-  .editor-container {
+  .editor-wrapper {
     display: flex;
+    flex-direction: column;
     height: 100vh;
     max-width: 90%;
     min-width: 90%;

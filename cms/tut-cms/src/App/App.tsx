@@ -144,16 +144,20 @@ export default class App extends Component<{}, IAppState> {
             <div style={{ display: "flex", width: "100vw" }}>
                 <NotificationContainer/>
                 <TutorialSelector rerenderParent={this.rerender} tutorialList={this.state.tutorialList}/>
-                <div className="editor-container">
+                
+                <div className="editor-wrapper">
+                    <div>Logged in as: { this.state.username + " " } </div>
                     { 
                         this.state.activeTutorial ? 
-                            <div style={{ width: "100%" }}><Editor 
+                            <div style={{ width: "100%" }}>
+                                <Editor 
                                 tutorial={this.state.activeTutorial} 
                                 updateTutorialList={this.getTutorials}
-                            /></div> 
+                                />
+                            </div> 
                                     : 
                             <div>
-                                Select a tutorial
+                                   || Select a tutorial
                             </div>
                     }
                 </div>

@@ -3,4 +3,8 @@ export default interface ITutorial {
     name: string;
     html: string;
     markdown: string;
+    category?: string;
+    authorId?: string;
+    authorName?: string;
+    isAvailable?: boolean;
 }

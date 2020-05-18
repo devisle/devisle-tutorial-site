@@ -64,7 +64,7 @@ export default class CMSAuthService {
         if (tokenArr[0] === "Bearer" && tokenArr[1] !== "undefined") {
             try {
                 const payload: TokenPayload = jwt.verify(tokenArr[1], process.env.JWT_KEY as string) as TokenPayload;
-                console.log(payload);
+                console.log("Verified");
                 return true;
             } catch (jsonWebTokenError) {
                 console.log("User token expired");

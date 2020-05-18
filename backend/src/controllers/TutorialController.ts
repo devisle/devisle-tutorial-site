@@ -3,12 +3,15 @@ import DbService, { MongoDbUpdateResponse } from "../services/TutorialDbService"
 import ITutorial from "./interfaces/ITutorial";
 import { ObjectId, MongoError } from "mongodb";
 import { Subject } from "rxjs";
+import jwt from "jsonwebtoken";
+
+type TokenPayload = { username: string, userId: string, iat: number, exp: number }; // This is repeated
 
 /**
  * Tutorial route controller
  * - Uses event driven async responses for db queries
  * - This is done via wiring a {@link subject Subject<T>} through the service methods
- * @todo maybe use single subject, test performance
+ * @todo maybe use single subject, test performance / Just wrap in another promise... ew
  *
  * @author ale8k
  */
@@ -27,24 +30,28 @@ export default class TutorialController {
      * @param {Response} res our res obj
      */
     private static getAllTutorials(req: Request, res: Response): void {
-        console.log(res.locals.authorised);
+        // console.log(res.locals.authorised);
         const response$ = new Subject<ITutorial[]>();
         const sub = response$.subscribe((d) => {
             sub.unsubscribe();
             res.send(d);
-            console.log("Got all tutorials");
+            // console.log("Got all tutorials");
         });
         DbService.getAllDocuments<ITutorial>("tutorials", response$);
     }
 
     /**
-     * Creates a base tutorial { name: <name>, content: <empty str> }
+     * Creates a base tutorial
      *
+     * @todo fix the random JSON.stringify's lol, the respond is already a string!
+     * Note, this will need CMS frontend adjusting too
      * @param {Request} req the users request obj
      * @param {Response} res our res obj
      */
     private static createTutorial(req: Request, res: Response): void {
+
         if (res.locals.authorised) {
+            console.log("route fired");
             const response$ = new Subject<string | MongoError>();
             const sub = response$.subscribe((d) => {
                 sub.unsubscribe();
@@ -52,7 +59,23 @@ export default class TutorialController {
                 console.log("Created tutorial");
             });
             if (TutorialController.structureCheck(req.body)) {
-                DbService.createDocument<ITutorial>("tutorials", req.body as ITutorial, response$);
+                // Use JWT for structure
+                console.log("hi?");
+                const token: string | undefined = req.headers.authorization;
+                const tokenArr: string[] = token ? token.split(" ") : [];
+                const decodedToken = jwt.decode(tokenArr[1] as string) as TokenPayload;
+                const fullTutorial: ITutorial = {
+                    name: req.body.name,
+                    html: req.body.html,
+                    markdown: req.body.markdown,
+                    category: "TODO",
+                    authorId: decodedToken.userId,
+                    authorName: decodedToken.username,
+                    isAvailable: true
+                };
+                DbService.createDocument<ITutorial>("tutorials", fullTutorial, response$);
+            } else {
+                res.send(JSON.stringify("UNSUCCESSFUL CREATION"));
             }
         } else {
             res.status(401).end();
@@ -96,8 +119,12 @@ export default class TutorialController {
      */
     private static structureCheck(data: any): data is ITutorial {
         if (Object.keys(data).length === 3) {
-            if (typeof data.html === "string" && typeof data.name === "string" && typeof data.markdown === "string") {
-                if (data.html !== undefined && data.name !== undefined && data.markdown !== undefined) {
+            if (typeof data.html === "string"
+                && typeof data.name === "string"
+                && typeof data.markdown === "string") {
+                if (data.html !== undefined
+                    && data.name !== undefined
+                    && data.markdown !== undefined) {
                     return true;
                 }
             }
