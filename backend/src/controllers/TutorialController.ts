@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import DbService, { MongoDbUpdateResponse } from "../services/TutorialDbService";
 import ITutorial from "./interfaces/ITutorial";
-import { ObjectId, Db, MongoError } from "mongodb";
+import { ObjectId, MongoError } from "mongodb";
 import { Subject } from "rxjs";
 
 /**
@@ -9,6 +9,7 @@ import { Subject } from "rxjs";
  * - Uses event driven async responses for db queries
  * - This is done via wiring a {@link subject Subject<T>} through the service methods
  * @todo maybe use single subject, test performance
+ *
  * @author ale8k
  */
 export default class TutorialController {
@@ -21,59 +22,75 @@ export default class TutorialController {
 
     /**
      * Grabs all the {@link tutorialDocs ITutorial[]} and resoonds
+     *
      * @param {Request} req the users request obj
      * @param {Response} res our res obj
      */
     private static getAllTutorials(req: Request, res: Response): void {
+        console.log(res.locals.authorised);
         const response$ = new Subject<ITutorial[]>();
         const sub = response$.subscribe((d) => {
             sub.unsubscribe();
             res.send(d);
+            console.log("Got all tutorials");
         });
         DbService.getAllDocuments<ITutorial>("tutorials", response$);
     }
 
     /**
      * Creates a base tutorial { name: <name>, content: <empty str> }
+     *
      * @param {Request} req the users request obj
      * @param {Response} res our res obj
      */
     private static createTutorial(req: Request, res: Response): void {
-        const response$ = new Subject<string | MongoError>();
-        const sub = response$.subscribe((d) => {
-            sub.unsubscribe();
-            res.send(JSON.stringify(d));
-        });
-        if (TutorialController.structureCheck(req.body)) {
-            DbService.createDocument<ITutorial>("tutorials", req.body as ITutorial, response$);
+        if (res.locals.authorised) {
+            const response$ = new Subject<string | MongoError>();
+            const sub = response$.subscribe((d) => {
+                sub.unsubscribe();
+                res.send(JSON.stringify(d));
+                console.log("Created tutorial");
+            });
+            if (TutorialController.structureCheck(req.body)) {
+                DbService.createDocument<ITutorial>("tutorials", req.body as ITutorial, response$);
+            }
+        } else {
+            res.status(401).end();
         }
     }
 
     /**
      * Updates a tutorial by it's {@link _Id ObjectId}
+     *
      * @param {Request} req the users request obj
      * @param {Response} res our res obj
      */
     private static async updateTutorialByID(req: Request, res: Response): Promise<void> {
-        const response$ = new Subject<MongoError | MongoDbUpdateResponse >();
-        const sub = response$.subscribe((d) => {
-            sub.unsubscribe();
-            res.send(d);
-        });
-        const tutorial = req.body as ITutorial;
-        const atomicSetup = {
-            $set: {
-                name: tutorial.name,
-                html: tutorial.html,
-                markdown: tutorial.markdown
-            } as ITutorial
-        };
-        const predicateId = { _id: new ObjectId(tutorial._id) };
-        DbService.updateSingleDocument("tutorials", predicateId, atomicSetup, response$);
+        if (res.locals.authorised) {
+            const response$ = new Subject<MongoError | MongoDbUpdateResponse >();
+            const sub = response$.subscribe((d) => {
+                sub.unsubscribe();
+                res.send(d);
+                console.log("Published tutorial");
+            });
+            const tutorial = req.body as ITutorial;
+            const atomicSetup = {
+                $set: {
+                    name: tutorial.name,
+                    html: tutorial.html,
+                    markdown: tutorial.markdown
+                } as ITutorial
+            };
+            const predicateId = { _id: new ObjectId(tutorial._id) };
+            DbService.updateSingleDocument("tutorials", predicateId, atomicSetup, response$);
+        } else {
+            res.status(401).end();
+        }
     }
 
     /**
      * Checks the incoming tutorial object structure to be of type {@link ITutorial ITutorial}
+     *
      * @param {any} data the unknown data type
      * @returns {boolean} whether or not the data passed the structural check
      */

@@ -2,6 +2,7 @@ import { Router, Request, Response, NextFunction } from "express";
 import { ParamsDictionary } from "express-serve-static-core";
 import IRoute from "./interfaces/IRoute";
 import TutorialController from "../controllers/TutorialController";
+import CMSAuthService from "../services/CMSAuthService";
 
 /**
  * The tutorial route
@@ -16,22 +17,25 @@ export default class TutorialRoute implements IRoute {
 
     // Middleware & controller setup
     constructor() {
-        this.router.use("/tutorial/",this.exampleMiddleware);
+        this.router.use("/tutorial/",this.authorisationCheck);
         this.router.get("/tutorial/", TutorialController.get); // get all? or by id?
         this.router.post("/tutorial/", TutorialController.post); // create a tutorial
         this.router.put("/tutorial/", TutorialController.put); // update a tutorial
     }
 
     /**
-     * A method callback which can be passed into the router.use() middleware implementer function
+     * Checks if the JWT is still valid and hasn't expired,
+     * stores the result in res.locals
+     * This is used to protect the routes
      *
      * @param {Request<ParamsDictionary>} req the HTTP request object
-     * @param {Response<String>} res the response object
+     * @param {Response} res the response object
      * @param {NextFunction} next express.next() function to proceed in the middleware chain
      */
-    private exampleMiddleware(req: Request<ParamsDictionary>, res: Response<String>, next: NextFunction): void {
-        // do stuff
-        console.log("I'm a middleware dude");
+    private authorisationCheck(req: Request<ParamsDictionary>, res: Response, next: NextFunction): void {
+        const token: string | undefined = req.headers.authorization;
+        const authorised = CMSAuthService.verifyJWT(token);
+        res.locals.authorised = authorised;
         next();
     }
 }

@@ -1,5 +1,6 @@
 import Tutorial from "../classes/Tutorial";
 import ITutorial from "../interfaces/ITutorial";
+import AuthService from "./AuthService";
 
 type MongoDbResponse = { n: number, nModified: number, ok: number };
 
@@ -11,48 +12,73 @@ type MongoDbResponse = { n: number, nModified: number, ok: number };
  * @author ale8k
  */
 export default class TutorialDbService {
+    
     /**
      * Creates an empty {@link tutorial Tutorial} with the given name
+     *
+     * @async
      * @param {string} name the tutorial name 
      * @returns {Promise<Response>} JSON response
      */
-    public static createTutorial(name: string): Promise<Response> {
-        return fetch("http://127.0.0.1:3000/tutorial", {
-            method: "POST",
-            mode: "cors",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(new Tutorial(name, "", "").toJSON())
-        });
+    public static createTutorial(name: string): Promise<string> {
+        return TutorialDbService.sendRequest<string>("POST", new Tutorial(name, "", "").toJSON());
     }
 
     /**
      * Gets all tutorials
+     *
+     * @async
      * @returns returns a resolved promise with {@link tutorialArr Tutorial[]}
      * Note, this can be undefined in the case of DB failure.
      */
     public static getAllTutorials(): Promise<ITutorial[]> {
-        return fetch("http://127.0.0.1:3000/tutorial", {
-            method: "GET",
-            mode: "cors",
-        }).then((d) => d.json());
+        return TutorialDbService.sendRequest<ITutorial[]>("GET");
     }
 
     /**
      * Updates a tutorial
+     *
+     * @async
      * @param {Tutorial} tutorial the tutorial to update 
      * @returns {Promise<MongoDbResponse>} returns mongodb response of an update in object
      */
     public static saveTutorial(tutorial: ITutorial): Promise<MongoDbResponse> {
-        return fetch("http://127.0.0.1:3000/tutorial", {
-            method: "PUT",
+        return TutorialDbService.sendRequest<MongoDbResponse>("PUT", tutorial);
+    }
+
+    /**
+     * Sends a fetch request with specified data / no data
+     * If the users isn't authenticated, updates the users login state
+     * 
+     * @async
+     * @param {string} httpMethod the HTTP method to use in the request 
+     * @param {object} data the data to pass in the body, if any 
+     * @returns {Promise<T>} a promise with a variable data type
+     */
+    private static sendRequest<T>(httpMethod: string, data?: object): Promise<T> {
+        const options: RequestInit = {
+            method: httpMethod,
             mode: "cors",
             headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(tutorial)
-        }).then(d => d.json());
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${AuthService.getCookie("jwt")}`,
+                "Accept": "application/json"
+            }
+        };
+
+        if (data) {
+            options.body = JSON.stringify(data);
+        }
+
+        return new Promise((res) => {
+            fetch("http://127.0.0.1:3000/tutorial", options).then(v => {
+                if (v.status === 401) {
+                    AuthService.updateUserLoginState();
+                } else {
+                    res(v.json());
+                }
+            });
+        });
     }
 
 }

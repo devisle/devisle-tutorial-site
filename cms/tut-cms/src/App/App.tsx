@@ -33,6 +33,11 @@ export default class App extends Component<{}, IAppState> {
         this.updateUserLoginState = this.updateUserLoginState.bind(this);
         this.getTutorials = this.getTutorials.bind(this);
         this.renderEditorInstance = this.renderEditorInstance.bind(this);
+
+        // Now we feed a reference of the 'updateUserLoginState()' into the TutDbService,
+        // this will be called under 401 circumstances
+        AuthService.updateUserLoginState = this.updateUserLoginState;
+        
     }
 
     /**
@@ -51,6 +56,9 @@ export default class App extends Component<{}, IAppState> {
         //this.getTutorials();
     }
 
+    /**
+     * Checks the users login state, and updates top level App state accordingly
+     */
     private updateUserLoginState(): void {
         AuthService.checkUserIsLoggedIn().then((d) => {
             console.log("User is logged in?:", d.loggedIn);
@@ -70,6 +78,7 @@ export default class App extends Component<{}, IAppState> {
      */
     private getTutorials(): void {
         TutorialDbService.getAllTutorials().then((tutorials => {
+            const apiTutorials = tutorials;
             // Setup array store
             const localStoreTutorials: ITutorial[] = [];
             // Setup reference index store
@@ -85,7 +94,7 @@ export default class App extends Component<{}, IAppState> {
             }
 
             // Loop through all tutorials gotten from API, merge our cached in and store
-            const finalTutorialList = tutorials.map((tutorial, i) => {
+            const finalTutorialList = apiTutorials.map((tutorial, i) => {
                 if (localStoreTutorialIds.includes(tutorial._id as string)) {
                     return localStoreTutorials[localStoreTutorialIds.indexOf(tutorial._id as string)];
                 } else {
@@ -113,6 +122,9 @@ export default class App extends Component<{}, IAppState> {
         }
     }
 
+    /**
+     * Renders the notification container, tutorial selector and editor instance
+     */
     private renderEditorInstance(): JSX.Element {
         return (
             <div>

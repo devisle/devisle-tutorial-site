@@ -94,8 +94,7 @@ export default class TutorialSelector extends Component<ITutorialManagerProps, I
                     tutorialList: tutorials
                 });
             });
-            console.log(response);
-            return response.json();
+            return response;
         }).then(response => {
             if (response === "SUCCESSFUL CREATION") {
                 NotificationManager.success("Successfully created a tutorial", "SUCCESSFUL CREATION");

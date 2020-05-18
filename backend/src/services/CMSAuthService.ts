@@ -1,7 +1,9 @@
 import bcrypt from "bcrypt";
 import MongoClient, { ObjectId } from "mongodb";
+import jwt from "jsonwebtoken";
 
 type user = { _id: ObjectId, username: string, password: string };
+type TokenPayload = { currentlyLoggedIn: boolean, iat: number, exp: number };
 
 /**
  * Static helper class resposible for handling the state/new state of a users login
@@ -9,7 +11,7 @@ type user = { _id: ObjectId, username: string, password: string };
  * @class
  * @author ale8k, shreyas1307
  */
-export default class CMSLoginService {
+export default class CMSAuthService {
     /**
      * Takes a username and password, and compares it vs the current in the DB
      *
@@ -44,12 +46,29 @@ export default class CMSLoginService {
     }
 
     /**
-     * Verifys a JWT of a given CMS user
+     * Syncronously verifies a JWT of a given CMS user attempting an API req
      *
-     * @return {x} whether or not the token is valid, @default false
+     * @returns {boolean} whether or not the token is valid
+     * @default false
      */
-    public static verifyJWT(): void {
+    public static verifyJWT(bearerToken: string | undefined): boolean {
+        const tokenArr: string[] = bearerToken ? bearerToken.split(" ") : [];
+        console.log("Attempting to verify");
+        if (tokenArr[0] === "Bearer" && tokenArr[1] !== "undefined") {
+            try {
+                const payload: TokenPayload = jwt.verify(tokenArr[1], process.env.JWT_KEY as string) as TokenPayload;
 
+                if (payload.currentlyLoggedIn) {
+                    console.log("User token verified");
+                    return true;
+                }
+            } catch (jsonWebTokenError) {
+                console.log("User token expired");
+                return false;
+            }
+        }
+
+        return false;
     }
 
 }

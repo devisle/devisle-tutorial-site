@@ -10,6 +10,13 @@ type LoginCheckResp = { loggedIn: boolean };
  */
 export default class AuthService {
     /**
+     * A reference to the parent component method of the application will be assigned here
+     * upon component construction, so we can be sure it'll always be assigned
+     * Used to update the users login state if any 401's occur
+     */
+    public static updateUserLoginState: Function;
+
+    /**
      * Performs a fresh login attempt, if successful,
      * stores the jwt in the document cookie list
      * @example
@@ -83,18 +90,21 @@ export default class AuthService {
             }
         }
     }
+
     /**
      * Gets a cookie by a given key
      * 
      * @param {string} name the cookie name 
      * @returns {string | undefined} the value of the cookie
      */
-    private static getCookie(name: string): string | undefined {
+    public static getCookie(name: string): string | undefined {
         const cookieMatch = document.cookie.match(
-            new RegExp("(^| )" 
-            + name + 
-            "=([^;]+)"
-        ));
+            new RegExp(
+                "(^| )" 
+                + name + 
+                "=([^;]+)"
+            )
+        );
 
         if (cookieMatch) {
             return cookieMatch[2];

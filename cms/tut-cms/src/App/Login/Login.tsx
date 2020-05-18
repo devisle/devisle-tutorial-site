@@ -38,6 +38,7 @@ export default class Login extends Component<ILoginProps, {}> {
     public render(): JSX.Element {
         const usernameRef: RefObject<HTMLInputElement> = React.createRef();
         const passwordRef: RefObject<HTMLInputElement> = React.createRef();
+
         return (
             <div className="Login">
                 <form onSubmit={(e) => this.attemptLogin(e, [usernameRef, passwordRef])}>
