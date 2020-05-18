@@ -141,7 +141,7 @@ export default class App extends Component<{}, IAppState> {
      */
     private renderEditorInstance(): JSX.Element {
         return (
-            <div>
+            <div style={{ display: "flex", width: "100vw" }}>
                 <NotificationContainer/>
                 <TutorialSelector rerenderParent={this.rerender} tutorialList={this.state.tutorialList}/>
                 <div className="editor-container">
