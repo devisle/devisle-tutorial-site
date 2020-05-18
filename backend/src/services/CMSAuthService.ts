@@ -3,7 +3,8 @@ import MongoClient, { ObjectId } from "mongodb";
 import jwt from "jsonwebtoken";
 
 type user = { _id: ObjectId, username: string, password: string };
-type TokenPayload = { currentlyLoggedIn: boolean, iat: number, exp: number };
+type TokenPayload = { username: string, userId: string, iat: number, exp: number }; // This is repeated
+type LoginCredentialsResponse = { username: string, confirmation: boolean, userId: string };
 
 /**
  * Static helper class resposible for handling the state/new state of a users login
@@ -18,10 +19,10 @@ export default class CMSAuthService {
      * @async
      * @param {string} username given username from req.body
      * @param {string} password given password from req.body
-     * @returns {Promise<boolean>} a promise determining whether the the password and username could be found,
+     * @returns {Promise<LoginCredentialsResponse>} a promise determining whether the the password and username could be found,
      * confirmed and we can proceed
      */
-    public static checkLoginCredentials(username: string, password: string): Promise<boolean> {
+    public static checkLoginCredentials(username: string, password: string): Promise<LoginCredentialsResponse> {
         return new Promise((res, rej) => {
             MongoClient.connect(process.env.DB_URL as string).then(
                 (client) => {
@@ -29,9 +30,15 @@ export default class CMSAuthService {
 
                     client.db(process.env.DB_NAME).collection("cms-users").findOne({ username: attemptedUsername }, (err, result) => {
                         if (result === null) {
-                            res(false);
+                            res({ confirmation: false } as LoginCredentialsResponse);
                         } else {
-                            res(bcrypt.compare(password, (result as user).password));
+                             bcrypt.compare(password, (result as user).password).then(compareResp => {
+                                res({
+                                    username,
+                                    confirmation: compareResp,
+                                    userId: result._id
+                                });
+                            });
                         }
                     });
                 },
@@ -57,11 +64,8 @@ export default class CMSAuthService {
         if (tokenArr[0] === "Bearer" && tokenArr[1] !== "undefined") {
             try {
                 const payload: TokenPayload = jwt.verify(tokenArr[1], process.env.JWT_KEY as string) as TokenPayload;
-
-                if (payload.currentlyLoggedIn) {
-                    console.log("User token verified");
-                    return true;
-                }
+                console.log(payload);
+                return true;
             } catch (jsonWebTokenError) {
                 console.log("User token expired");
                 return false;

@@ -2,7 +2,8 @@ import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import CMSAuthService from "../services/CMSAuthService";
 
-type LoginCredentials = { username: string, password: string };
+type LoginCredentials = { attemptedUsername: string, password: string };
+type TokenPayload = { username: string, userId: string, iat: number, exp: number }; // This is repeated
 
 /**
  * Confirms login credentials of a given CMS user
@@ -25,20 +26,20 @@ export default class CMSLoginController {
      * @param {Response} res our res obj
      */
     private static login(req: Request, res: Response): void {
-        const { username, password } = req.body as LoginCredentials;
-        console.log("username:", username, "password:", password);
-        if (!username || !password) {
+        const { attemptedUsername, password } = req.body as LoginCredentials;
+        console.log("username:", attemptedUsername, "password:", password);
+        if (!attemptedUsername || !password) {
             res.json({
                 "successfulLogin": false,
                 "jwt": ""
             }).status(200).end();
         } else {
-            CMSAuthService.checkLoginCredentials(username, password).then((confirmation) => {
+            CMSAuthService.checkLoginCredentials(attemptedUsername, password).then(({ username, userId, confirmation }) => {
                 if (confirmation) {
                     // Note, this is able to take zeit/ms for expiry: [https://github.com/zeit/ms]
                     // Currently it's at 2 days because I feel this is enough time to produce a tutorial,
                     // we may alternatively opt for 'maxAge' property if this causes issues
-                    const token = jwt.sign({ currentlyLoggedIn: true }, process.env.JWT_KEY as string, {
+                    const token = jwt.sign({ username, userId }, process.env.JWT_KEY as string, {
                         expiresIn: "15000"
                     });
                     res.json({
@@ -66,12 +67,16 @@ export default class CMSLoginController {
         const token: string | undefined = req.headers.authorization;
 
         if (CMSAuthService.verifyJWT(token)) {
+            const tokenArr: string[] = token ? token.split(" ") : [];
+            const decodedToken = jwt.decode(tokenArr[1] as string) as TokenPayload;
             res.json({
-                loggedIn: true
+                username: decodedToken.username,
+                userId: decodedToken.userId
             });
         } else {
             res.json({
-                loggedIn: false
+                username: "",
+                userId: ""
             });
         }
     }

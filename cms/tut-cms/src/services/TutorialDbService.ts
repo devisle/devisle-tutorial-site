@@ -25,7 +25,7 @@ export default class TutorialDbService {
     }
 
     /**
-     * Gets all tutorials
+     * Gets all tutorials from the API
      *
      * @async
      * @returns returns a resolved promise with {@link tutorialArr Tutorial[]}

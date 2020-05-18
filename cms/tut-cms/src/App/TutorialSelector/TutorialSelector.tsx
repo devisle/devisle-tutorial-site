@@ -3,6 +3,7 @@ import ITutorial from "../../interfaces/ITutorial";
 import Modal from "react-modal";
 import TutorialDbService from "../../services/TutorialDbService";
 import { NotificationManager } from "react-notifications";
+import programmingSubs from "./HeaderSubCategories/ProgrammingSubs";
 // CSS
 import "react-markdown-editor-lite/lib/index.css";
 import "./TutorialSelector.scss";
@@ -122,6 +123,7 @@ export default class TutorialSelector extends Component<ITutorialManagerProps, I
                             <div>
                                 Enter tutorial name: <br/>
                                 <input ref={modalNameRef} type="text"/> <br/>
+
                             </div>
                             <button onClick={this.toggleCreatorModal}>Cancel</button>
                             <button onClick={() => this.createTutorial(modalNameRef.current?.value as string)}>Create</button>
@@ -130,6 +132,21 @@ export default class TutorialSelector extends Component<ITutorialManagerProps, I
                 </Modal>
             </div>
         );
+    }
+
+    /**
+     * Returns every category possible, perhaps move this to the API? Maybe?
+     * 
+     * Feel free to extend this list when requiring a new type of category to make
+     * For now, only programming
+     * 
+     * @returns {string[]} a huge array of all the categories
+     */
+    public getAllTutorialHeaderAndSubCategories(): object {
+        const categories = {
+            programming: programmingSubs
+        };
+        return categories;
     }
 }
 

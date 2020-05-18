@@ -13,6 +13,8 @@ interface IAppState {
     tutorialList: ITutorial[];
     activeTutorial: ITutorial | null;
     loggedIn: boolean;
+    username: string | null;
+    userId: string | null;
 }
 
 /**
@@ -26,7 +28,9 @@ export default class App extends Component<{}, IAppState> {
         this.state = {
             tutorialList: [],
             activeTutorial: null,
-            loggedIn: false
+            loggedIn: false,
+            username: null,
+            userId: null
         };
 
         this.rerender = this.rerender.bind(this);
@@ -58,16 +62,24 @@ export default class App extends Component<{}, IAppState> {
 
     /**
      * Checks the users login state, and updates top level App state accordingly
+     * This is also where we grab important info on our user, including their id and username
      */
     private updateUserLoginState(): void {
         AuthService.checkUserIsLoggedIn().then((d) => {
-            console.log("User is logged in?:", d.loggedIn);
-            if (d.loggedIn) {
+            console.log("User is logged in?:", d.username ? true : false);
+            if (d.username && d.userId) {
                 this.getTutorials();
+                this.setState({
+                    loggedIn: true,
+                    username: d.username,
+                    userId: d.userId
+                });
+            } else {
+                this.setState({
+                    loggedIn: false
+                });
             }
-            this.setState({
-                loggedIn: d.loggedIn
-            });
+
         });
     }
 
@@ -75,6 +87,8 @@ export default class App extends Component<{}, IAppState> {
      * Gets all tutorials in our localStorage (if any) and from our API,
      * it merges the localStorage in place of the API response tutorials and this creates
      * our final tutorial list
+     * 
+     * @todo move this to TutorialDbService
      */
     private getTutorials(): void {
         TutorialDbService.getAllTutorials().then((tutorials => {

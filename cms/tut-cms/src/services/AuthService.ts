@@ -1,4 +1,4 @@
-type LoginCheckResp = { loggedIn: boolean };
+type LoginCheckResp = { username: string, userId: string };
 
 /**
  * Handles login of a CMS user, including:
@@ -26,10 +26,10 @@ export default class AuthService {
      * 
      * 
      * @async
-     * @param {string} username 
+     * @param {string} attemptedUsername
      * @param {string} password 
      */
-    public static async login(username: string, password: string): Promise<void> {
+    public static async login(attemptedUsername: string, password: string): Promise<void> {
         return await fetch(process.env.REACT_APP_SERVER_URI + "/cms/login/", {
             method: "POST",
             mode: "cors",
@@ -37,7 +37,7 @@ export default class AuthService {
                 "Content-Type": "application/json",
                 "Accept": "application/json"
             },
-            body: JSON.stringify({ username, password })
+            body: JSON.stringify({ attemptedUsername, password })
         }).then(d => {
             return d.json();
         }).then(({ successfulLogin, jwt }) => {
