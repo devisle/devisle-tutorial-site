@@ -1,6 +1,11 @@
 import Head from "next/head";
 import Link from "next/link";
 
+/**
+ * Initial Routes for the Front-end
+ * @author shreyas1307
+ */
+
 export default function Home() {
 	return (
 		<div className="container">

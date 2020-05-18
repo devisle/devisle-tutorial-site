@@ -3,6 +3,10 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 // Declaring the t ype of data received in Response
 
+/**
+ * @author shreyas1307
+ */
+
 type Data = {
 	name: string;
 };
