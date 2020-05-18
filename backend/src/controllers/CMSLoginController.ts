@@ -23,6 +23,7 @@ export default class CMSLoginController {
      */
     private static login(req: Request, res: Response): void {
         const { username, password } = req.body as LoginCredentials;
+        console.log("username:", username, "password:", password);
         if (!username || !password) {
             res.json({
                 "successfulLogin": false
@@ -36,15 +37,15 @@ export default class CMSLoginController {
                     const token = jwt.sign({ currentlyLoggedIn: true }, process.env.JWT_KEY as string, {
                         expiresIn: "10000"
                     });
-                    res.cookie("jwt", token);
                     res.json({
-                        "successfulLogin": true
+                        "successfulLogin": true,
+                        "jwt": token
                     });
                 } else {
                     // Force a clear regardless...
-                    res.clearCookie("jwt");
                     res.json({
-                        "successfulLogin": false
+                        "successfulLogin": false,
+                        "jwt": ""
                     });
                 }
             });

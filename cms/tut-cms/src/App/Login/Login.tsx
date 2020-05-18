@@ -20,18 +20,21 @@ export default class Login extends Component<{}, {}> {
      */
     private async attemptLogin(event: FormEvent<HTMLFormElement>, [usernameRef, passwordRef]: RefObject<HTMLInputElement>[]): Promise<void> {
         event.preventDefault();
-        const writtenUsername = usernameRef.current?.value;
-        const writtenPassword = passwordRef.current?.value;
+        const username = usernameRef.current?.value;
+        const password = passwordRef.current?.value;
         console.log(process.env.REACT_APP_SERVER_URI);
         const response = await fetch(process.env.REACT_APP_SERVER_URI + "/cms/login/", {
             method: "POST",
             mode: "cors",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
                 "Accept": "application/json"
             },
-            body: JSON.stringify({ })
-        }).then(d => d.json()).then(console.log);
+            body: JSON.stringify({ username, password })
+        }).then(d => {
+            return d.json();
+        }).then(console.log);
         
     }
 
