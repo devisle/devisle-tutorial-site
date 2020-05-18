@@ -147,10 +147,10 @@ export default class App extends Component<{}, IAppState> {
                 <div className="editor-container">
                     { 
                         this.state.activeTutorial ? 
-                            <Editor 
+                            <div style={{ width: "100%" }}><Editor 
                                 tutorial={this.state.activeTutorial} 
                                 updateTutorialList={this.getTutorials}
-                            /> 
+                            /></div> 
                                     : 
                             <div>
                                 Select a tutorial

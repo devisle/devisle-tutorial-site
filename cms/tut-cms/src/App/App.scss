@@ -3,8 +3,9 @@
 
   .editor-container {
     display: flex;
-    width: 90%;
     height: 100vh;
+    max-width: 90%;
+    min-width: 90%;
   }
 }
 

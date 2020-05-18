@@ -155,7 +155,7 @@ export default class Editor extends Component<IEditorProps, {}> {
             <div className="Editor">
                 <MdEditor
                     value={this.props.tutorial.markdown}
-                    style={{ height: "100vh" }}
+                    style={{ height: "100vh", width: "100%" }}
                     renderHTML={(text) => this._mdParser.render(text)}
                     onChange={(e: EditorOnChange) => this.handleEditorChange(e)}
                 />
