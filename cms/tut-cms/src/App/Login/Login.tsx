@@ -18,11 +18,21 @@ export default class Login extends Component<{}, {}> {
      * @param {FormEvent<HTMLFormElement>} event the event returned from a submit click
      * @param {RefObject<HTMLInputElement>[]} inputRefs an array containing each input element ref object
      */
-    private attemptLogin(event: FormEvent<HTMLFormElement>, [usernameRef, passwordRef]: RefObject<HTMLInputElement>[]): void {
-        console.log(usernameRef.current?.value);
-        console.log(passwordRef.current?.value);
-        console.log(process.env.REACT_APP_SERVER_URI);
+    private async attemptLogin(event: FormEvent<HTMLFormElement>, [usernameRef, passwordRef]: RefObject<HTMLInputElement>[]): Promise<void> {
         event.preventDefault();
+        const writtenUsername = usernameRef.current?.value;
+        const writtenPassword = passwordRef.current?.value;
+        console.log(process.env.REACT_APP_SERVER_URI);
+        const response = await fetch(process.env.REACT_APP_SERVER_URI + "/cms/login/", {
+            method: "POST",
+            mode: "cors",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify({ })
+        }).then(d => d.json()).then(console.log);
+        
     }
 
     /**

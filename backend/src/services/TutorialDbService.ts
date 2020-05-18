@@ -5,7 +5,9 @@ export type MongoDbUpdateResponse = { ok: number; n: number; nModified: number; 
 
 /**
  * Static helper class resposible for handling all tutorial based DB operations/transactions
+ *
  * @class
+ * @todo feel free to remove RxJS and wrap the DB calls in a new promise
  * @author ale8k, rakeshshubhu
  */
 export default class TutorialDbService {
@@ -15,6 +17,7 @@ export default class TutorialDbService {
 
     /**
      * Gets all documents in a collection of type
+     *
      * @param {string} collectionName collection name
      * @param {Subject<string>} response$ the subject to emit the response of the query back to the controller handler
      * @todo handle find error & fix force cast
@@ -38,6 +41,7 @@ export default class TutorialDbService {
 
     /**
      * Creates a document within a given collection
+     *
      * @param {string} collectionName collection name
      * @param {T} data any object type to be parsed and created as a document
      * @param {Subject<string>} response$ the subject to emit the response of the query back to the controller handler
@@ -68,6 +72,7 @@ export default class TutorialDbService {
 
     /**
      * Updates a single document in a given collection
+     *
      * @param {string} collectionName collection name
      * @param {T} data the data to write over
      * @param {Subject<string | MongoError>} response$ the subject to emit the response of the query back to the controller handler

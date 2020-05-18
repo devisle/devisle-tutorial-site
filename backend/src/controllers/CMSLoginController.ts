@@ -5,6 +5,7 @@ import CMSLoginService from "../services/CMSLoginService";
 type LoginCredentials = { username: string, password: string };
 
 /**
+ * Confirms login credentials of a given CMS user
  * @class
  * @author ale8k, shreyas1307
  */
@@ -22,27 +23,32 @@ export default class CMSLoginController {
      */
     private static login(req: Request, res: Response): void {
         const { username, password } = req.body as LoginCredentials;
-
-        CMSLoginService.checkLoginCredentials(username, password).then((confirmation) => {
-            if (confirmation) {
-                // Note, this is able to take zeit/ms for expiry: [https://github.com/zeit/ms]
-                // Currently it's at 2 days because I feel this is enough time to produce a tutorial,
-                // we may alternatively opt for 'maxAge' property if this causes issues
-                const token = jwt.sign({ currentlyLoggedIn: true }, process.env.JWT_KEY as string, {
-                    expiresIn: "10000"
-                });
-                res.cookie("jwt", token);
-                res.json({
-                    "successfulLogin": true
-                });
-            } else {
-                // Force a clear regardless...
-                res.clearCookie("jwt");
-                res.json({
-                    "successfulLogin": false
-                });
-            }
-        });
+        if (!username || !password) {
+            res.json({
+                "successfulLogin": false
+            });
+        } else {
+            CMSLoginService.checkLoginCredentials(username, password).then((confirmation) => {
+                if (confirmation) {
+                    // Note, this is able to take zeit/ms for expiry: [https://github.com/zeit/ms]
+                    // Currently it's at 2 days because I feel this is enough time to produce a tutorial,
+                    // we may alternatively opt for 'maxAge' property if this causes issues
+                    const token = jwt.sign({ currentlyLoggedIn: true }, process.env.JWT_KEY as string, {
+                        expiresIn: "10000"
+                    });
+                    res.cookie("jwt", token);
+                    res.json({
+                        "successfulLogin": true
+                    });
+                } else {
+                    // Force a clear regardless...
+                    res.clearCookie("jwt");
+                    res.json({
+                        "successfulLogin": false
+                    });
+                }
+            });
+        }
     }
 
 }

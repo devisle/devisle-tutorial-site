@@ -5,6 +5,7 @@ import TutorialController from "../controllers/TutorialController";
 
 /**
  * The tutorial route
+ *
  * @author ale8k
  */
 export default class TutorialRoute implements IRoute {
@@ -23,6 +24,7 @@ export default class TutorialRoute implements IRoute {
 
     /**
      * A method callback which can be passed into the router.use() middleware implementer function
+     *
      * @param {Request<ParamsDictionary>} req the HTTP request object
      * @param {Response<String>} res the response object
      * @param {NextFunction} next express.next() function to proceed in the middleware chain
