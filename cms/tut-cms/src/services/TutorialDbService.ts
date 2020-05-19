@@ -47,6 +47,17 @@ export default class TutorialDbService {
     }
 
     /**
+     * Gets the list of categories to select from
+     * @todo Create endpoint of categories stored
+     */
+    public static getCategories(): string[] {
+        return [
+            "Programming",
+            "Something else"
+        ];
+    }
+
+    /**
      * Sends a fetch request with specified data / no data
      * If the users isn't authenticated, updates the users login state
      * 

@@ -69,8 +69,8 @@ export default class Editor extends Component<IEditorProps, {}> {
         this.saveDraftTutorial = this.saveDraftTutorial.bind(this);
         this.deleteDraftTutorial = this.deleteDraftTutorial.bind(this);
         this.publishTutorial = this.publishTutorial.bind(this);
-        this.getCategories = this.getCategories.bind(this);
         this.handleCategoryChange = this.handleCategoryChange.bind(this);
+        this.handleNameChange = this.handleNameChange.bind(this);
     }
 
     /**
@@ -119,6 +119,15 @@ export default class Editor extends Component<IEditorProps, {}> {
     }
 
     /**
+     * Changes the cached tutorials current name value
+     * @param {ChangeEvent<HTMLInputElement>} e 
+     */
+    private handleNameChange(e:  ChangeEvent<HTMLInputElement>): void {
+        console.log("Name updated:", e.currentTarget.value);
+        this._cachedTutorial.name = e.currentTarget.value;
+    }
+
+    /**
      * Saves a tutorial to the localStorage
      */
     private saveDraftTutorial(): void {
@@ -160,21 +169,6 @@ export default class Editor extends Component<IEditorProps, {}> {
     }
 
     /**
-     * Gets the list of categories to select from
-     * @todo Create endpoint of categories stored
-     */
-    private getCategories(): string[] {
-        return [
-            "Programming",
-            "Something else"
-        ];
-    }
-
-    /**
-     * Creates a category?
-     */
-
-    /**
      * Render
      */
     public render(): JSX.Element {
@@ -182,8 +176,11 @@ export default class Editor extends Component<IEditorProps, {}> {
             <div className="Editor">
                 <div>Category: 
                     <select onChange={(e) => this.handleCategoryChange(e)}>
-                        {this.getCategories().map(cat => <option value={cat}>{cat}</option>)}  
+                        {TutorialDbService.getCategories().map(cat => <option value={cat}>{cat}</option>)}  
                     </select>
+                </div>
+                <div>Name:
+                    <input defaultValue={this._cachedTutorial.name} onChange={(e) => this.handleNameChange(e)}  type="text"/>
                 </div>
                 <MdEditor
                     value={this.props.tutorial.markdown}

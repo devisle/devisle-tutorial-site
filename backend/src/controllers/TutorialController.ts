@@ -97,7 +97,6 @@ export default class TutorialController {
                 console.log("Published tutorial");
             });
             const tutorial = req.body as ITutorial;
-            console.log(tutorial);
             const atomicSetup = {
                 $set: {
                     category: tutorial.category,
