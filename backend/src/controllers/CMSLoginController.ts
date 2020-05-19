@@ -40,7 +40,7 @@ export default class CMSLoginController {
                     // Currently it's at 2 days because I feel this is enough time to produce a tutorial,
                     // we may alternatively opt for 'maxAge' property if this causes issues
                     const token = jwt.sign({ username, userId }, process.env.JWT_KEY as string, {
-                        expiresIn: "15000"
+                        expiresIn: "2 days"
                     });
                     res.json({
                         "successfulLogin": true,

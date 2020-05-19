@@ -6,6 +6,10 @@ import ITutorial from "../interfaces/ITutorial";
  */
 export default class Tutorial implements ITutorial {
     /**
+     * The tutorial category
+     */
+    private _category: string;
+    /**
      * The tutorial name
      */
     private _name: string;
@@ -17,11 +21,33 @@ export default class Tutorial implements ITutorial {
      * The markdown for this tutorial
      */
     private _markdown: string;
+    /**
+     * The tutorial ID
+     */
+    public _id: string = "";
 
-    constructor(name: string, html: string, markdown: string) {
+    constructor(category: string, name: string, html: string, markdown: string) {
+        this._category = category;
         this._name = name;
         this._html = html;
         this._markdown = markdown;
+    }
+
+    /**
+     * Gets the category
+     */
+    public get category(): string {
+        return this._category;
+    }
+
+    /**
+     * Sets the category
+     */
+    public set category(value: string) {
+        if (value === "") {
+            throw new Error("Tutorial category cannot be an empty string");
+        }
+        this._category = value;
     }
 
     /**

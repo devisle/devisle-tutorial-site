@@ -21,7 +21,7 @@ export default class TutorialDbService {
      * @returns {Promise<Response>} JSON response
      */
     public static createTutorial(name: string): Promise<string> {
-        return TutorialDbService.sendRequest<string>("POST", new Tutorial(name, "", "").toJSON());
+        return TutorialDbService.sendRequest<string>("POST", new Tutorial("Programming", name, "", "").toJSON());
     }
 
     /**

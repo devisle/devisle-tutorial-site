@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, ChangeEvent } from "react";
 import MdEditor from "react-markdown-editor-lite";
 import MarkdownIt from "markdown-it";
 import SaveDraftPlugin from "./Editor-Plugins/SaveDraftPlugin";
@@ -69,6 +69,8 @@ export default class Editor extends Component<IEditorProps, {}> {
         this.saveDraftTutorial = this.saveDraftTutorial.bind(this);
         this.deleteDraftTutorial = this.deleteDraftTutorial.bind(this);
         this.publishTutorial = this.publishTutorial.bind(this);
+        this.getCategories = this.getCategories.bind(this);
+        this.handleCategoryChange = this.handleCategoryChange.bind(this);
     }
 
     /**
@@ -107,12 +109,23 @@ export default class Editor extends Component<IEditorProps, {}> {
     }
 
     /**
+     * Changes the cached tutorials current category
+     * @param {ChangeEvent<HTMLSelectElement>} e 
+     */
+    private handleCategoryChange(e:  ChangeEvent<HTMLSelectElement>): void {
+        console.log("Category updated:", e.currentTarget.value);
+        this._cachedTutorial.category = e.currentTarget.value;
+        NotificationManager.info("CATEGORY CHANGED (BUT NOT SAVED)!");
+    }
+
+    /**
      * Saves a tutorial to the localStorage
      */
     private saveDraftTutorial(): void {
         window.localStorage.setItem(this._cachedTutorial._id as string, JSON.stringify(this._cachedTutorial));
         NotificationManager.info("DRAFT SAVED!");
     }
+
     /**
      * Deletes a tutorial in the localStorage
      */
@@ -123,7 +136,6 @@ export default class Editor extends Component<IEditorProps, {}> {
         } else {
             NotificationManager.warning("Could not delete a draft because one does not exist...", "DRAFT DELETED FAILED", 5000);
         }
-
     }
 
     /**
@@ -148,11 +160,31 @@ export default class Editor extends Component<IEditorProps, {}> {
     }
 
     /**
+     * Gets the list of categories to select from
+     * @todo Create endpoint of categories stored
+     */
+    private getCategories(): string[] {
+        return [
+            "Programming",
+            "Something else"
+        ];
+    }
+
+    /**
+     * Creates a category?
+     */
+
+    /**
      * Render
      */
     public render(): JSX.Element {
         return (
             <div className="Editor">
+                <div>Category: 
+                    <select onChange={(e) => this.handleCategoryChange(e)}>
+                        {this.getCategories().map(cat => <option value={cat}>{cat}</option>)}  
+                    </select>
+                </div>
                 <MdEditor
                     value={this.props.tutorial.markdown}
                     style={{ height: "100vh", width: "100%" }}

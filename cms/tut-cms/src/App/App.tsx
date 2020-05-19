@@ -140,6 +140,7 @@ export default class App extends Component<{}, IAppState> {
      * Renders the notification container, tutorial selector and editor instance
      */
     private renderEditorInstance(): JSX.Element {
+        console.log(this.state.activeTutorial);
         return (
             <div style={{ display: "flex", width: "100vw" }}>
                 <NotificationContainer/>
