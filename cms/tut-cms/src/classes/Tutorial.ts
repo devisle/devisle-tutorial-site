@@ -98,8 +98,9 @@ export default class Tutorial implements ITutorial {
     /**
      * Returns the correct property naming format when parsing to JSON
      */
-    public toJSON(): { name: string, html: string, markdown: string } {
+    public toJSON(): { category: string, name: string, html: string, markdown: string } {
         return {
+            category: this.category,
             name: this.name,
             html: this.html,
             markdown: this.markdown

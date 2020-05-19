@@ -58,9 +58,8 @@ export default class TutorialController {
                 res.send(JSON.stringify(d));
                 console.log("Created tutorial");
             });
+            console.log(req.body);
             if (TutorialController.structureCheck(req.body)) {
-                // Use JWT for structure
-                console.log("hi?");
                 const token: string | undefined = req.headers.authorization;
                 const tokenArr: string[] = token ? token.split(" ") : [];
                 const decodedToken = jwt.decode(tokenArr[1] as string) as TokenPayload;
@@ -68,7 +67,7 @@ export default class TutorialController {
                     name: req.body.name,
                     html: req.body.html,
                     markdown: req.body.markdown,
-                    category: "TODO",
+                    category: req.body.category,
                     authorId: decodedToken.userId,
                     authorName: decodedToken.username,
                     isAvailable: true
@@ -119,13 +118,15 @@ export default class TutorialController {
      * @returns {boolean} whether or not the data passed the structural check
      */
     private static structureCheck(data: any): data is ITutorial {
-        if (Object.keys(data).length === 3) {
+        if (Object.keys(data).length === 4) {
             if (typeof data.html === "string"
                 && typeof data.name === "string"
-                && typeof data.markdown === "string") {
+                && typeof data.markdown === "string"
+                && typeof data.category === "string") {
                 if (data.html !== undefined
                     && data.name !== undefined
-                    && data.markdown !== undefined) {
+                    && data.markdown !== undefined
+                    && data.category !== undefined) {
                     return true;
                 }
             }

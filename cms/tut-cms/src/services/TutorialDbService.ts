@@ -17,11 +17,12 @@ export default class TutorialDbService {
      * Creates an empty {@link tutorial Tutorial} with the given name
      *
      * @async
+     * @param {string} category the tutorial category
      * @param {string} name the tutorial name 
      * @returns {Promise<Response>} JSON response
      */
-    public static createTutorial(name: string): Promise<string> {
-        return TutorialDbService.sendRequest<string>("POST", new Tutorial("Programming", name, "", "").toJSON());
+    public static createTutorial(category: string, name: string): Promise<string> {
+        return TutorialDbService.sendRequest<string>("POST", new Tutorial(category, name, "", "").toJSON());
     }
 
     /**

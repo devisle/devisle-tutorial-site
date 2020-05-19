@@ -49,6 +49,7 @@ export default class TutorialSelector extends Component<ITutorialManagerProps, I
 
     /**
      * Emits the tutorial stored on this card to the App, used in rendering the correct editor
+     *
      * @param {React.MouseEvent<HTMLDivElement>} e users mouse event 
      * @param {ITutorial} tut the tutorial to emit update as the 'activeTutorial'
      */
@@ -63,13 +64,14 @@ export default class TutorialSelector extends Component<ITutorialManagerProps, I
 
     /**
      * Conditionally renders the tutorial card list
+     *
      * @returns {JSX.Element | JSX.Element[]} the loading or list of tuts
      */
     private renderTutorialCardList(): JSX.Element | JSX.Element[] {
         const respJSX = (<div style={{ height: "40px", textAlign: "center", marginTop: "5vh" }}>Loading...</div>);
         if (this.props.tutorialList.length !== 0) {
             return this.props.tutorialList.map(tut => {
-                return(
+                return (
                     <div className="tutorial-card" key={tut._id} onClick={(e) => {
                         this.handleCardClick(e, tut);
                     }}>
@@ -84,10 +86,13 @@ export default class TutorialSelector extends Component<ITutorialManagerProps, I
     /**
      * Creates a new tutorial with the given name,
      * upon successful creation, rerenders the parent with a fresh list of tutorials
+     *
+     * @param {string} category tutorial category
      * @param {string} name tutorial name
      */
-    private createTutorial(name: string): void {
-        TutorialDbService.createTutorial(name).then((response) => {
+    private createTutorial(category: string, name: string): void {
+        console.log(category);
+        TutorialDbService.createTutorial(category, name).then((response) => {
             this.toggleCreatorModal();
             TutorialDbService.getAllTutorials().then(tutorials => {
                 this.props.rerenderParent({
@@ -109,6 +114,7 @@ export default class TutorialSelector extends Component<ITutorialManagerProps, I
      */
     public render(): JSX.Element {
         const modalNameRef: RefObject<HTMLInputElement> = React.createRef();
+        const modalCatRef: RefObject<HTMLSelectElement> = React.createRef();
         return (
             <div className="TutorialManager">
                 <button className="create-btn" onClick={this.toggleCreatorModal}>Create tutorial</button>
@@ -120,12 +126,21 @@ export default class TutorialSelector extends Component<ITutorialManagerProps, I
                     <div className="modal-container">
                         <div className="modal-body">
                             <div>
-                                Enter tutorial name: <br/>
-                                <input ref={modalNameRef} type="text"/> <br/>
-
+                                Enter tutorial name: <br />
+                                <input ref={modalNameRef} type="text" /> <br />
+                            </div>
+                            <div>Category:
+                                    <select ref={modalCatRef}>
+                                    {TutorialDbService.getCategories().map(cat => <option value={cat}>{cat}</option>)}
+                                </select>
                             </div>
                             <button onClick={this.toggleCreatorModal}>Cancel</button>
-                            <button onClick={() => this.createTutorial(modalNameRef.current?.value as string)}>Create</button>
+                            <button onClick={() => this.createTutorial(
+                                    (modalCatRef.current?.value as string),
+                                    (modalNameRef.current?.value as string)
+                                )}>
+                                    Create
+                            </button>
                         </div>
                     </div>
                 </Modal>

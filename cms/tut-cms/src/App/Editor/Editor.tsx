@@ -176,11 +176,15 @@ export default class Editor extends Component<IEditorProps, {}> {
             <div className="Editor">
                 <div>Category: 
                     <select onChange={(e) => this.handleCategoryChange(e)}>
-                        {TutorialDbService.getCategories().map(cat => <option value={cat}>{cat}</option>)}  
+                        {TutorialDbService.getCategories().map(cat => 
+                            <option value={cat} selected={this.props.tutorial.category === cat ? true : false}>
+                                {cat}
+                            </option>
+                        )}  
                     </select>
                 </div>
                 <div>Name:
-                    <input defaultValue={this._cachedTutorial.name} onChange={(e) => this.handleNameChange(e)}  type="text"/>
+                    <input defaultValue={this.props.tutorial.name} onChange={(e) => this.handleNameChange(e)}  type="text"/>
                 </div>
                 <MdEditor
                     value={this.props.tutorial.markdown}
