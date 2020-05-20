@@ -1,0 +1,79 @@
+body {
+	margin: 0;
+	padding: 0;
+	font-family: Helvetica Neue, sans-serif;
+
+	$titleSize: 24px;
+	$subtitleSize: 21px;
+	$contentSize: 21px;
+
+	$headerBGColor: #ffffff;
+	$mainBGColor: #fdfdfd;
+
+	.title {
+		font-size: $titleSize;
+		color: black;
+	}
+
+	.w-75 {
+		width: 85%;
+		padding: 39px 0;
+	}
+	.w-25 {
+		width: 15%;
+	}
+
+	.tutorial-search {
+		padding: 26px 25px;
+		width: 100%;
+		font-size: $subtitleSize;
+		background: #ffffff 0% 0% no-repeat padding-box;
+		border: 1px solid #707070;
+		opacity: 1;
+	}
+
+	header {
+		border-bottom: 1px solid #707070;
+		background-color: $headerBGColor;
+
+		.navbar {
+			margin: 0 auto;
+			padding: 28px 27px;
+			max-width: 1100px;
+			font-size: $titleSize;
+
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+		}
+	}
+
+	main {
+		background-color: $mainBGColor;
+
+		.main {
+			display: flex;
+			align-items: center;
+			// justify-content: sp;
+			margin: 0 auto;
+			max-width: 1100px;
+
+			.category-list {
+				display: flex;
+				align-items: center;
+				justify-content: flex-start;
+
+				.category-item {
+					display: flex;
+					padding: 9px 12px;
+					margin-right: 70px;
+					align-items: center;
+					justify-content: space-evenly;
+					width: 216px;
+					height: 75px;
+					border: 1px solid black;
+				}
+			}
+		}
+	}
+}
