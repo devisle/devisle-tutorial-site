@@ -7,7 +7,6 @@ import { useState } from "react";
  *
  * @author shreyas1307
  */
-
 export default function Home() {
 	const [categories, setCategories] = useState([
 		{ icon: "devicon-javascript-plain", categoryName: "JavaScript" },
