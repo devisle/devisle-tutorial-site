@@ -30,7 +30,10 @@ class Server {
         dotenv.config();
         this._app = express();
         this._app.use(cors());
-        this._app.use(bodyParser());
+        this._app.use(bodyParser.urlencoded({
+            extended: true
+        }));
+        this._app.use(bodyParser.json());
         this._port = process.env.PORT || 3000;
         this.registerRoutes();
 
@@ -38,7 +41,9 @@ class Server {
         // SOMEONE REVIEW IF THIS IS CORRECT WAY OF DOING THIS!
         // THE METHODS HAVE CHANGED, AND THIS WAS ONLY WAY I COULD DO IT
         MongoClient.connect((process.env.DB_URL as string), {
-            poolSize: 10
+            poolSize: 10,
+            useNewUrlParser: true,
+            useUnifiedTopology: true
         }, (err, client) => {
             if (err) {
                 throw err;

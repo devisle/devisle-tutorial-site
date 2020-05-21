@@ -63,7 +63,7 @@ export default class TutorialController {
      * @param {Request} req the users request obj
      * @param {Response} res our res obj
      */
-    private static async updateTutorialById(req: Request, res: Response): Promise<void> {
+    private static updateTutorialById(req: Request, res: Response): void {
         if (TutorialController.validateTutorialData(req.body, 5)) {
             const { _id, category, name, html, markdown } = req.body;
             const atomicDto = { $set: { ...new PartialTutorial(name, html, markdown, category) } };
