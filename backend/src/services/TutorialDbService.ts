@@ -52,31 +52,16 @@ export default class TutorialDbService {
      * @param {T} data the data to write over
      * @param {Subject<string | MongoError>} response$ the subject to emit the response of the query back to the controller handler
      */
-    public static updateSingleDocument(collectionName: string, predicate: object, newValue: object,
-        response$: Subject<MongoUpdateResponse | MongoError>): void {
-        MongoClient.connect(process.env.DB_URL as string).then(
-            (client) => {
-                console.log("Connected successfully to db");
-                client.db(process.env.DB_NAME as string).collection(collectionName).updateOne(
-                    predicate,
-                    newValue,
-                    (err: MongoError, response: UpdateWriteOpResult) => {
-                        if (err !== null) {
-                            response$.next(err);
-                            throw new Error("Update failed" + err);
-                        } else {
-                            response$.next(response.result as MongoUpdateResponse);
-                        }
-                    }
-                );
-                client.close();
-            },
-            (err) => {
-                if (err) {
-                    throw new Error("DB connection failed" + err);
+    public static updateSingleDocument(collectionName: string, predicate: object, newValue: object): Promise<UpdateWriteOpResult> {
+        return new Promise((res, rej) => {
+            TutorialDbService.db.collection(collectionName).updateOne(
+                predicate,
+                newValue,
+                (err: MongoError, response: UpdateWriteOpResult) => {
+                    err ? rej(err) : res(response);
                 }
-            }
-        );
+            );
+        });
     }
 
 }

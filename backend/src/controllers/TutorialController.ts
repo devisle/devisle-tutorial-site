@@ -40,7 +40,7 @@ export default class TutorialController {
      * @param {Response} res our res obj
      */
     private static createTutorial(req: Request, res: Response): void {
-        if (TutorialController.validateTutorialData(req.body)) {
+        if (TutorialController.validateTutorialData(req.body, 4)) {
             const token: string | undefined = req.headers.authorization;
             const tokenArr: string[] = token ? token.split(" ") : [];
             const { userId, username } = jwt.decode(tokenArr[1] as string) as TokenPayload;
@@ -64,34 +64,28 @@ export default class TutorialController {
      * @param {Response} res our res obj
      */
     private static async updateTutorialById(req: Request, res: Response): Promise<void> {
-        const response$ = new Subject<MongoError | MongoUpdateResponse>();
-        const sub = response$.subscribe((d) => {
-            sub.unsubscribe();
-            console.log(d);
-            res.send(d);
-            console.log("Published tutorial");
-        });
-        const { _id, category, name, html, markdown } = req.body as PartialTutorial;
-        const atomicSetup = {
-            $set: {
-                category,
-                name,
-                html,
-                markdown,
-            } as PartialTutorial
-        };
-        const predicateId = { _id: new ObjectId(_id) };
-        TutorialDbService.updateSingleDocument("tutorials", predicateId, atomicSetup, response$);
+        if (TutorialController.validateTutorialData(req.body, 5)) {
+            const { _id, category, name, html, markdown } = req.body;
+            const atomicDto = { $set: { ...new PartialTutorial(name, html, markdown, category) } };
+            const predicateId = { _id: new ObjectId(_id) };
+
+            TutorialDbService.updateSingleDocument("tutorials", predicateId, atomicDto).then(
+                (resp) => res.status(200).json(resp).end(),
+                (err: MongoError) => res.status(503).send("Error name: " + err.name + "Code: " + err.code + "Msg: " + err.errmsg)
+            );
+        }
     }
 
     /**
      * Checks the incoming tutorial object structure to be of type {@link partialTutorial PartialTutorial}
      *
      * @param {any} data the unknown data type
+     * @param {number} keyLength have the check for keyLength vary, in some cases we want the _id so we'll expect the keys to
+     * be 5
      * @returns {boolean} whether or not the data passed the structural check
      */
-    private static validateTutorialData(data: any): data is PartialTutorial {
-        if (Object.keys(data).length === 4) {
+    private static validateTutorialData(data: any, keyLength: number): data is PartialTutorial {
+        if (Object.keys(data).length === keyLength) {
             if (typeof data.html === "string"
                 && typeof data.name === "string"
                 && typeof data.markdown === "string"

@@ -19,12 +19,7 @@ export default class Tutorial extends PartialTutorial {
             authorName: string,
             isAvailable: boolean,
             id?: string) {
-        super();
-        this._id = id;
-        this.name = name;
-        this.html = html;
-        this.markdown = markdown;
-        this.category = category;
+        super(name, html, markdown, category, id);
         this.authorId = authorId;
         this.authorName = authorName;
         this.isAvailable = isAvailable;

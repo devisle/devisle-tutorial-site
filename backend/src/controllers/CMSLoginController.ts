@@ -38,7 +38,7 @@ export default class CMSLoginController {
                     // we may alternatively opt for 'maxAge' property if this causes issues
                     res.json({
                         "successfulLogin": true,
-                        "jwt": jwt.sign({ username, userId }, process.env.JWT_KEY as string, { expiresIn: "2 days" })
+                        "jwt": jwt.sign({ username, userId }, process.env.JWT_KEY as string, { expiresIn: process.env.JWT_EXPIRY })
                     }).status(200).end();
                 } else {
                     res.status(401).send(UNAUTHORISED_TEXT).end();
