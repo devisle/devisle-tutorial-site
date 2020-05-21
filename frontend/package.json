@@ -8,14 +8,27 @@
     "start": "next start"
   },
   "dependencies": {
+    "@testing-library/jest-dom": "^5.8.0",
+    "@testing-library/react": "^10.0.4",
+    "@testing-library/user-event": "^10.3.3",
+    "markdown-it": "^11.0.0",
     "next": "9.4.0",
     "react": "16.13.1",
     "react-dom": "16.13.1",
+    "react-markdown-editor-lite": "^1.1.2",
+    "react-modal": "^3.11.2",
+    "react-notifications": "^1.6.0",
     "sass": "^1.26.5"
   },
   "devDependencies": {
+    "@types/jest": "^25.2.3",
+    "@types/markdown-it": "^10.0.1",
     "@types/node": "^14.0.1",
     "@types/react": "^16.9.35",
+    "@types/react-dom": "^16.9.8",
+    "@types/react-modal": "^3.10.5",
+    "dotenv": "^8.2.0",
+    "ts-lint": "^4.5.1",
     "typescript": "^3.9.2"
   }
 }
