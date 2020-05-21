@@ -3,9 +3,6 @@ import jwt from "jsonwebtoken";
 import CMSAuthService from "../services/CMSAuthService";
 import { UNAUTHORISED_TEXT } from "../constants";
 
-type LoginCredentials = { attemptedUsername: string, password: string };
-type TokenPayload = { username: string, userId: string, iat: number, exp: number }; // This is repeated
-
 /**
  * Confirms login credentials of a given CMS user
  *

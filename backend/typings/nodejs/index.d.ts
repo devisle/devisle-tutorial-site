@@ -2,8 +2,8 @@
  * NodeJS GLOBAL type extension
  * This is used for adding Jest globals, 
  * so that our *.unit/int.test.ts can pickup on the globals
- * 
  * We're simply unable to otherwise...
+ * 
  * @author ale8k
  */
 declare module NodeJS {

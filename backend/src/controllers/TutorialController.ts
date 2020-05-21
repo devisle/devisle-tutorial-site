@@ -7,8 +7,6 @@ import Tutorial from "src/dtos/Tutorial.dto";
 import PartialTutorial from "src/dtos/PartialTutorial.dto";
 import { UNAUTHORISED_TEXT } from "../constants";
 
-type TokenPayload = { username: string, userId: string, iat: number, exp: number }; // This is repeated
-
 /**
  * Tutorial route controller
  * - Uses event driven async responses for db queries
