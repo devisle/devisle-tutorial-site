@@ -1,7 +1,5 @@
-import MongoClient, { MongoError, UpdateWriteOpResult } from "mongodb";
+import { MongoError, UpdateWriteOpResult, Db, MongoClient } from "mongodb";
 import { Subject } from "rxjs";
-
-export type MongoDbUpdateResponse = { ok: number; n: number; nModified: number; };
 
 /**
  * Static helper class resposible for handling all tutorial based DB operations/transactions
@@ -11,9 +9,10 @@ export type MongoDbUpdateResponse = { ok: number; n: number; nModified: number; 
  * @author ale8k, rakeshshubhu
  */
 export default class TutorialDbService {
-    constructor() {
-        console.log("Db service initialised!");
-    }
+    /**
+     * Single DB ref from Server
+     */
+    public static db: Db;
 
     /**
      * Gets all documents in a collection of type
@@ -22,21 +21,12 @@ export default class TutorialDbService {
      * @param {Subject<string>} response$ the subject to emit the response of the query back to the controller handler
      * @todo handle find error & fix force cast
      */
-    public static getAllDocuments<T>(collectionName: string, response$: Subject<T[]>): void {
-        MongoClient.connect(process.env.DB_URL as string).then(
-            (client) => {
-                console.log("Connected successfully to db");
-                client.db(process.env.DB_NAME as string).collection<T>(collectionName).find({}).toArray((err, result) => {
-                    response$.next(result); // forcefully cast the result to T
-                });
-                client.close();
-            },
-            (err) => {
-                if (err) {
-                    throw new Error("DB connection failed" + err);
-                }
-            }
-        );
+    public static getAllDocuments<T>(collectionName: string): Promise<T[]> {
+        return new Promise((res, rej) => {
+            TutorialDbService.db.collection<T>(collectionName).find({}).toArray((err, result) => {
+                result.length ? res(result) : rej(err);
+            });
+        });
     }
 
     /**
@@ -46,28 +36,13 @@ export default class TutorialDbService {
      * @param {T} data any object type to be parsed and created as a document
      * @param {Subject<string>} response$ the subject to emit the response of the query back to the controller handler
      */
-    public static createDocument<T>(collectionName: string, data: T, response$: Subject<string | MongoError>): void {
-        MongoClient.connect(process.env.DB_URL as string).then(
-            (client) => {
-                //console.log("Connected successfully to db");
-                client.db(process.env.DB_NAME as string).collection(collectionName).insertOne(data).then(({result}) => {
-                    if (result.ok) {
-                        response$.next("SUCCESSFUL CREATION");
-                    } else {
-                        response$.next("UNSUCCESSFUL CREATION");
-                    }
-                },
-                (err: MongoError) => {
-                    response$.next(err);
-                });
-                client.close();
-            },
-            (err) => {
-                if (err) {
-                    throw new Error("DB connection failed" + err);
-                }
-            }
-        );
+    public static createDocument<T>(collectionName: string, data: T): Promise<MongoUpdateResponse> {
+        return new Promise((res, rej) => {
+            TutorialDbService.db.collection(collectionName).insertOne(data).then(
+                ({ result }) => result.ok ? res() : rej(),
+                () => rej()
+            );
+        });
     }
 
     /**
@@ -78,7 +53,7 @@ export default class TutorialDbService {
      * @param {Subject<string | MongoError>} response$ the subject to emit the response of the query back to the controller handler
      */
     public static updateSingleDocument(collectionName: string, predicate: object, newValue: object,
-            response$: Subject<MongoDbUpdateResponse  | MongoError>): void {
+        response$: Subject<MongoUpdateResponse | MongoError>): void {
         MongoClient.connect(process.env.DB_URL as string).then(
             (client) => {
                 console.log("Connected successfully to db");
@@ -90,7 +65,7 @@ export default class TutorialDbService {
                             response$.next(err);
                             throw new Error("Update failed" + err);
                         } else {
-                            response$.next(response.result as MongoDbUpdateResponse);
+                            response$.next(response.result as MongoUpdateResponse);
                         }
                     }
                 );

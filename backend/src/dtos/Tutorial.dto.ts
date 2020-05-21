@@ -1,31 +1,53 @@
 import PartialTutorial from "./PartialTutorial.dto";
 
 /**
- * Represents a FULL tutorial, with no optionals
+ * Represents a FULL tutorial, with no optionals (aside from _id)
  *
  * @class
  * @author ale8k
  */
-export default abstract class Tutorial extends PartialTutorial {
+export default class Tutorial extends PartialTutorial {
+    /**
+     * Set given DTO fields
+     */
+    constructor(
+            name: string,
+            html: string,
+            markdown: string,
+            category: string,
+            authorId: string,
+            authorName: string,
+            isAvailable: boolean,
+            id?: string) {
+        super();
+        this._id = id;
+        this.name = name;
+        this.html = html;
+        this.markdown = markdown;
+        this.category = category;
+        this.authorId = authorId;
+        this.authorName = authorName;
+        this.isAvailable = isAvailable;
+    }
     /**
      * The Mongo user's GUID [who created this tutorial]
-     * @abstract
+     *
      * @type {string}
      * @memberof Tutorial
      */
-    public abstract authorId: string;
+    public authorId: string;
     /**
      * The Mongo user's username [who created this tutorial]
-     * @abstract
+     *
      * @type {string}
      * @memberof Tutorial
      */
-    public abstract authorName: string;
+    public authorName: string;
     /**
      * Soft-delete flag
-     * @abstract
+     *
      * @type {string}
      * @memberof Tutorial
      */
-    public abstract isAvailable: boolean;
+    public isAvailable: boolean;
 }

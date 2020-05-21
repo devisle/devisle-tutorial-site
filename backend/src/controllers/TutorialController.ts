@@ -1,16 +1,14 @@
 import { Request, Response } from "express";
-import DbService, { MongoDbUpdateResponse } from "../services/TutorialDbService";
 import { ObjectId, MongoError } from "mongodb";
 import { Subject } from "rxjs";
 import jwt from "jsonwebtoken";
-import Tutorial from "src/dtos/Tutorial.dto";
-import PartialTutorial from "src/dtos/PartialTutorial.dto";
+import Tutorial from "../dtos/Tutorial.dto";
+import PartialTutorial from "../dtos/PartialTutorial.dto";
+import { INTERNAL_ERROR_TEXT, SUCCESSFUL_DOC_CREATION, BAD_REQUEST_TEXT } from "../constants";
+import TutorialDbService from "../services/TutorialDbService";
 
 /**
  * Tutorial route controller
- * - Uses event driven async responses for db queries
- * - This is done via wiring a {@link subject Subject<T>} through the service methods
- * @todo maybe use single subject, test performance / Just wrap in another promise... ew
  *
  * @author ale8k
  */
@@ -20,57 +18,41 @@ export default class TutorialController {
      */
     public static get: (req: Request, res: Response) => void = TutorialController.getAllTutorials;
     public static post: (req: Request, res: Response) => void = TutorialController.createTutorial;
-    public static put: (req: Request, res: Response) => void = TutorialController.updateTutorialByID;
+    public static put: (req: Request, res: Response) => void = TutorialController.updateTutorialById;
 
     /**
-     * Grabs all the {@link tutorialDocs Tutoriall[]} and resoonds
+     * Grabs all the {@link tutorialDocs Tutoriall[]} and responds
      *
      * @param {Request} req the users request obj
      * @param {Response} res our res obj
      */
     private static getAllTutorials(req: Request, res: Response): void {
-        const response$ = new Subject<Tutorial[]>();
-        const sub = response$.subscribe((d) => {
-            sub.unsubscribe();
-            res.send(d);
-        });
-        DbService.getAllDocuments<Tutorial>("tutorials", response$);
+        TutorialDbService.getAllDocuments<Tutorial>("tutorials").then(
+            (tutorials) => res.status(200).json(tutorials).end(),
+            (err) => res.status(500).send(INTERNAL_ERROR_TEXT + JSON.stringify(err)).end()
+        );
     }
 
     /**
      * Creates a base tutorial
      *
-     * @todo fix the random JSON.stringify's lol, the respond is already a string!
-     * Note, this will need CMS frontend adjusting too
      * @param {Request} req the users request obj
      * @param {Response} res our res obj
      */
     private static createTutorial(req: Request, res: Response): void {
-
-        console.log("route fired");
-        const response$ = new Subject<string | MongoError>();
-        const sub = response$.subscribe((d) => {
-            sub.unsubscribe();
-            res.send(JSON.stringify(d));
-            console.log("Created tutorial");
-        });
-        console.log(req.body);
-        if (TutorialController.structureCheck(req.body)) {
+        if (TutorialController.validateTutorialData(req.body)) {
             const token: string | undefined = req.headers.authorization;
             const tokenArr: string[] = token ? token.split(" ") : [];
-            const decodedToken = jwt.decode(tokenArr[1] as string) as TokenPayload;
-            const fullTutorial: Tutorial = {
-                name: req.body.name,
-                html: req.body.html,
-                markdown: req.body.markdown,
-                category: req.body.category as string,
-                authorId: decodedToken.userId,
-                authorName: decodedToken.username,
-                isAvailable: true
-            };
-            DbService.createDocument<Tutorial>("tutorials", fullTutorial, response$);
+            const { userId, username } = jwt.decode(tokenArr[1] as string) as TokenPayload;
+            const { name, html, markdown, category } = req.body;
+            const dto = new Tutorial(name, html, markdown, category, userId, username, true);
+
+            TutorialDbService.createDocument<Tutorial>("tutorials", dto).then(
+                () => res.status(200).send(SUCCESSFUL_DOC_CREATION).end(),
+                () => res.status(500).send(INTERNAL_ERROR_TEXT + "TODO").end()
+            );
         } else {
-            res.send(JSON.stringify("UNSUCCESSFUL CREATION"));
+            res.status(400).send(BAD_REQUEST_TEXT).end();
         }
 
     }
@@ -81,8 +63,8 @@ export default class TutorialController {
      * @param {Request} req the users request obj
      * @param {Response} res our res obj
      */
-    private static async updateTutorialByID(req: Request, res: Response): Promise<void> {
-        const response$ = new Subject<MongoError | MongoDbUpdateResponse>();
+    private static async updateTutorialById(req: Request, res: Response): Promise<void> {
+        const response$ = new Subject<MongoError | MongoUpdateResponse>();
         const sub = response$.subscribe((d) => {
             sub.unsubscribe();
             console.log(d);
@@ -99,7 +81,7 @@ export default class TutorialController {
             } as PartialTutorial
         };
         const predicateId = { _id: new ObjectId(_id) };
-        DbService.updateSingleDocument("tutorials", predicateId, atomicSetup, response$);
+        TutorialDbService.updateSingleDocument("tutorials", predicateId, atomicSetup, response$);
     }
 
     /**
@@ -108,7 +90,7 @@ export default class TutorialController {
      * @param {any} data the unknown data type
      * @returns {boolean} whether or not the data passed the structural check
      */
-    private static structureCheck(data: any): data is PartialTutorial {
+    private static validateTutorialData(data: any): data is PartialTutorial {
         if (Object.keys(data).length === 4) {
             if (typeof data.html === "string"
                 && typeof data.name === "string"

@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import MongoClient, { ObjectId } from "mongodb";
+import { ObjectId, MongoClient, Db } from "mongodb";
 import jwt from "jsonwebtoken";
 
 type user = { _id: ObjectId, username: string, password: string };
@@ -13,6 +13,11 @@ type LoginCredentialsResponse = { username: string, confirmation: boolean, userI
  * @author ale8k, shreyas1307
  */
 export default class CMSAuthService {
+    /**
+     * Single DB ref from Server
+     */
+    public static db: Db;
+
     /**
      * Takes a username and password, and compares it vs the current in the DB
      *

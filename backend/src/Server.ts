@@ -3,6 +3,9 @@ import express, { Application } from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
 import routes from "./routes/index";
+import { MongoClient } from "mongodb";
+import TutorialDbService from "./services/TutorialDbService";
+import CMSAuthService from "./services/CMSAuthService";
 
 /**
  * Sets up all initial middlewares and the app instance itself
@@ -30,12 +33,27 @@ class Server {
         this._app.use(bodyParser());
         this._port = process.env.PORT || 3000;
         this.registerRoutes();
+
+        /** Setup single db pool instance prior to app launching */
+        // SOMEONE REVIEW IF THIS IS CORRECT WAY OF DOING THIS!
+        // THE METHODS HAVE CHANGED, AND THIS WAS ONLY WAY I COULD DO IT
+        MongoClient.connect((process.env.DB_URL as string), {
+            poolSize: 10
+        }, (err, client) => {
+            if (err) {
+                throw err;
+            } else {
+                CMSAuthService.db = client.db(process.env.DB_NAME as string);
+                TutorialDbService.db = client.db(process.env.DB_NAME as string);
+                this.start();
+            }
+        });
     }
 
     /**
      * Server initialisation
      */
-    public start(): void {
+    private start(): void {
         this._app.listen(this._port, () => console.log(`Server running on ${this._port}`));
     }
 
@@ -51,5 +69,5 @@ class Server {
 
 }
 
-new Server().start();
+new Server();
 
