@@ -1,6 +1,6 @@
 import { Router, Request, Response, NextFunction } from "express";
 import { ParamsDictionary } from "express-serve-static-core";
-import IRoute from "./interfaces/IRoute";
+import IRoute from "../interfaces/IRoute";
 import TutorialController from "../controllers/TutorialController";
 import CMSAuthService from "../services/CMSAuthService";
 
@@ -15,7 +15,9 @@ export default class TutorialRoute implements IRoute {
      */
     public readonly router: Router = Router();
 
-    // Middleware & controller setup
+    /**
+     * Middleware & controller setup
+     */
     constructor() {
         this.router.use("/tutorial/",this.authorisationCheck);
         this.router.get("/tutorial/", TutorialController.get); // get all? or by id?

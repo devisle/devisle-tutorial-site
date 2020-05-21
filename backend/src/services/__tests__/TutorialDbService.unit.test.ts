@@ -1,7 +1,7 @@
 import MongoDb, { MongoError, MongoClient } from "mongodb";
 import TutorialDbService, { MongoDbUpdateResponse } from "../TutorialDbService";
 import { Subject } from "rxjs";
-import ITutorial from "../../controllers/interfaces/ITutorial";
+import ITutorial from "../../interfaces/ITutorial";
 
 /**
  * Handles testing each TutorialDBService action and ensure it performs the correct operation

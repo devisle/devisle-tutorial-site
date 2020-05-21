@@ -1,9 +1,11 @@
 import { Request, Response } from "express";
 import DbService, { MongoDbUpdateResponse } from "../services/TutorialDbService";
-import ITutorial from "./interfaces/ITutorial";
 import { ObjectId, MongoError } from "mongodb";
 import { Subject } from "rxjs";
 import jwt from "jsonwebtoken";
+import Tutorial from "src/dtos/Tutorial.dto";
+import PartialTutorial from "src/dtos/PartialTutorial.dto";
+import { UNAUTHORISED_TEXT } from "../constants";
 
 type TokenPayload = { username: string, userId: string, iat: number, exp: number }; // This is repeated
 
@@ -24,20 +26,18 @@ export default class TutorialController {
     public static put: (req: Request, res: Response) => void = TutorialController.updateTutorialByID;
 
     /**
-     * Grabs all the {@link tutorialDocs ITutorial[]} and resoonds
+     * Grabs all the {@link tutorialDocs Tutoriall[]} and resoonds
      *
      * @param {Request} req the users request obj
      * @param {Response} res our res obj
      */
     private static getAllTutorials(req: Request, res: Response): void {
-        // console.log(res.locals.authorised);
-        const response$ = new Subject<ITutorial[]>();
+        const response$ = new Subject<Tutorial[]>();
         const sub = response$.subscribe((d) => {
             sub.unsubscribe();
             res.send(d);
-            // console.log("Got all tutorials");
         });
-        DbService.getAllDocuments<ITutorial>("tutorials", response$);
+        DbService.getAllDocuments<Tutorial>("tutorials", response$);
     }
 
     /**
@@ -49,7 +49,6 @@ export default class TutorialController {
      * @param {Response} res our res obj
      */
     private static createTutorial(req: Request, res: Response): void {
-
         if (res.locals.authorised) {
             console.log("route fired");
             const response$ = new Subject<string | MongoError>();
@@ -63,21 +62,21 @@ export default class TutorialController {
                 const token: string | undefined = req.headers.authorization;
                 const tokenArr: string[] = token ? token.split(" ") : [];
                 const decodedToken = jwt.decode(tokenArr[1] as string) as TokenPayload;
-                const fullTutorial: ITutorial = {
+                const fullTutorial: Tutorial = {
                     name: req.body.name,
                     html: req.body.html,
                     markdown: req.body.markdown,
-                    category: req.body.category,
+                    category: req.body.category as string,
                     authorId: decodedToken.userId,
                     authorName: decodedToken.username,
                     isAvailable: true
                 };
-                DbService.createDocument<ITutorial>("tutorials", fullTutorial, response$);
+                DbService.createDocument<Tutorial>("tutorials", fullTutorial, response$);
             } else {
                 res.send(JSON.stringify("UNSUCCESSFUL CREATION"));
             }
         } else {
-            res.status(401).end();
+            res.status(401).send(UNAUTHORISED_TEXT).end();
         }
     }
 
@@ -92,32 +91,33 @@ export default class TutorialController {
             const response$ = new Subject<MongoError | MongoDbUpdateResponse >();
             const sub = response$.subscribe((d) => {
                 sub.unsubscribe();
+                console.log(d);
                 res.send(d);
                 console.log("Published tutorial");
             });
-            const tutorial = req.body as ITutorial;
+            const { _id, category, name, html, markdown } = req.body as PartialTutorial;
             const atomicSetup = {
                 $set: {
-                    category: tutorial.category,
-                    name: tutorial.name,
-                    html: tutorial.html,
-                    markdown: tutorial.markdown
-                } as ITutorial
+                    category,
+                    name,
+                    html,
+                    markdown,
+                } as PartialTutorial
             };
-            const predicateId = { _id: new ObjectId(tutorial._id) };
+            const predicateId = { _id: new ObjectId(_id) };
             DbService.updateSingleDocument("tutorials", predicateId, atomicSetup, response$);
         } else {
-            res.status(401).end();
+            res.status(401).send(UNAUTHORISED_TEXT).end();
         }
     }
 
     /**
-     * Checks the incoming tutorial object structure to be of type {@link ITutorial ITutorial}
+     * Checks the incoming tutorial object structure to be of type {@link partialTutorial PartialTutorial}
      *
      * @param {any} data the unknown data type
      * @returns {boolean} whether or not the data passed the structural check
      */
-    private static structureCheck(data: any): data is ITutorial {
+    private static structureCheck(data: any): data is PartialTutorial {
         if (Object.keys(data).length === 4) {
             if (typeof data.html === "string"
                 && typeof data.name === "string"

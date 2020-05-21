@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import CMSAuthService from "../services/CMSAuthService";
+import { UNAUTHORISED_TEXT } from "../constants";
 
 type LoginCredentials = { attemptedUsername: string, password: string };
 type TokenPayload = { username: string, userId: string, iat: number, exp: number }; // This is repeated
@@ -74,9 +75,8 @@ export default class CMSLoginController {
                 userId: decodedToken.userId
             });
         } else {
-            res.json({
-                username: "",
-                userId: ""
+            res.status(401).send(UNAUTHORISED_TEXT).end(() => {
+                res.clearCookie("jwt");
             });
         }
     }
