@@ -1,36 +1,41 @@
 import Head from "next/head";
 import Link from "next/link";
 import { useState } from "react";
-import { GetStaticProps, GetStaticPropsContext } from "next";
+
+import {Layout, Seo} from '../components'
 
 /**
- * Initial Routes for the Front-end
+ * Get tutorials 
+ * 
+ * @todo typescript types
+ * @returns tutorials
+ */
+export const getServerSideProps = async () => {
+    const response = await fetch('http://localhost:3000/api/getTutorial');
+    return {
+        props: {
+            tutorials: await response.json()
+        }
+    }
+}
+
+/**
+ * Index Page - renders on '/' route
  *
- * @author shreyas1307
+ * @author shreyas1307, rakeshshubhu
  */
 export default function index(props) {
-    const [categories, setCategories] = useState([
-        { icon: "devicon-javascript-plain", categoryName: "JavaScript" },
-        { icon: "devicon-python-plain", categoryName: "Python" },
-    ]);
+    const [categories, setCategories] = useState(props.tutorials);
     return (
-        <div className="container">
-            <Head>
-                <title>Dev Isle Tutorials</title>
-                <link rel="icon" href="/favicon.ico" />
-                <link
-                    rel="stylesheet"
-                    href="https://cdn.rawgit.com/konpa/devicon/df6431e323547add1b4cf45992913f15286456d3/devicon.min.css"
-                ></link>
-            </Head>
-
+        <Layout>     
+            <Seo/>
             <main>
                 <header>
                     <div className="navbar">
                         <div className="nav-title">Dev Isle Tutorials</div>
                         {/* {user?.isAuthenticated ? (
-							<div className="nav-items">Welcome</div>
-						) : ( */}
+                            <div className="nav-items">Welcome</div>
+                        ) : ( */}
                         <div className="nav-items">Login</div>
                         {/* )} */}
                     </div>
@@ -75,17 +80,6 @@ export default function index(props) {
                     </div>
                 </main>
             </main>
-        </div>
+        </Layout>
     );
 }
-
-export const getStaticProps: GetStaticProps = async (
-    ctx: GetStaticPropsContext
-) => {
-    console.log(ctx.params);
-    console.log(ctx.preview);
-    console.log(ctx.previewData);
-    return {
-        props: {},
-    };
-};
