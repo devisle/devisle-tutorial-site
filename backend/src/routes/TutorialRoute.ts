@@ -1,8 +1,9 @@
 import { Router, Request, Response, NextFunction } from "express";
 import { ParamsDictionary } from "express-serve-static-core";
-import IRoute from "./interfaces/IRoute";
-import TutorialController from "../controllers/TutorialController";
+import IRoute from "../interfaces/IRoute";
+import CMSTutorialController from "../controllers/CMSTutorialController";
 import CMSAuthService from "../services/CMSAuthService";
+import { UNAUTHORISED_TEXT } from "../constants";
 
 /**
  * The tutorial route
@@ -15,18 +16,21 @@ export default class TutorialRoute implements IRoute {
      */
     public readonly router: Router = Router();
 
-    // Middleware & controller setup
+    /**
+     * Middleware & controller setup
+     */
     constructor() {
         this.router.use("/tutorial/",this.authorisationCheck);
-        this.router.get("/tutorial/", TutorialController.get); // get all? or by id?
-        this.router.post("/tutorial/", TutorialController.post); // create a tutorial
-        this.router.put("/tutorial/", TutorialController.put); // update a tutorial
+        this.router.get("/tutorial/", CMSTutorialController.get); // get all? or by id?
+        this.router.post("/tutorial/", CMSTutorialController.post); // create a tutorial
+        this.router.put("/tutorial/", CMSTutorialController.put); // update a tutorial
     }
 
     /**
-     * Checks if the JWT is still valid and hasn't expired,
-     * stores the result in res.locals
-     * This is used to protect the routes
+     * JWT check
+     *  - Checks if still valid
+     *  - Continues middleware chain if it is valid
+     *  - Denies request from here if not valid
      *
      * @param {Request<ParamsDictionary>} req the HTTP request object
      * @param {Response} res the response object
@@ -35,7 +39,10 @@ export default class TutorialRoute implements IRoute {
     private authorisationCheck(req: Request<ParamsDictionary>, res: Response, next: NextFunction): void {
         const token: string | undefined = req.headers.authorization;
         const authorised = CMSAuthService.verifyJWT(token);
-        res.locals.authorised = authorised;
-        next();
+        if (!authorised) {
+            res.status(401).send(UNAUTHORISED_TEXT).end();
+        } else {
+            next();
+        }
     }
 }
