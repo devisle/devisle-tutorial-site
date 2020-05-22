@@ -13,8 +13,8 @@ export default class CMSLoginController {
     /**
      * HTTP method handlers
      */
-    public static userLogin: (req: Request, res: Response) => void = CMSLoginController.login;
-    public static confirmUsedIsLoggedIn: (req: Request, res: Response) => void = CMSLoginController.confirmUserLoggedIn;
+    public static post: (req: Request, res: Response) => void = CMSLoginController.login;
+    public static get: (req: Request, res: Response) => void = CMSLoginController.confirmUserLoggedIn;
 
     /**
      * Attempts to log a user in

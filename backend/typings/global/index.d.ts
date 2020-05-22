@@ -13,4 +13,3 @@ declare type LoginCredentials = { attemptedUsername: string, password: string }
 /** Mongo update response isn't typed, this is just an alias */
 declare type MongoUpdateResponse = { ok: number; n: number; nModified?: number };
 
-
