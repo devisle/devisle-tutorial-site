@@ -58,17 +58,18 @@ export default class CMSAuthService {
     public static verifyJWT(bearerToken: string | undefined): boolean {
         const tokenArr: string[] = bearerToken ? bearerToken.split(" ") : [];
         console.log("Attempting to verify");
+
         if (tokenArr[0] === "Bearer" && tokenArr[1] !== "undefined") {
             try {
-                const payload: TokenPayload = jwt.verify(tokenArr[1], process.env.JWT_KEY as string) as TokenPayload;
+                jwt.verify(tokenArr[1], process.env.JWT_KEY as string);
                 console.log("Verified");
                 return true;
             } catch (jsonWebTokenError) {
-                console.log("User token expired");
+                console.log("User token expired / bad token");
                 return false;
             }
         }
-
+        console.log("Unauthorised");
         return false;
     }
 

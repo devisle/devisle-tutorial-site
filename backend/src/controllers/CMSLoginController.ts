@@ -65,7 +65,7 @@ export default class CMSLoginController {
 
         if (CMSAuthService.verifyJWT(token)) {
             const tokenArr: string[] = token ? token.split(" ") : [];
-            const { username, userId} = jwt.decode(tokenArr[1] as string) as TokenPayload;
+            const { username, userId } = jwt.decode(tokenArr[1] as string) as TokenPayload;
             res.status(200).json({ username, userId }).end();
         } else {
             res.status(401).send(UNAUTHORISED_TEXT).end();
