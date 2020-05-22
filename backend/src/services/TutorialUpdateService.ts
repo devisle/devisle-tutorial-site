@@ -4,10 +4,9 @@ import { MongoError, UpdateWriteOpResult, Db } from "mongodb";
  * Static helper class resposible for handling all tutorial based DB operations/transactions
  *
  * @class
- * @todo feel free to remove RxJS and wrap the DB calls in a new promise
  * @author ale8k, rakeshshubhu
  */
-export default class TutorialDbService {
+export default class TutorialUpdateService {
     /**
      * Single DB ref from Server
      */
@@ -18,10 +17,11 @@ export default class TutorialDbService {
      *
      * @async
      * @param {string} collectionName collection name
+     * @returns {Promise<T[]>} an array of the given documents
      */
     public static getAllDocuments<T>(collectionName: string): Promise<T[]> {
         return new Promise((res, rej) => {
-            TutorialDbService.db.collection<T>(collectionName).find({}).toArray((err, result) => {
+            TutorialUpdateService.db.collection<T>(collectionName).find({}).toArray((err, result) => {
                 result.length ? res(result) : rej(err);
             });
         });
@@ -33,10 +33,11 @@ export default class TutorialDbService {
      * @async
      * @param {string} collectionName collection name
      * @param {T} data any object type to be parsed and created as a document
+     * @returns {Promise<MongoUpdateResponse>} the base response for an update in mongo
      */
     public static createDocument<T>(collectionName: string, data: T): Promise<MongoUpdateResponse> {
         return new Promise((res, rej) => {
-            TutorialDbService.db.collection(collectionName).insertOne(data).then(
+            TutorialUpdateService.db.collection(collectionName).insertOne(data).then(
                 ({ result }) => result.ok ? res() : rej(),
                 () => rej()
             );
@@ -49,10 +50,11 @@ export default class TutorialDbService {
      * @async
      * @param {string} collectionName collection name
      * @param {T} data the data to write over
+     * @returns {Promise<UpdateWriteOpResult>} the mongo result object
      */
     public static updateSingleDocument(collectionName: string, predicate: object, newValue: object): Promise<UpdateWriteOpResult> {
         return new Promise((res, rej) => {
-            TutorialDbService.db.collection(collectionName).updateOne(
+            TutorialUpdateService.db.collection(collectionName).updateOne(
                 predicate,
                 newValue,
                 (err: MongoError, response: UpdateWriteOpResult) => {
