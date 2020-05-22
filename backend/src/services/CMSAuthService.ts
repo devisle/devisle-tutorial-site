@@ -1,9 +1,8 @@
 import bcrypt from "bcrypt";
-import { ObjectId, MongoClient, Db } from "mongodb";
+import { ObjectId, Db } from "mongodb";
 import jwt from "jsonwebtoken";
 
 type user = { _id: ObjectId, username: string, password: string };
-type TokenPayload = { username: string, userId: string, iat: number, exp: number }; // This is repeated
 type LoginCredentialsResponse = { username: string, confirmation: boolean, userId: string };
 
 /**
@@ -29,31 +28,20 @@ export default class CMSAuthService {
      */
     public static checkLoginCredentials(username: string, password: string): Promise<LoginCredentialsResponse> {
         return new Promise((res, rej) => {
-            MongoClient.connect(process.env.DB_URL as string).then(
-                (client) => {
-                    const attemptedUsername = username.toLowerCase();
+            const attemptedUsername = username.toLowerCase();
+            const attemptedPassword = password;
 
-                    client.db(process.env.DB_NAME).collection("cms-users").findOne({ username: attemptedUsername }, (err, result) => {
-                        if (result === null) {
-                            res({ confirmation: false } as LoginCredentialsResponse);
-                        } else {
-                             bcrypt.compare(password, (result as user).password).then(compareResp => {
-                                res({
-                                    username,
-                                    confirmation: compareResp,
-                                    userId: result._id
-                                });
-                            });
-                        }
-                    });
-                },
-                (err) => {
-                    if (err) {
-                        rej(false);
-                        throw new Error("DB connection failed" + err);
-                    }
+            CMSAuthService.db.collection("cms-users").findOne({ username: attemptedUsername }, (err, result) => {
+                if (err) {
+                    rej(err);
                 }
-            );
+
+                const correctPassword = (result as user).password;
+                this.comparePasswords(attemptedPassword, correctPassword).then(bool => {
+                    res({ username, confirmation: bool, userId: result._id });
+                });
+            });
+
         });
     }
 
@@ -78,6 +66,18 @@ export default class CMSAuthService {
         }
 
         return false;
+    }
+
+    /**
+     * Compares two passwords and returns the result
+     *
+     * @async
+     * @param {string} attemptedPassword the attempted password
+     * @param {string} correctPassword the correct password retrieved from db
+     * @returns {Promise<boolean>} whether or not they match
+     */
+    private static comparePasswords(attemptedPassword: string, correctPassword: string): Promise<boolean> {
+        return bcrypt.compare(attemptedPassword, correctPassword);
     }
 
 }

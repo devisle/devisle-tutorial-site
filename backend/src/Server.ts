@@ -8,24 +8,30 @@ import TutorialDbService from "./services/TutorialDbService";
 import CMSAuthService from "./services/CMSAuthService";
 
 /**
- * Sets up all initial middlewares and the app instance itself
+ * Entry point
  *
  * @class
- * @classdesc {@link App App} registers the routers for this server
  * @author ale8k
  */
 class Server {
     /**
-     * Express application
+     * @constant {Application} _app Express instance
      */
     private readonly _app: Application;
     /**
-     * Server's primary port
+     * @constant {Number | String} _port Server's primary port
      */
     private readonly _port: Number | String;
 
-    // add prod/dev/test env's to the constructor, such that on
-    // server instantiation we can quickly start a different env.
+    /**
+     * Registers:
+     *  - ENV variables
+     *  - Middlewares (global)
+     *  - Routes
+     *  - Port var
+     *  - DB instance for services
+     * Then finally, starts the server
+     */
     constructor() {
         dotenv.config();
         this._app = express();
@@ -40,25 +46,28 @@ class Server {
         /** Setup single db pool instance prior to app launching */
         // SOMEONE REVIEW IF THIS IS CORRECT WAY OF DOING THIS!
         // THE METHODS HAVE CHANGED, AND THIS WAS ONLY WAY I COULD DO IT
-        MongoClient.connect((process.env.DB_URL as string), {
-            poolSize: 10,
-            useNewUrlParser: true,
-            useUnifiedTopology: true
-        }, (err, client) => {
-            if (err) {
-                throw err;
-            } else {
-                CMSAuthService.db = client.db(process.env.DB_NAME as string);
-                TutorialDbService.db = client.db(process.env.DB_NAME as string);
-                this.start();
+        MongoClient.connect((process.env.DB_URL as string),
+            {
+                poolSize: 10,
+                useNewUrlParser: true,
+                useUnifiedTopology: true
+            },
+            (err, client) => {
+                if (err) {
+                    throw err;
+                } else {
+                    CMSAuthService.db = client.db(process.env.DB_NAME as string);
+                    TutorialDbService.db = client.db(process.env.DB_NAME as string);
+                    this.startServer();
+                }
             }
-        });
+        );
     }
 
     /**
      * Server initialisation
      */
-    private start(): void {
+    private startServer(): void {
         this._app.listen(this._port, () => console.log(`Server running on ${this._port}`));
     }
 

@@ -1,5 +1,4 @@
-import { MongoError, UpdateWriteOpResult, Db, MongoClient } from "mongodb";
-import { Subject } from "rxjs";
+import { MongoError, UpdateWriteOpResult, Db } from "mongodb";
 
 /**
  * Static helper class resposible for handling all tutorial based DB operations/transactions
@@ -17,9 +16,8 @@ export default class TutorialDbService {
     /**
      * Gets all documents in a collection of type
      *
+     * @async
      * @param {string} collectionName collection name
-     * @param {Subject<string>} response$ the subject to emit the response of the query back to the controller handler
-     * @todo handle find error & fix force cast
      */
     public static getAllDocuments<T>(collectionName: string): Promise<T[]> {
         return new Promise((res, rej) => {
@@ -32,9 +30,9 @@ export default class TutorialDbService {
     /**
      * Creates a document within a given collection
      *
+     * @async
      * @param {string} collectionName collection name
      * @param {T} data any object type to be parsed and created as a document
-     * @param {Subject<string>} response$ the subject to emit the response of the query back to the controller handler
      */
     public static createDocument<T>(collectionName: string, data: T): Promise<MongoUpdateResponse> {
         return new Promise((res, rej) => {
@@ -48,9 +46,9 @@ export default class TutorialDbService {
     /**
      * Updates a single document in a given collection
      *
+     * @async
      * @param {string} collectionName collection name
      * @param {T} data the data to write over
-     * @param {Subject<string | MongoError>} response$ the subject to emit the response of the query back to the controller handler
      */
     public static updateSingleDocument(collectionName: string, predicate: object, newValue: object): Promise<UpdateWriteOpResult> {
         return new Promise((res, rej) => {

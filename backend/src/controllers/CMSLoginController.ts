@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import CMSAuthService from "../services/CMSAuthService";
-import { UNAUTHORISED_TEXT, BAD_REQUEST_TEXT } from "../constants";
+import { UNAUTHORISED_TEXT, BAD_REQUEST_TEXT, INTERNAL_ERROR_TEXT } from "../constants";
 
 /**
  * Confirms login credentials of a given CMS user
@@ -28,22 +28,27 @@ export default class CMSLoginController {
      */
     private static login(req: Request, res: Response): void {
         if(CMSLoginController.validateLoginCredentials(req.body)) {
-            const { attemptedUsername, password } = req.body as LoginCredentials;
+            const { attemptedUsername, password } = req.body;
             console.log("username:", attemptedUsername, "password:", password);
 
-            CMSAuthService.checkLoginCredentials(attemptedUsername, password).then(({ username, userId, confirmation }) => {
-                if (confirmation) {
-                    // Note, this is able to take zeit/ms for expiry: [https://github.com/zeit/ms]
-                    // Currently it's at 2 days because I feel this is enough time to produce a tutorial,
-                    // we may alternatively opt for 'maxAge' property if this causes issues
-                    res.json({
-                        "successfulLogin": true,
-                        "jwt": jwt.sign({ username, userId }, process.env.JWT_KEY as string, { expiresIn: process.env.JWT_EXPIRY })
-                    }).status(200).end();
-                } else {
-                    res.status(401).send(UNAUTHORISED_TEXT).end();
+            CMSAuthService.checkLoginCredentials(attemptedUsername, password).then(
+                ({ username, userId, confirmation }) => {
+                    if (confirmation) {
+                        // Note, this is able to take zeit/ms for expiry: [https://github.com/zeit/ms]
+                        // Currently it's at 2 days because I feel this is enough time to produce a tutorial,
+                        // we may alternatively opt for 'maxAge' property if this causes issues
+                        res.json({
+                            "successfulLogin": true,
+                            "jwt": jwt.sign({ username, userId }, process.env.JWT_KEY as string, { expiresIn: process.env.JWT_EXPIRY })
+                        }).status(200).end();
+                    } else {
+                        res.status(401).send(UNAUTHORISED_TEXT).end();
+                    }
+                },
+                (err) => {
+                    res.status(503).send("Error name: " + err.name + "Code: " + err.code + "Msg: " + err.errmsg).end();
                 }
-            });
+            );
         } else {
             res.status(400).send(BAD_REQUEST_TEXT).end();
         }
