@@ -35,11 +35,15 @@ export default class CMSAuthService {
                 if (err) {
                     rej(err);
                 }
+                if (!result) {
+                    res({ username, confirmation: false, userId: "" });
+                } else {
+                    const correctPassword = (result as user).password;
 
-                const correctPassword = (result as user).password;
-                this.comparePasswords(attemptedPassword, correctPassword).then(bool => {
-                    res({ username, confirmation: bool, userId: result._id });
-                });
+                    this.comparePasswords(attemptedPassword, correctPassword).then(bool => {
+                        res({ username, confirmation: bool, userId: result._id });
+                    });
+                }
             });
 
         });

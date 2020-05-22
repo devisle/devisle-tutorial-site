@@ -1,7 +1,7 @@
 import { Router, Request, Response, NextFunction } from "express";
 import { ParamsDictionary } from "express-serve-static-core";
 import IRoute from "../interfaces/IRoute";
-import TutorialController from "../controllers/TutorialController";
+import CMSTutorialController from "../controllers/CMSTutorialController";
 import CMSAuthService from "../services/CMSAuthService";
 import { UNAUTHORISED_TEXT } from "../constants";
 
@@ -21,9 +21,9 @@ export default class TutorialRoute implements IRoute {
      */
     constructor() {
         this.router.use("/tutorial/",this.authorisationCheck);
-        this.router.get("/tutorial/", TutorialController.get); // get all? or by id?
-        this.router.post("/tutorial/", TutorialController.post); // create a tutorial
-        this.router.put("/tutorial/", TutorialController.put); // update a tutorial
+        this.router.get("/tutorial/", CMSTutorialController.get); // get all? or by id?
+        this.router.post("/tutorial/", CMSTutorialController.post); // create a tutorial
+        this.router.put("/tutorial/", CMSTutorialController.put); // update a tutorial
     }
 
     /**
