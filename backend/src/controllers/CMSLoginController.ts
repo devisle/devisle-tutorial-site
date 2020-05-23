@@ -11,12 +11,6 @@ import { UNAUTHORISED_TEXT, BAD_REQUEST_TEXT, INTERNAL_ERROR_TEXT } from "../con
  */
 export default class CMSLoginController {
     /**
-     * HTTP method handlers
-     */
-    public static post: (req: Request, res: Response) => void = CMSLoginController.login;
-    public static get: (req: Request, res: Response) => void = CMSLoginController.confirmUserLoggedIn;
-
-    /**
      * Attempts to log a user in
      *  - Validates the credentials format
      *  - Sends status 400 on bad format
@@ -26,7 +20,7 @@ export default class CMSLoginController {
      * @param {Request} req the users request obj
      * @param {Response} res our res obj
      */
-    private static login(req: Request, res: Response): void {
+    public static login(req: Request, res: Response): void {
         if(CMSLoginController.validateLoginCredentials(req.body)) {
             const { attemptedUsername, password } = req.body;
             console.log("username:", attemptedUsername, "password:", password);
@@ -39,7 +33,9 @@ export default class CMSLoginController {
                         // we may alternatively opt for 'maxAge' property if this causes issues
                         res.json({
                             "successfulLogin": true,
-                            "jwt": jwt.sign({ username, userId }, process.env.JWT_KEY as string, { expiresIn: process.env.JWT_EXPIRY })
+                            "jwt": jwt.sign({ username, userId }, process.env.JWT_KEY as string, { expiresIn: process.env.JWT_EXPIRY }),
+                            "username": username,
+                            "userId": userId
                         }).status(200).end();
                     } else {
                         res.status(401).send(UNAUTHORISED_TEXT).end();

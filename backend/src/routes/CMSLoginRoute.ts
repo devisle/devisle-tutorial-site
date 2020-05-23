@@ -12,14 +12,18 @@ export default class CMSLoginRoute implements IRoute {
     /**
      * Router instance
      */
-    public readonly router: Router = Router();
+    public readonly ROUTER: Router = Router();
+    /**
+     * Resource location
+     */
+    public readonly RESOURCE_LOC: string = "/cms/auth";
 
     /**
      * Middleware & controller setup
      */
     constructor() {
-        this.router.post("/cms/login/", CMSLoginController.post); // send new details or empty for token check
-        this.router.get("/cms/login/confirm/", CMSLoginController.get); // confirms a users JWT
+        this.ROUTER.post(this.RESOURCE_LOC + "/login", CMSLoginController.login);
+        this.ROUTER.get(this.RESOURCE_LOC + "/confirm", CMSLoginController.confirmUserLoggedIn);
     }
 
 }

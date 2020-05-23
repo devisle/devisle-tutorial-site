@@ -77,7 +77,7 @@ class Server {
      */
     private registerRoutes(): void {
         routes.forEach(route => {
-            this._app.use(new route().router);
+            this._app.use(new route().ROUTER);
         });
     }
 

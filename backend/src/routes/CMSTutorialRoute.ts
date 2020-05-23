@@ -6,24 +6,28 @@ import CMSAuthService from "../services/CMSAuthService";
 import { UNAUTHORISED_TEXT } from "../constants";
 
 /**
- * The tutorial route
+ * The CMS tutorial update route
  *
  * @author ale8k
  */
-export default class TutorialRoute implements IRoute {
+export default class CMSTutorialRoute implements IRoute {
     /**
      * Router instance
      */
-    public readonly router: Router = Router();
+    public readonly ROUTER: Router = Router();
+    /**
+     * Resource location
+     */
+    public readonly RESOURCE_LOC: string = "/cms/tutorials";
 
     /**
      * Middleware & controller setup
      */
     constructor() {
-        this.router.use("/tutorial/",this.authorisationCheck);
-        this.router.get("/tutorial/", CMSTutorialController.get); // get all? or by id?
-        this.router.post("/tutorial/", CMSTutorialController.post); // create a tutorial
-        this.router.put("/tutorial/", CMSTutorialController.put); // update a tutorial
+        this.ROUTER.use(this.RESOURCE_LOC, this.authorisationCheck);
+        this.ROUTER.get(this.RESOURCE_LOC, CMSTutorialController.getAllTutorials);
+        this.ROUTER.post(this.RESOURCE_LOC, CMSTutorialController.createTutorial); // create a tutorial
+        this.ROUTER.put(this.RESOURCE_LOC, CMSTutorialController.updateTutorialById); // update a tutorial
     }
 
     /**

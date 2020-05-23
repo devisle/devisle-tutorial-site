@@ -13,20 +13,13 @@ import TutorialUpdateService from "../services/TutorialUpdateService";
  */
 export default class CMSTutorialController {
     /**
-     * HTTP method handlers
-     */
-    public static get: (req: Request, res: Response) => void = CMSTutorialController.getAllTutorials;
-    public static post: (req: Request, res: Response) => void = CMSTutorialController.createTutorial;
-    public static put: (req: Request, res: Response) => void = CMSTutorialController.updateTutorialById;
-
-    /**
      * Grabs all the {@link tutorialDocs Tutoriall[]} and responds
      *
      * @async
      * @param {Request} req the users request obj
      * @param {Response} res our res obj
      */
-    private static getAllTutorials(req: Request, res: Response): void {
+    public static getAllTutorials(req: Request, res: Response): void {
         TutorialUpdateService.getAllDocuments<Tutorial>("tutorials").then(
             (tutorials) => res.status(200).json(tutorials).end(),
             (err) => res.status(500).send(INTERNAL_ERROR_TEXT + JSON.stringify(err)).end()
@@ -40,7 +33,7 @@ export default class CMSTutorialController {
      * @param {Request} req the users request obj
      * @param {Response} res our res obj
      */
-    private static createTutorial(req: Request, res: Response): void {
+    public static createTutorial(req: Request, res: Response): void {
         if (CMSTutorialController.validateTutorialData(req.body, 4)) {
             const token: string | undefined = req.headers.authorization;
             const tokenArr: string[] = token ? token.split(" ") : [];
@@ -65,7 +58,7 @@ export default class CMSTutorialController {
      * @param {Request} req the users request obj
      * @param {Response} res our res obj
      */
-    private static updateTutorialById(req: Request, res: Response): void {
+    public static updateTutorialById(req: Request, res: Response): void {
         if (CMSTutorialController.validateTutorialData(req.body, 5)) {
             const { _id, category, name, html, markdown } = req.body;
             const atomicDto = { $set: { ...new PartialTutorial(name, html, markdown, category) } };
