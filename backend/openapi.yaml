@@ -1,0 +1,123 @@
+openapi: 3.0.2
+info:
+    title: Tutorial site API
+    description: The API for the NextJS tutorial site developmed by DevIsle. 
+    version: 1.0.0
+    contact: 
+        name: DevIsle Team
+        
+tags: 
+  - name: authorisation/authentication
+    description: Endpoints for authorisation and authentication
+  - name: cms
+    description: Endpoints for the CMS
+
+paths:
+  /cms/auth/login:
+    post:
+      tags: 
+        - authorisation/authentication
+      summary: Logs into the CMS
+      description: Verifies credentials and returns some meta data of the user, alongside a 2 day JWT in the body.
+      operationId: cmsUserLogin
+      requestBody:
+        $ref: "#/components/requestBodies/UserLoginBody"
+      responses:
+        200:
+          description: A confirmed login
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserLoginRespModel"
+        401:
+          $ref: "#/components/responses/Unauthorised"
+        503:
+          $ref: "#/components/responses/ServiceUnavailable"
+
+  /cms/auth/confirm:
+    get:
+      tags: 
+      - authorisation/authentication
+      summary: Verifys the users JWT
+      description: Performs a verification check of the users JWT and responds accordingly.
+      operationId: verifyCmsUsersJWT
+      responses:
+        200:
+          description: Responds with the **username** of the user and their **userId** if the token is successfully verified.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/requestBodies/UserLoginBody"
+              example: 
+                {
+                  username: "Alex",
+                  userId: "5ech7083300gh30f202efaf9"
+                }
+        401:
+          $ref: "#/components/responses/Unauthorised"
+      security:
+      - BearerAuth: []
+                  
+components:
+  schemas:
+    # I appreciate this may not be used often, but it's cleaner to read
+    # the paths with it $ref'd.
+    UserLoginModel:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      required: 
+        # Todo, change this into 'username'...
+        - username
+        - password
+    UserLoginRespModel:
+      allOf:
+        - type: object
+          properties:
+            successfulLogin:
+              type: boolean
+            jwt:
+              type: string
+          required:
+            - successfulLogin
+            - jwt
+        - $ref: "#/components/schemas/UserLoginModel"
+
+  requestBodies:
+    UserLoginBody:
+      description: Test
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/UserLoginModel"
+
+  responses:
+    ServiceUnavailable:
+      description: Service unavailable
+      content:
+        text/plain:
+          schema:
+            type: string
+            example: Error object schema todo
+            
+    Unauthorised:
+      description: Unauthorised
+      content:
+        text/plain:
+          schema:
+            type: string
+            example: Access denied! Unauthorised.
+            
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+    
+servers:
+    - url: http://127.0.0.1:3000/
+      description: Development
+

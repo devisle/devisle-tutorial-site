@@ -3,7 +3,7 @@ import { ObjectId, Db } from "mongodb";
 import jwt from "jsonwebtoken";
 
 type user = { _id: ObjectId, username: string, password: string };
-type LoginCredentialsResponse = { username: string, confirmation: boolean, userId: string };
+type LoginCredentialsResponse = { checkedUsername: string, confirmation: boolean, userId: string };
 
 /**
  * Static helper class resposible for handling the state/new state of a users login
@@ -36,12 +36,12 @@ export default class CMSAuthService {
                     rej(err);
                 }
                 if (!result) {
-                    res({ username, confirmation: false, userId: "" });
+                    res({ checkedUsername: "", confirmation: false, userId: "" });
                 } else {
                     const correctPassword = (result as user).password;
 
                     this.comparePasswords(attemptedPassword, correctPassword).then(bool => {
-                        res({ username, confirmation: bool, userId: result._id });
+                        res({ checkedUsername: attemptedPassword, confirmation: bool, userId: result._id });
                     });
                 }
             });

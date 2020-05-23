@@ -22,19 +22,21 @@ export default class CMSLoginController {
      */
     public static login(req: Request, res: Response): void {
         if(CMSLoginController.validateLoginCredentials(req.body)) {
-            const { attemptedUsername, password } = req.body;
-            console.log("username:", attemptedUsername, "password:", password);
+            const { username, password } = req.body;
+            console.log("username:", username, "password:", password);
 
-            CMSAuthService.checkLoginCredentials(attemptedUsername, password).then(
-                ({ username, userId, confirmation }) => {
+            CMSAuthService.checkLoginCredentials(username, password).then(
+                ({ checkedUsername, userId, confirmation }) => {
                     if (confirmation) {
                         // Note, this is able to take zeit/ms for expiry: [https://github.com/zeit/ms]
                         // Currently it's at 2 days because I feel this is enough time to produce a tutorial,
                         // we may alternatively opt for 'maxAge' property if this causes issues
                         res.json({
                             "successfulLogin": true,
-                            "jwt": jwt.sign({ username, userId }, process.env.JWT_KEY as string, { expiresIn: process.env.JWT_EXPIRY }),
-                            "username": username,
+                            "jwt": jwt.sign({ checkedUsername, userId },
+                                process.env.JWT_KEY as string,
+                                { expiresIn: process.env.JWT_EXPIRY }),
+                            "username": checkedUsername,
                             "userId": userId
                         }).status(200).end();
                     } else {
@@ -42,6 +44,7 @@ export default class CMSLoginController {
                     }
                 },
                 (err) => {
+                    // Create error object instance
                     res.status(503).send("Error name: " + err.name + "Code: " + err.code + "Msg: " + err.errmsg).end();
                 }
             );
@@ -79,9 +82,9 @@ export default class CMSLoginController {
      */
     private static validateLoginCredentials(data: any): data is LoginCredentials {
         if (Object.keys(data).length === 2) {
-            if (typeof data.attemptedUsername === "string" && typeof data.password === "string") {
-                if (data.attemptedUsername !== undefined && data.password !== undefined) {
-                    if (data.attemptedUsername !== "" && data.password !== "") {
+            if (typeof data.username === "string" && typeof data.password === "string") {
+                if (data.username !== undefined && data.password !== undefined) {
+                    if (data.username !== "" && data.password !== "") {
                         return true;
                     }
                 }
