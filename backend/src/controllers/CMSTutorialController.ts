@@ -90,12 +90,12 @@ export default class CMSTutorialController {
 
             try {
                 const predicateId = { _id: new ObjectId(tutId) };
-
+                // Maybe send 304 on nModified: 0, but if we do, the body is absent.
                 TutorialUpdateService.updateSingleDocument("tutorials", predicateId, atomicDto).then(
                     (resp) => {
                         const { result: { n, nModified, ok } } = resp;
                         const formattedResponse: MongoUpdateResponse = { ok, n, nModified };
-                        res.status(204).json(formattedResponse).end();
+                        res.status(200).json(formattedResponse).end();
                     },
                     (err: MongoError) => res.status(503).send("Error name: " + err.name + "Code: " + err.code + "Msg: " + err.errmsg)
                 );
