@@ -10,7 +10,7 @@
     "start": "node dist/Server.js",
     "test:unit": "jest unit --detectOpenHandles --colors",
     "test:int": "jest int --detectOpenHandles --colors",
-    "test:dev:unit": "jest --watch unit --detectOpenHandles --colors"
+    "test:unit:watch": "jest --watch unit --detectOpenHandles --colors"
   },
   "author": "Alexander Kilroy",
   "license": "ISC",
