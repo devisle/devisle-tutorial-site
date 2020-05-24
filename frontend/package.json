@@ -18,7 +18,8 @@
     "react-markdown-editor-lite": "^1.1.2",
     "react-modal": "^3.11.2",
     "react-notifications": "^1.6.0",
-    "sass": "^1.26.5"
+    "sass": "^1.26.5",
+    "styled-components": "^5.1.0"
   },
   "devDependencies": {
     "@types/jest": "^25.2.3",
