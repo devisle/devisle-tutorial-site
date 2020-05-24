@@ -25,9 +25,9 @@ export default class CMSTutorialRoute implements IRoute {
      */
     constructor() {
         this.ROUTER.use(this.RESOURCE_LOC, this.authorisationCheck);
-        this.ROUTER.get(this.RESOURCE_LOC + "/:operation", CMSTutorialController.operationRouter);
-        this.ROUTER.post(this.RESOURCE_LOC + "/:operation", CMSTutorialController.operationRouter);
-        this.ROUTER.put(this.RESOURCE_LOC + "/:operation", CMSTutorialController.operationRouter);
+        this.ROUTER.get(this.RESOURCE_LOC + "/all", CMSTutorialController.getAllTutorials);
+        this.ROUTER.post(this.RESOURCE_LOC + "/create", CMSTutorialController.createTutorial);
+        this.ROUTER.put(this.RESOURCE_LOC + "/update", CMSTutorialController.updateTutorialById);
     }
 
     /**

@@ -13,36 +13,13 @@ import TutorialUpdateService from "../services/TutorialUpdateService";
  */
 export default class CMSTutorialController {
     /**
-     * Routes the operation to the correct controller method.
-     * Extensions to this will be done via nested switch / standard check if single.
-     *
-     * @param {Request} req the users request obj
-     * @param {Response} res our res obj
-     */
-    public static operationRouter(req: Request, res: Response): void {
-        switch (req.params.operation) {
-            case "get-all":
-                CMSTutorialController.getAllTutorials(req, res);
-                break;
-            case "create":
-                CMSTutorialController.createTutorial(req, res);
-                break;
-            case "update":
-                CMSTutorialController.updateTutorialById(req, res);
-                break;
-            default:
-                res.status(404).send(NOT_FOUND_TEXT).end();
-        }
-    }
-
-    /**
      * Grabs all the {@link tutorialDocs Tutoriall[]} and responds
      *
      * @async
      * @param {Request} req the users request obj
      * @param {Response} res our res obj
      */
-    private static getAllTutorials(req: Request, res: Response): void {
+    public static getAllTutorials(req: Request, res: Response): void {
         TutorialUpdateService.getAllDocuments<Tutorial>("tutorials").then(
             (tutorials) => res.status(200).json(tutorials).end(),
             (err) => res.status(500).send(INTERNAL_ERROR_TEXT + JSON.stringify(err)).end()
@@ -56,7 +33,7 @@ export default class CMSTutorialController {
      * @param {Request} req the users request obj
      * @param {Response} res our res obj
      */
-    private static createTutorial(req: Request, res: Response): void {
+    public static createTutorial(req: Request, res: Response): void {
         if (CMSTutorialController.validateTutorialData(req.body, 4)) {
             const token: string | undefined = req.headers.authorization;
             const tokenArr: string[] = token ? token.split(" ") : [];

@@ -7,28 +7,26 @@ info:
         name: DevIsle Team
         
 tags: 
-  - name: authorisation/authentication
-    description: Endpoints for authorisation and authentication
-  - name: cms
-    description: Endpoints for the CMS
+  - name: CMS
+    description: All CMS related endpoints
 
 paths:
   /cms/auth/login:
     post:
       tags: 
-        - authorisation/authentication
+        - CMS
       summary: Logs into the CMS
       description: Verifies credentials and returns some meta data of the user, alongside a 2 day JWT in the body.
       operationId: cmsUserLogin
       requestBody:
-        $ref: "#/components/requestBodies/UserLoginBody"
+        $ref: "#/components/requestBodies/CMSUserLoginBody"
       responses:
         200:
           description: A confirmed login
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserLoginRespModel"
+                $ref: "#/components/schemas/CMSUserLoginRespModel"
         401:
           $ref: "#/components/responses/Unauthorised"
         503:
@@ -37,7 +35,7 @@ paths:
   /cms/auth/confirm:
     get:
       tags: 
-      - authorisation/authentication
+      - CMS
       summary: Verifys the users JWT
       description: Performs a verification check of the users JWT and responds accordingly.
       operationId: verifyCmsUsersJWT
@@ -47,7 +45,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/requestBodies/UserLoginBody"
+                $ref: "#/components/requestBodies/CMSUserLoginBody"
               example: 
                 {
                   username: "Alex",
@@ -57,12 +55,120 @@ paths:
           $ref: "#/components/responses/Unauthorised"
       security:
       - BearerAuth: []
-                  
+
+  /cms/tutorials/all:
+    get:
+      tags:
+      - CMS
+      summary: Get all tutorials
+      description: Gets all the tutorials in their **full** format.
+      operationId: getAllTutorialsCMS
+      responses:
+        200:
+          description: Responds with a list of **full** tutorials.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CMSAllTutorialsArrayModel"
+        500:
+          description: Internal server error, will occur under external services failing
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Something went wrong on our side! See here: Example Error"
+      security:
+      - BearerAuth: []
+
+  /cms/tutorials/create:
+    post:
+      tags:
+      - CMS
+      summary: Create tutorial
+      description: Creates a tutorial.
+      operationId: createATutorialCMS
+      requestBody:
+        $ref: "#/components/requestBodies/CMSCreateUpdateTutorialBody"
+      responses:
+        201:
+          description: "Tutorial created *successfully*.  \n - `ok` is boolean, in values 0/1.  \n\n - `n` is document affected, in boolean, values 0/1."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MongoUpdateResponse"
+        400:
+          description: Bad request, will occur if the request body is incorrect
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Server cannot process this request!"
+        500:
+          description: Internal server error, will occur under external services failing
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Something went wrong on our side! See here: Example Error"
+      security:
+      - BearerAuth: []
+  
+  /cms/tutorials/update:
+    put:
+      tags:
+      - CMS
+      summary: Update a tutorial
+      description: Updates a tutorial by it's `ObjectId(id)`
+      operationId: updateATutorialCMS
+      parameters:
+        - in: query
+          description: The `ObjectId(id)` of the tutorial we wish to update.
+          name: tutId
+          required: true
+          schema:
+            type: string
+          example: /cms/tutorials/update?tutId=5ec6aa4993014b10402122b2
+      requestBody:
+        $ref: "#/components/requestBodies/CMSCreateUpdateTutorialBody"
+      responses:
+        200:
+          description: "Tutorial updated *successfully*.  \n - `ok` is boolean, in values 0/1.  \n\n - `n` is document affected, in boolean, values 0/1.  \n - `nModified` is the amount of documents updated/changed."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExtendedMongoUpdateResponse"
+        400:
+          description: "Bad request, will occur if:  \n - the request body is incorrect  \n\n - the `ObjectId(id)` string byte size is incorrect"
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Server cannot process this request!"
+      security:
+      - BearerAuth: []
+
 components:
   schemas:
-    # I appreciate this may not be used often, but it's cleaner to read
-    # the paths with it $ref'd.
-    UserLoginModel:
+    MongoUpdateResponse:
+      type: object
+      properties:
+        ok:
+          type: integer
+        n:
+          type: integer
+      required:
+        - ok
+        - "n"
+    ExtendedMongoUpdateResponse:
+      allOf:
+        - $ref: "#/components/schemas/MongoUpdateResponse"
+        - type: object
+          properties:
+            nModified: 
+              type: integer
+          required:
+            - nModified
+    CMSUserLoginModel:
       type: object
       properties:
         username:
@@ -70,10 +176,9 @@ components:
         password:
           type: string
       required: 
-        # Todo, change this into 'username'...
         - username
         - password
-    UserLoginRespModel:
+    CMSUserLoginRespModel:
       allOf:
         - type: object
           properties:
@@ -84,16 +189,56 @@ components:
           required:
             - successfulLogin
             - jwt
-        - $ref: "#/components/schemas/UserLoginModel"
-
-  requestBodies:
-    UserLoginBody:
-      description: Test
-      required: true
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/UserLoginModel"
+        - $ref: "#/components/schemas/CMSUserLoginModel"
+    CMSTutorialModel:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        html:
+          type: string
+        markdown:
+          type: string
+        category:
+          type: string
+        authorId:
+          type: string
+        authorName:
+          type: string
+        isAvailable:
+          type: boolean
+      required:
+        - _id
+        - name
+        - html
+        - markdown
+        - category
+        - authorId
+        - authorName
+        - isAvailable
+    CMSAllTutorialsArrayModel:
+      type: array
+      items: 
+        $ref: "#/components/schemas/CMSTutorialModel"
+    TutorialCreateUpdateModel:
+      type: object
+      properties:
+        name:
+          type: string
+        html:
+          type: string
+        markdown:
+          type: string
+        # TODO: Limit the categories to reference a category collection
+        category:
+          type: string
+      required:
+        - name
+        - html
+        - markdown
+        - category
 
   responses:
     ServiceUnavailable:
@@ -103,7 +248,6 @@ components:
           schema:
             type: string
             example: Error object schema todo
-            
     Unauthorised:
       description: Unauthorised
       content:
@@ -111,6 +255,22 @@ components:
           schema:
             type: string
             example: Access denied! Unauthorised.
+
+  requestBodies:
+    CMSCreateUpdateTutorialBody:
+      description: The schema to create/update a tutorial, a.k.a *PartialTutorial* in app.
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/TutorialCreateUpdateModel"
+    CMSUserLoginBody:
+      description: The login credential schema
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/CMSUserLoginModel"
             
   securitySchemes:
     BearerAuth:
