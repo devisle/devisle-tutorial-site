@@ -1,7 +1,7 @@
 openapi: 3.0.2
 info:
     title: Tutorial site API
-    description: The API for the NextJS tutorial site developmed by DevIsle. 
+    description: The API for the NextJS tutorial site developed by DevIsle. 
     version: 1.0.0
     contact: 
         name: DevIsle Team
