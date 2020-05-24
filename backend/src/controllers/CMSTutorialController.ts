@@ -65,7 +65,7 @@ export default class CMSTutorialController {
             const dto = new Tutorial(name, html, markdown, category, userId, username, true);
 
             TutorialUpdateService.createDocument<Tutorial>("tutorials", dto).then(
-                () => res.status(200).send({ ok: 1, n: 1 }).end(),
+                () => res.status(201).send({ ok: 1, n: 1 }).end(),
                 () => res.status(500).send(INTERNAL_ERROR_TEXT + "TODO").end()
             );
         } else {
@@ -95,7 +95,7 @@ export default class CMSTutorialController {
                     (resp) => {
                         const { result: { n, nModified, ok } } = resp;
                         const formattedResponse: MongoUpdateResponse = { ok, n, nModified };
-                        res.status(200).json(formattedResponse).end();
+                        res.status(204).json(formattedResponse).end();
                     },
                     (err: MongoError) => res.status(503).send("Error name: " + err.name + "Code: " + err.code + "Msg: " + err.errmsg)
                 );
