@@ -4,7 +4,7 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import routes from "./routes/index";
 import { MongoClient } from "mongodb";
-import TutorialUpdateService from "./services/TutorialUpdateService";
+import DbUpdateService from "./services/DbUpdateService";
 import CMSAuthService from "./services/CMSAuthService";
 
 /**
@@ -57,7 +57,7 @@ class Server {
                     throw err;
                 } else {
                     CMSAuthService.db = client.db(process.env.DB_NAME as string);
-                    TutorialUpdateService.db = client.db(process.env.DB_NAME as string);
+                    DbUpdateService.db = client.db(process.env.DB_NAME as string);
                     this.startServer();
                 }
             }
