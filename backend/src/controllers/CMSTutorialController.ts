@@ -42,7 +42,7 @@ export default class CMSTutorialController {
             const dto = new Tutorial(name, html, markdown, category, userId, username, true);
 
             DbUpdateService.createDocument<Tutorial>("tutorials", dto).then(
-                () => res.status(201).send({ ok: 1, n: 1 }).end(),
+                (result) => res.status(201).send(result).end(),
                 () => res.status(500).send(INTERNAL_ERROR_TEXT + "TODO").end()
             );
         } else {

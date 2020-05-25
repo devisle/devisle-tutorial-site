@@ -6,6 +6,7 @@ import routes from "./routes/index";
 import { MongoClient } from "mongodb";
 import DbUpdateService from "./services/DbUpdateService";
 import CMSAuthService from "./services/CMSAuthService";
+import http from "http";
 
 /**
  * Entry point
@@ -13,15 +14,21 @@ import CMSAuthService from "./services/CMSAuthService";
  * @class
  * @author ale8k
  */
-class Server {
+export default class Server {
     /**
      * @constant {Application} _app Express instance
+     * Note, needs to be public so we can access the instance for
+     * supertest.
      */
-    private readonly _app: Application;
+    public readonly APP: Application;
+    /**
+     * Server references
+     */
+    public server: http.Server;
     /**
      * @constant {Number | String} _port Server's primary port
      */
-    private readonly _port: Number | String;
+    private readonly _PORT: Number | String;
 
     /**
      * Registers:
@@ -32,20 +39,23 @@ class Server {
      *  - DB instance for services
      * Then finally, starts the server
      */
-    constructor() {
-        dotenv.config();
-        this._app = express();
-        this._app.use(cors());
-        this._app.use(bodyParser.urlencoded({
+    constructor(configPath: { path: string }) {
+        dotenv.config(configPath);
+        this.APP = express();
+        this.APP.use(cors());
+        this.APP.use(bodyParser.urlencoded({
             extended: true
         }));
-        this._app.use(bodyParser.json());
-        this._port = process.env.PORT || 3000;
+        this.APP.use(bodyParser.json());
+        this._PORT = process.env.PORT || 3000;
         this.registerRoutes();
 
-        /** Setup single db pool instance prior to app launching */
+        /** Setup single db pool instance prior to APP launching */
         // SOMEONE REVIEW IF THIS IS CORRECT WAY OF DOING THIS!
         // THE METHODS HAVE CHANGED, AND THIS WAS ONLY WAY I COULD DO IT
+
+        // todo, place this in generator alex, so that the test lib
+        // can pickup on the db connection immediately
         MongoClient.connect((process.env.DB_URL as string),
             {
                 poolSize: 10,
@@ -68,20 +78,27 @@ class Server {
      * Server initialisation
      */
     private startServer(): void {
-        this._app.listen(this._port, () => console.log(`Server running on ${this._port}`));
+        this.server = this.APP.listen(this._PORT, () => console.log(`Server running on ${this._PORT}`));
+    }
+
+    /**
+     * Shut server down
+     */
+    private stopServer(): void {
+        this.server.close();
     }
 
     /**
      * Loops through the index of routes in "./routes/index.ts"
-     * and calls express.App.use() on each RouteClass's router field.
+     * and calls express.APP.use() on each RouteClass's router field.
      */
     private registerRoutes(): void {
         routes.forEach(route => {
-            this._app.use(new route().ROUTER);
+            this.APP.use(new route().ROUTER);
         });
     }
 
 }
 
-new Server();
+new Server({ path: ".env"});
 

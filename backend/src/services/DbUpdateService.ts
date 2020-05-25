@@ -38,7 +38,7 @@ export default class DbUpdateService {
     public static createDocument<T>(collectionName: string, data: T): Promise<MongoUpdateResponse> {
         return new Promise((res, rej) => {
             DbUpdateService.db.collection(collectionName).insertOne(data).then(
-                ({ result }) => result.ok ? res() : rej(),
+                ({ result }) => result.ok ? res({ ok: result.ok, n: result.n }) : rej({ ok: result.ok, n: result.n }),
                 () => rej()
             );
         });

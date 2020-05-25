@@ -1,8 +1,9 @@
 import { MongoClient } from "mongodb";
-import CMSAuthService from "../CMSAuthService";
+import DbUpdateService from "../DbUpdateService";
 
-describe("CMSAuthService", () => {
+describe("DbUpdateService", () => {
     let connection;
+    const collectionName = "test";
 
     // Setup the DB for testing
     beforeAll(async () => {
@@ -12,16 +13,48 @@ describe("CMSAuthService", () => {
                 useUnifiedTopology: true
             },
         );
-        CMSAuthService.db = await connection.db(global.__MONGO_DB_NAME__);
+        DbUpdateService.db = await connection.db(global.__MONGO_DB_NAME__);
 
-        await CMSAuthService.db.collection("tutorials");
-
+        await DbUpdateService.db.collection(collectionName).insert(
+            {
+                iamatest: "lol"
+            }
+        );
     });
 
     // Clean up
-    afterAll(async () => {
+    afterEach(async () => {
         // Clear mock tuts
-        await CMSAuthService.db.collection("tutorials").remove({});
+        await DbUpdateService.db.collection(collectionName).remove({});
+    });
+
+    it("getAllDocuments<T> should return all documents in a given collection", (done) => {
+        DbUpdateService.getAllDocuments<{ iamatest: string }>(collectionName).then(data => {
+            expect(data.length).toBe(1);
+            done();
+        });
+    });
+
+    it("createDocument<T> should create a single document", (done) => {
+        DbUpdateService.createDocument<{ iamatest: string }>(collectionName, { iamatest: "lol" }).then(data => {
+            expect(data.ok).toBe(1);
+            expect(data.n).toBe(1);
+            expect(data.nModified).toBe(undefined);
+            done();
+        });
+    });
+
+    it("updateSingleDocument should update a document correctly", async (done) => {
+        await DbUpdateService.createDocument<{ iamatest: string }>(collectionName, { iamatest: "lol" });
+        await DbUpdateService.getAllDocuments<{ iamatest: string }>(collectionName).then(async () => {
+            await DbUpdateService.updateSingleDocument(collectionName, { iamatest: "lol" }, { $set: { iamatest: "changed" } })
+            .then(async () => {
+                await DbUpdateService.getAllDocuments<{ iamatest: string }>(collectionName).then(async (changed) => {
+                    expect(changed[0].iamatest).toBe("changed");
+                    done();
+                });
+            });
+        });
     });
 
 });
