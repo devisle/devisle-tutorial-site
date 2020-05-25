@@ -39,7 +39,7 @@ describe("CMSLoginController", () => {
     });
 
     it("should login successfully, with the correct response", async (done) => {
-        await new Server({ path: ".test.env" }).setupServer().then((app) => {
+        await new Server({ path: ".env.testing" }).setupServer().then((app) => {
             supertest(app).post("/cms/auth/login").send({ username: "alex", password: "p123" })
             .expect(200)
             .expect(response => {
