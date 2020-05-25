@@ -41,7 +41,7 @@ export default class CMSAuthService {
                     const correctPassword = (result as user).password;
 
                     this.comparePasswords(attemptedPassword, correctPassword).then(bool => {
-                        res({ checkedUsername: attemptedPassword, confirmation: bool, userId: result._id });
+                        res({ checkedUsername: username, confirmation: bool, userId: result._id });
                     });
                 }
             });

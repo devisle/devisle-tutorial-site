@@ -1,6 +1,9 @@
 import { MongoClient } from "mongodb";
 import DbUpdateService from "../DbUpdateService";
 
+/**
+ * @author ale8k
+ */
 describe("DbUpdateService", () => {
     let connection;
     const collectionName = "test";

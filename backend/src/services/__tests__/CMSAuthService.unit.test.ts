@@ -2,6 +2,9 @@ import { MongoClient } from "mongodb";
 import CMSAuthService from "../CMSAuthService";
 import jwt from "jsonwebtoken";
 
+/**
+ * @author ale8k
+ */
 describe("CMSAuthService", () => {
     let connection;
     let testJwt: string;
