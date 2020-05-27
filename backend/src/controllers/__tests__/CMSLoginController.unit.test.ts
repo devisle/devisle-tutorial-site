@@ -10,7 +10,7 @@ import { UNAUTHORISED_TEXT, BAD_REQUEST_TEXT } from "../../constants";
  * @author ale8k
  */
 describe("CMSLoginController", () => {
-    let connection;
+    let connection: MongoClient;
     const collectionName = "cms-users";
     let db: Db;
     let collection: Collection;
@@ -37,6 +37,10 @@ describe("CMSLoginController", () => {
                 password: "$2b$12$Cp/IwyOUsKiJZTANWklBB.k4mv07lIV1gSLT4FbtsOI.eoFi2qfTu"
             }
         );
+    });
+
+    afterAll(() => {
+        connection.close();
     });
 
     /**
