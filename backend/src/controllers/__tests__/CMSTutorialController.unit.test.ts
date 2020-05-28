@@ -4,6 +4,7 @@ import { MongoClient, Db, Collection } from "mongodb";
 import { BAD_REQUEST_TEXT, BAD_OBJECTID_PARSE_TEXT } from "../../constants";
 import PartialTutorial from "../../dtos/PartialTutorial.dto";
 import Tutorial from "../../dtos/Tutorial.dto";
+import JestHelper from "../../../JestHelper";
 
 /**
  * This test utilises [supertest]{@link https://www.npmjs.com/package/supertest}
@@ -20,12 +21,7 @@ describe("CMSTutorialController", () => {
     let tutorialsCollection: Collection;
 
     beforeAll(async () => {
-        process.env.PORT = "3003";
-        process.env.DB_URL = global.__MONGO_URI__;
-        process.env.DB_NAME = global.__MONGO_DB_NAME__;
-        process.env.BCRYPT_SALT = "12";
-        process.env.JWT_KEY = "iamakeylol";
-        process.env.JWT_EXPIRY = "2 days";
+        JestHelper.setupTestHTTPEnv();
 
         connection = await MongoClient.connect((global.__MONGO_URI__), {
             poolSize: 10,
@@ -47,8 +43,8 @@ describe("CMSTutorialController", () => {
     /**
      * /CMS/TUTORIALS/CREATE
      */
-    it("cms/tutorials/create should create a tutorial, with a 200 response", async (done) => {
-        await new Server({ path: ".test.env" }).setupServer().then((app) => {
+    it("cms/tutorials/create should create a tutorial, with a 200 response", (done) => {
+        new Server({ path: ".test.env" }).setupServer().then((app) => {
             let jwt: string;
             const agent = supertest(app);
             // Grab our JWT by logging in
@@ -71,8 +67,8 @@ describe("CMSTutorialController", () => {
         });
     });
 
-    it("cms/tutorials/create should attempt to create a tutorial with bad data, with a 400 response", async (done) => {
-        await new Server({ path: ".test.env" }).setupServer().then((app) => {
+    it("cms/tutorials/create should attempt to create a tutorial with bad data, with a 400 response", (done) => {
+        new Server({ path: ".test.env" }).setupServer().then((app) => {
             let jwt: string;
             const agent = supertest(app);
             // Grab our JWT by logging in
@@ -93,7 +89,7 @@ describe("CMSTutorialController", () => {
      */
     it("cms/tutorials/all should retrieve all tutorials, with a 200 response", async (done) => {
         await tutorialsCollection.insertOne(new PartialTutorial("test tut", "html", "markdown", "category"));
-        await new Server({ path: ".test.env" }).setupServer().then((app) => {
+        new Server({ path: ".test.env" }).setupServer().then((app) => {
             let jwt: string;
             const agent = supertest(app);
             // Grab our JWT by logging in
@@ -117,7 +113,7 @@ describe("CMSTutorialController", () => {
      */
     it("cms/tutorials/update? should update a tutorial successfully, with a 200 response", async (done) => {
         await tutorialsCollection.insertOne(new PartialTutorial("test tut", "html", "markdown", "category"));
-        await new Server({ path: ".test.env" }).setupServer().then((app) => {
+        new Server({ path: ".test.env" }).setupServer().then((app) => {
             let jwt: string;
             let tut: Tutorial;
             const agent = supertest(app);
@@ -146,7 +142,7 @@ describe("CMSTutorialController", () => {
 
     it("cms/tutorials/update? should attempt to update a tutorial, with bad objectid, with a 400 response", async (done) => {
         await tutorialsCollection.insertOne(new PartialTutorial("test tut", "html", "markdown", "category"));
-        await new Server({ path: ".test.env" }).setupServer().then((app) => {
+        new Server({ path: ".test.env" }).setupServer().then((app) => {
             let jwt: string;
             let tut: Tutorial;
             const agent = supertest(app);
@@ -172,7 +168,7 @@ describe("CMSTutorialController", () => {
 
     it("cms/tutorials/update? should attempt to update a tutorial, with tut data, with a 400 response", async (done) => {
         await tutorialsCollection.insertOne(new PartialTutorial("test tut", "html", "markdown", "category"));
-        await new Server({ path: ".test.env" }).setupServer().then((app) => {
+        new Server({ path: ".test.env" }).setupServer().then((app) => {
             let jwt: string;
             let tut: Tutorial;
             const agent = supertest(app);

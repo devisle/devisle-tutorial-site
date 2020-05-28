@@ -49,10 +49,10 @@ describe("DbUpdateService", () => {
 
     it("updateSingleDocument should update a document correctly", async (done) => {
         await DbUpdateService.createDocument<{ iamatest: string }>(collectionName, { iamatest: "lol" });
-        await DbUpdateService.getAllDocuments<{ iamatest: string }>(collectionName).then(async () => {
-            await DbUpdateService.updateSingleDocument(collectionName, { iamatest: "lol" }, { $set: { iamatest: "changed" } })
-            .then(async () => {
-                await DbUpdateService.getAllDocuments<{ iamatest: string }>(collectionName).then(async (changed) => {
+        DbUpdateService.getAllDocuments<{ iamatest: string }>(collectionName).then(() => {
+            DbUpdateService.updateSingleDocument(collectionName, { iamatest: "lol" }, { $set: { iamatest: "changed" } })
+            .then(() => {
+                DbUpdateService.getAllDocuments<{ iamatest: string }>(collectionName).then(async (changed) => {
                     expect(changed[0].iamatest).toBe("changed");
                     done();
                 });
