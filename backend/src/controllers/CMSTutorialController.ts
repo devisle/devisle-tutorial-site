@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import Tutorial from "../dtos/Tutorial.dto";
 import PartialTutorial from "../dtos/PartialTutorial.dto";
 import { INTERNAL_ERROR_TEXT, BAD_REQUEST_TEXT, BAD_OBJECTID_PARSE_TEXT, NOT_FOUND_TEXT } from "../constants";
-import TutorialUpdateService from "../services/TutorialUpdateService";
+import DbUpdateService from "../services/DbUpdateService";
 
 /**
  * Tutorial route controller
@@ -20,7 +20,7 @@ export default class CMSTutorialController {
      * @param {Response} res our res obj
      */
     public static getAllTutorials(req: Request, res: Response): void {
-        TutorialUpdateService.getAllDocuments<Tutorial>("tutorials").then(
+        DbUpdateService.getAllDocuments<Tutorial>("tutorials").then(
             (tutorials) => res.status(200).json(tutorials).end(),
             (err) => res.status(500).send(INTERNAL_ERROR_TEXT + JSON.stringify(err)).end()
         );
@@ -41,8 +41,8 @@ export default class CMSTutorialController {
             const { name, html, markdown, category } = req.body;
             const dto = new Tutorial(name, html, markdown, category, userId, username, true);
 
-            TutorialUpdateService.createDocument<Tutorial>("tutorials", dto).then(
-                () => res.status(201).send({ ok: 1, n: 1 }).end(),
+            DbUpdateService.createDocument<Tutorial>("tutorials", dto).then(
+                (result) => res.status(201).send(result).end(),
                 () => res.status(500).send(INTERNAL_ERROR_TEXT + "TODO").end()
             );
         } else {
@@ -68,7 +68,7 @@ export default class CMSTutorialController {
             try {
                 const predicateId = { _id: new ObjectId(tutId) };
                 // Maybe send 304 on nModified: 0, but if we do, the body is absent.
-                TutorialUpdateService.updateSingleDocument("tutorials", predicateId, atomicDto).then(
+                DbUpdateService.updateSingleDocument("tutorials", predicateId, atomicDto).then(
                     (resp) => {
                         const { result: { n, nModified, ok } } = resp;
                         const formattedResponse: MongoUpdateResponse = { ok, n, nModified };

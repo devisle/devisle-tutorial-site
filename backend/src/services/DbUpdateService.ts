@@ -1,12 +1,12 @@
 import { MongoError, UpdateWriteOpResult, Db } from "mongodb";
 
 /**
- * Static helper class resposible for handling all tutorial based DB operations/transactions
+ * Static helper class resposible for handling all DB operations/transactions
  *
  * @class
  * @author ale8k, rakeshshubhu
  */
-export default class TutorialUpdateService {
+export default class DbUpdateService {
     /**
      * Single DB ref from Server
      */
@@ -21,7 +21,7 @@ export default class TutorialUpdateService {
      */
     public static getAllDocuments<T>(collectionName: string): Promise<T[]> {
         return new Promise((res, rej) => {
-            TutorialUpdateService.db.collection<T>(collectionName).find({}).toArray((err, result) => {
+            DbUpdateService.db.collection<T>(collectionName).find({}).toArray((err, result) => {
                 result.length ? res(result) : rej(err);
             });
         });
@@ -37,8 +37,8 @@ export default class TutorialUpdateService {
      */
     public static createDocument<T>(collectionName: string, data: T): Promise<MongoUpdateResponse> {
         return new Promise((res, rej) => {
-            TutorialUpdateService.db.collection(collectionName).insertOne(data).then(
-                ({ result }) => result.ok ? res() : rej(),
+            DbUpdateService.db.collection(collectionName).insertOne(data).then(
+                ({ result }) => result.ok ? res({ ok: result.ok, n: result.n }) : rej({ ok: result.ok, n: result.n }),
                 () => rej()
             );
         });
@@ -54,7 +54,7 @@ export default class TutorialUpdateService {
      */
     public static updateSingleDocument(collectionName: string, predicate: object, newValue: object): Promise<UpdateWriteOpResult> {
         return new Promise((res, rej) => {
-            TutorialUpdateService.db.collection(collectionName).updateOne(
+            DbUpdateService.db.collection(collectionName).updateOne(
                 predicate,
                 newValue,
                 (err: MongoError, response: UpdateWriteOpResult) => {
