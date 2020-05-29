@@ -23,7 +23,6 @@ export default class CMSLoginController {
     public static login(req: Request, res: Response): void {
         if(CMSLoginController.validateLoginCredentials(req.body)) {
             const { username, password } = req.body;
-            console.log("username:", username, "password:", password);
 
             CMSAuthService.checkLoginCredentials(username, password).then(
                 ({ checkedUsername, userId, confirmation }) => {

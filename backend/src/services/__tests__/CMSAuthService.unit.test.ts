@@ -36,7 +36,7 @@ describe("CMSAuthService", () => {
     // Clean up
     afterAll(async () => {
         // Clear mock users
-        await CMSAuthService.db.collection("cms-users").remove({});
+        await CMSAuthService.db.collection("cms-users").deleteMany({});
     });
 
     it("checkLoginCredentials should confirm credentials safely", (done) => {

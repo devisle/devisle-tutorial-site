@@ -18,7 +18,7 @@ describe("DbUpdateService", () => {
         );
         DbUpdateService.db = await connection.db(global.__MONGO_DB_NAME__);
 
-        await DbUpdateService.db.collection(collectionName).insert(
+        await DbUpdateService.db.collection(collectionName).insertOne(
             {
                 iamatest: "lol"
             }
@@ -28,7 +28,7 @@ describe("DbUpdateService", () => {
     // Clean up
     afterEach(async () => {
         // Clear mock tuts
-        await DbUpdateService.db.collection(collectionName).remove({});
+        await DbUpdateService.db.collection(collectionName).deleteMany({});
     });
 
     it("getAllDocuments<T> should return all documents in a given collection", (done) => {
