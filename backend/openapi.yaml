@@ -151,8 +151,6 @@ paths:
   #
   # Get tutorials
   #
-  #    Get tutorial cards?
-  #
   #    Get tut by id
   #       /public/tutorials/{ID}
   #
@@ -162,8 +160,18 @@ paths:
   #    Get most recent tutorials X amount
   #       /public/tutorials/get?amount=*
   #
-  # Like tutorials
+  # Get tutorial cards
+  #
+  #    Get most recent tutorial card X amont -> a card will need some description info... mhm
+  #       /public/tutorials/cards?amount=*
+  #
+  #    Get all tutorials cards for this category
+  #       /public/tutorials/cards/{category}?offset=*&outset=*
+  #
+  # Like/unlike tutorials (this will obv require much more thought ultimately and maybe even a user account
+  # or localStorage tracker of whether or not they've liked? Idk, something like that)
   #       /public/tutorials/like?tutId=*
+  #       /public/tutorials/unlike?tutId=*
   #
   # Categories
   #     Get cat by id
@@ -172,8 +180,8 @@ paths:
   #     Get cats in offset/outset -> this endpoint will also be used by the CMS lol
   #       /public/tutorials/categories?offset=*&outset=*
   #
-  #     Svg assets to be stored in NextJS server, not here.
-  #     Asset should be named after category name, i.e., Learn JS = learn-js.png/svg/jpeg w/e
+  # Svg assets to be stored in NextJS server, not here.
+  # Asset should be named after category name, i.e., Learn JS = learn-js.png/svg/jpeg w/e
   #
 
 components:
