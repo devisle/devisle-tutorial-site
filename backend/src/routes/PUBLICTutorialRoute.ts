@@ -1,5 +1,6 @@
 import IRoute from "../interfaces/IRoute";
 import { Router } from "express";
+import PUBLICTutorialController from "../controllers/PUBLICTutorialController";
 
 /**
  * The public tutorial route
@@ -15,4 +16,11 @@ export default class PUBLICTutorialRoute implements IRoute {
      * Resource location
      */
     public readonly RESOURCE_LOC: string = "/public/tutorials";
+
+    /**
+     * Middleware & controller setup
+     */
+    constructor() {
+        this.ROUTER.get(this.RESOURCE_LOC + "/:id", PUBLICTutorialController.getTutorialById);
+    }
 }

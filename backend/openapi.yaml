@@ -150,11 +150,17 @@ paths:
   # PUBLIC RESOURCES
   #
   # Get tutorials
+  #
+  #    Get tutorial cards?
+  #
   #    Get tut by id
-  #       /public/tutorials/get?tutId=*
+  #       /public/tutorials/{ID}
   #
   #    Get offset/outset amount of tutorials in a given category
   #       /public/tutorials/get?category=*&offset=*&outset=*
+  #
+  #    Get most recent tutorials X amount
+  #       /public/tutorials/get?amount=*
   #
   # Like tutorials
   #       /public/tutorials/like?tutId=*
@@ -163,8 +169,12 @@ paths:
   #     Get cat by id
   #       /public/tutorials/categories?catId=*
   #
-  #     Get cats in offset/outset
+  #     Get cats in offset/outset -> this endpoint will also be used by the CMS lol
   #       /public/tutorials/categories?offset=*&outset=*
+  #
+  #     Svg assets to be stored in NextJS server, not here.
+  #     Asset should be named after category name, i.e., Learn JS = learn-js.png/svg/jpeg w/e
+  #
 
 components:
   schemas:

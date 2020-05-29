@@ -7,7 +7,7 @@ import { INTERNAL_ERROR_TEXT, BAD_REQUEST_TEXT, BAD_OBJECTID_PARSE_TEXT, NOT_FOU
 import DbUpdateService from "../services/DbUpdateService";
 
 /**
- * Tutorial route controller
+ * CMS Tutorial route controller
  *
  * @author ale8k
  */
