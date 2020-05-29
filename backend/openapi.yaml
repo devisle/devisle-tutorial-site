@@ -147,6 +147,25 @@ paths:
       security:
       - BearerAuth: []
 
+  # PUBLIC RESOURCES
+  #
+  # Get tutorials
+  #    Get tut by id
+  #       /public/tutorials/get?tutId=*
+  #
+  #    Get offset/outset amount of tutorials in a given category
+  #       /public/tutorials/get?category=*&offset=*&outset=*
+  #
+  # Like tutorials
+  #       /public/tutorials/like?tutId=*
+  #
+  # Categories
+  #     Get cat by id
+  #       /public/tutorials/categories?catId=*
+  #
+  #     Get cats in offset/outset
+  #       /public/tutorials/categories?offset=*&outset=*
+
 components:
   schemas:
     MongoUpdateResponse:
