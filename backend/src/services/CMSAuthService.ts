@@ -1,6 +1,8 @@
 import bcrypt from "bcrypt";
 import { ObjectId, Db } from "mongodb";
 import jwt from "jsonwebtoken";
+import chalk from "chalk";
+import * as log from "loglevel";
 
 type user = { _id: ObjectId, username: string, password: string };
 type LoginCredentialsResponse = { checkedUsername: string, confirmation: boolean, userId: string };
@@ -16,6 +18,10 @@ export default class CMSAuthService {
      * Single DB ref from Server
      */
     public static db: Db;
+    /**
+     * LogLevel no conflict instance
+     */
+    private static l = log.noConflict();
 
     /**
      * Takes a username and password, and compares it vs the current in the DB
@@ -57,19 +63,17 @@ export default class CMSAuthService {
      */
     public static verifyJWT(bearerToken: string | undefined): boolean {
         const tokenArr: string[] = bearerToken ? bearerToken.split(" ") : [];
-        console.log("Attempting to verify");
-
+        CMSAuthService.l.info(chalk.dim.magenta("Attempting to verify request token..."));
         if (tokenArr[0] === "Bearer" && tokenArr[1] !== "undefined") {
             try {
                 jwt.verify(tokenArr[1], process.env.JWT_KEY as string);
-                console.log("Verified");
+                CMSAuthService.l.info(chalk.dim.green("Verified token successfully. Proceeding with request."));
                 return true;
             } catch (jsonWebTokenError) {
-                console.log("User token expired / bad token");
+                CMSAuthService.l.error(chalk.dim.redBright("Token verification failed! The token has either expired or is bad."));
                 return false;
             }
         }
-        console.log("Unauthorised");
         return false;
     }
 

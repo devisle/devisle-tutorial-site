@@ -7,6 +7,8 @@ import { MongoClient } from "mongodb";
 import DbUpdateService from "./services/DbUpdateService";
 import CMSAuthService from "./services/CMSAuthService";
 import http from "http";
+import chalk from "chalk";
+import * as log from "loglevel";
 
 /**
  * App wrapper
@@ -25,6 +27,10 @@ export default class App {
      * Server references
      */
     public server: http.Server;
+    /**
+     * LogLevel no conflict instance
+     */
+    private _l = log.noConflict();
 
     /**
      * Registers:
@@ -32,7 +38,7 @@ export default class App {
      *  - App instance
      */
     constructor(configPath: { path: string }) {
-        console.log("Setting up environment...");
+        this._l.info(chalk.dim.cyan("Setting up environment..."));
         dotenv.config(configPath);
         this.APP = express();
     }
@@ -42,7 +48,7 @@ export default class App {
      */
     public async setupServer(): Promise<Application> {
         return await new Promise<Application>(res => {
-            console.log("Setting up middleware...");
+            this._l.info(chalk.dim.cyan("Setting up middleware..."));
             this.APP.use(cors());
             this.APP.use(bodyParser.urlencoded({
                 extended: true
@@ -51,7 +57,7 @@ export default class App {
             this.registerRoutes();
 
             res(new Promise(async resolve => {
-                console.log("Setting up db connection...");
+                this._l.info(chalk.dim.cyan("Setting up db connection..."));
                     await MongoClient.connect((process.env.DB_URL as string),
                     {
                         poolSize: 10,
@@ -63,10 +69,10 @@ export default class App {
                             throw err;
                         } else {
                             CMSAuthService.db = client.db(process.env.DB_NAME as string);
-                            console.log("CMSAuthService db reference stored...");
+                            this._l.info(chalk.dim.cyan("CMSAuthService db reference stored..."));
                             DbUpdateService.db = client.db(process.env.DB_NAME as string);
-                            console.log("DbUpdateService db reference stored...");
-                            console.log("Resolving server...");
+                            this._l.info(chalk.dim.cyan("DbUpdateService db reference stored..."));
+                            this._l.info(chalk.dim.cyan("Resolving server..."));
                             resolve(this.APP);
                         }
                     }

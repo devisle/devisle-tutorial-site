@@ -5,6 +5,7 @@ import { BAD_REQUEST_TEXT, BAD_OBJECTID_PARSE_TEXT } from "../../constants";
 import PartialTutorial from "../../dtos/PartialTutorial.dto";
 import Tutorial from "../../dtos/Tutorial.dto";
 import JestHelper from "../../../JestHelper";
+import * as log from "loglevel";
 
 /**
  * This test utilises [supertest]{@link https://www.npmjs.com/package/supertest}
@@ -21,6 +22,7 @@ describe("CMSTutorialController", () => {
     let tutorialsCollection: Collection;
 
     beforeAll(async () => {
+        log.setDefaultLevel("silent");
         JestHelper.setupTestHTTPEnv();
 
         connection = await MongoClient.connect((global.__MONGO_URI__), {
@@ -32,7 +34,7 @@ describe("CMSTutorialController", () => {
         db = await connection.db(global.__MONGO_DB_NAME__);
         usersCollection = db.collection(usersCollectionName);
         tutorialsCollection = db.collection(tutorialsCollectionName);
-        await usersCollection.insert(
+        await usersCollection.insertOne(
             {
                 username: "alex",
                 password: "$2b$12$Cp/IwyOUsKiJZTANWklBB.k4mv07lIV1gSLT4FbtsOI.eoFi2qfTu"
@@ -59,7 +61,6 @@ describe("CMSTutorialController", () => {
                             agent.get("/cms/tutorials/all").set("Authorization", `Bearer ${jwt}`).expect((response) => {
                                 const tutArr = response.body as Tutorial[];
                                 const tut = tutArr[0];
-                                console.log(tut);
                                 expect(tut.isAvailable).toBeTruthy();
                             }).end(done);
                         });
@@ -101,7 +102,6 @@ describe("CMSTutorialController", () => {
                     agent.get("/cms/tutorials/all").set("Authorization", `Bearer ${jwt}`).expect(200).expect(response => {
                         const tutArr = response.body as Tutorial[];
                         const tut = tutArr[0];
-                        console.log(tut);
                         expect(tut.isAvailable).toBeTruthy();
                     }).end(done);
                 });

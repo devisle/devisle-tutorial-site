@@ -3,6 +3,7 @@ import supertest from "supertest";
 import { MongoClient, Db, Collection } from "mongodb";
 import { UNAUTHORISED_TEXT, BAD_REQUEST_TEXT } from "../../constants";
 import JestHelper from "../../../JestHelper";
+import * as log from "loglevel";
 
 /**
  * This test utilises [supertest]{@link https://www.npmjs.com/package/supertest}
@@ -20,6 +21,7 @@ describe("CMSLoginController", () => {
     const incorrectFormatCredentials = { username: 5, password: "p1233" };
 
     beforeAll(async () => {
+        log.setDefaultLevel("silent");
         JestHelper.setupTestHTTPEnv();
 
         connection = await MongoClient.connect((global.__MONGO_URI__), {
@@ -30,7 +32,7 @@ describe("CMSLoginController", () => {
 
         db = await connection.db(global.__MONGO_DB_NAME__);
         collection = db.collection(collectionName);
-        await collection.insert(
+        await collection.insertOne(
             {
                 username: "alex",
                 password: "$2b$12$Cp/IwyOUsKiJZTANWklBB.k4mv07lIV1gSLT4FbtsOI.eoFi2qfTu"
