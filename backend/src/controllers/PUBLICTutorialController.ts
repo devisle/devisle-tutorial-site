@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import PUBLICTutorialService from "../services/PUBLICTutorialService";
 import { ObjectId, MongoError } from "mongodb";
 import { BAD_OBJECTID_PARSE_TEXT, INTERNAL_ERROR_TEXT } from "../constants";
+import PublicTutorial from "../dtos/PublicTutorial.dto";
+import ISection from "src/interfaces/ISection";
 
 /**
  * PUBLIC Tutorial route controller
@@ -23,9 +25,9 @@ export default class PUBLICTutorialController {
             PUBLICTutorialService.getPublicTutById("tutorials", tutObjectId).then(
                 (response) => {
                     if (response === null) {
-                        // fix
+                        res.sendStatus(204).end();
                     } else {
-                        // transform this cunt bro
+                        res.status(200).send(response).end();
                     }
                 },
                 (err: MongoError) =>  res.status(500).send(INTERNAL_ERROR_TEXT + JSON.stringify(err)).end()

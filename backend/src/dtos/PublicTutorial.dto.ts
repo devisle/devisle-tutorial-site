@@ -1,31 +1,60 @@
+import ISection from "src/interfaces/ISection";
+
 /**
  * Represents a PUBLICALLY AVAILABLE tutorial
- *
- * // TODO
  *
  * @class
  * @author ale8k
  */
 export default class PublicTutorial {
     /**
-     * The Mongo user's GUID [who created this tutorial]
+     * Set given DTO fields
+     */
+    constructor(
+            name: string,
+            category: string,
+            authorName: string,
+            isAvailable: boolean,
+            content: ISection[]) {
+        this.name = name;
+        this.category = category;
+        this.authorName = authorName;
+        this.isAvailable = isAvailable;
+        this.content = content;
+    }
+    /**
+     * The tutorial name
      *
      * @type {string}
-     * @memberof Tutorial
+     * @memberof PublicTutorial
      */
-    public authorId: string;
+    public name: string;
+    /**
+     * The tutorial category
+     *
+     * @type {string}
+     * @memberof PublicTutorial
+     */
+    public category: string;
     /**
      * The Mongo user's username [who created this tutorial]
      *
      * @type {string}
-     * @memberof Tutorial
+     * @memberof PublicTutorial
      */
     public authorName: string;
     /**
      * Soft-delete flag
      *
      * @type {string}
-     * @memberof Tutorial
+     * @memberof PublicTutorial
      */
     public isAvailable: boolean;
+    /**
+     * The content of this tutorial, (big ass array)
+     *
+     * @type {ISection[]}
+     * @memberof PublicTutorial
+     */
+    public content: ISection[];
 }

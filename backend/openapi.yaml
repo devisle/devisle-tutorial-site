@@ -154,13 +154,39 @@ paths:
   #    Get tut by id
   #       /public/tutorials/{ID}
   #
-  # /public/tutorials/{id}:
-  #   get:
-  #     tags:
-  #     - PUBLIC
-  #     summary: Get a tutorial by it's ID
-  #     description: Gets a tutorial by it's ID
-  #     operationId: getTutById
+  /public/tutorials/{tutId}:
+    get:
+      tags:
+      - PUBLIC
+      summary: Get a tutorial by it's ID
+      description: Gets a tutorial by it's `ObjectId(id)` (represented as a string)
+      operationId: getTutById
+      parameters:
+        - in: path
+          description: The `ObjectId(id)` of the tutorial we wish retreive
+          name: tutId
+          required: true
+          schema:
+            type: string
+          example: /public/tutorials/5ec6aa4993014b10402122b2
+      responses:
+        200:
+          description: "Returns a `PublicTutorial` formatted object."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicTutorialModel"
+        204:
+          description: "Returns 204 if tutorial does not exist"
+        400:
+          description: "Bad request, will occur when the `ObjectId(id)` path param string byte size is incorrect"
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "ObjectID argument passed in [the query] must be a single String of 12 bytes or a string of 24 hex"
+  #
+  #
   #    Get offset/outset amount of tutorials in a given category
   #       /public/tutorials/get?category=*&offset=*&outset=*
   #
@@ -193,6 +219,26 @@ paths:
 
 components:
   schemas:
+    PublicTutorialModel:
+      type: object
+      properties:
+        name:
+          type: string
+        category:
+          type: string
+        authorName:
+          type: string
+        isAvailable:
+          type: boolean
+        content:
+          type: array
+          items:
+            type: object
+            properties:
+              sectionTitle:
+                type: string
+              sectionBody:
+                type: string
     MongoUpdateResponse:
       type: object
       properties:
