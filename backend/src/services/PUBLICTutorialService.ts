@@ -65,23 +65,50 @@ export default class PUBLICTutorialService {
                 }
             };
             PUBLICTutorialService.db.collection(collectionName)
-            .find<IProjectedTutorial & { _id: string }>({ category: queryCategory }, tutCardProjection)
-            .toArray().then(
-                (data) => {
-                    // Now we need to strip the HTML out of the html tag, and create a 'tutorial card'
-                    const responseCards: TutorialCard[] = data.map(preparsedCard => {
-                        const { _id, name, html, category, authorName, isAvailable } = preparsedCard;
-                        // Remove any stuff prior to first section, as it shouldn't be there
-                        let cardText = html.substring(html.indexOf("--##") + 4, html.length);
-                        // Remove all html related
-                        cardText = cardText.replace(/<\/?[^>]+(>|$)/g, "");
-                        // Remove section markers and give it a trim
-                        cardText = cardText.replace(/--##/g, "").trim();
-                        // Grab only 105 chars, may be subject to change
-                        cardText = cardText.substring(0, 105);
-                        return new TutorialCard(_id, name, category, cardText, authorName, isAvailable);
+                .find<IProjectedTutorial & { _id: string }>({ category: queryCategory }, tutCardProjection)
+                .toArray().then(
+                    (data) => {
+                        // Now we need to strip the HTML out of the html tag, and create a 'tutorial card'
+                        const responseCards: TutorialCard[] = data.map(preparsedCard => {
+                            const { _id, name, html, category, authorName, isAvailable } = preparsedCard;
+                            // Remove any stuff prior to first section, as it shouldn't be there
+                            let cardText = html.substring(html.indexOf("--##") + 4, html.length);
+                            // Remove all html related
+                            cardText = cardText.replace(/<\/?[^>]+(>|$)/g, "");
+                            // Remove section markers and give it a trim
+                            cardText = cardText.replace(/--##/g, "").trim();
+                            // Grab only 105 chars, may be subject to change
+                            cardText = cardText.substring(0, 105);
+                            return new TutorialCard(_id, name, category, cardText, authorName, isAvailable);
+                        });
+                        res(responseCards);
+                    }
+                );
+        });
+    }
+
+    /**
+     * Filter tutorial names and id's
+     *
+     * @param response
+     */
+    public static getOnlyTutNamesAndIds(collectionName: string): Promise<{ tutId: string, tutName: string }[]> {
+        return new Promise((res) => {
+            const pathProjection: FindOneOptions = {
+                projection: {
+                    _id: 1,
+                    name: 1,
+                }
+            };
+            PUBLICTutorialService.db.collection(collectionName).find<{ _id: string, name: string }>({}, pathProjection).toArray().then(
+                (result) => {
+                    const parsedPaths = result.map((path) => {
+                        return {
+                            tutId: path._id,
+                            tutName: path.name.replace(" ", "-").toLowerCase()
+                        };
                     });
-                    res(responseCards);
+                    res(parsedPaths);
                 }
             );
         });

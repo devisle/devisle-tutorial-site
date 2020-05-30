@@ -87,6 +87,19 @@ export default class PUBLICTutorialController {
     }
 
     /**
+     * Grabs a all the potential static paths (which are just the tutorial names)
+     *
+     * @async
+     * @param {Request} req the users request obj
+     * @param {Response} res our res obj
+     */
+    public static getAllPaths(req: Request, res: Response): void {
+        PUBLICTutorialService.getOnlyTutNamesAndIds("tutorials").then(
+            (paths) => res.status(200).send(paths)
+        );
+    }
+
+    /**
      * Verifies if the category passed in exists in the CONSTANTS
      *
      * @param {string} category a tutorial category

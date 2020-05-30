@@ -257,6 +257,27 @@ paths:
                   type: string
                   example: javascript
 
+  /public/tutorials/paths/all:
+    get:
+      tags:
+      - PUBLIC
+      summary: Gets all of the potential paths to a tutorial
+      operationId: getAllPaths
+      responses:
+        200:
+          description: "Returns an array of path strings"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    tutId:
+                      type: string
+                    tutName:
+                      type: string
+
   #
   #    Get all tutorials cards for this category
   #       /public/tutorials/cards/{category}?offset=*&outset=*
