@@ -185,26 +185,64 @@ paths:
               schema:
                 type: string
                 example: "ObjectID argument passed in [the query] must be a single String of 12 bytes or a string of 24 hex"
-  #
-  #
-  #    Get offset/outset amount of tutorials in a given category
-  #       /public/tutorials/get?category=*&offset=*&outset=*
-  #
-  #    Get most recent tutorials X amount
-  #       /public/tutorials/get?amount=*
-  #
-  # Get tutorial cards
-  #
-  #    Get most recent tutorial card X amont -> a card will need some description info... mhm
-  #       /public/tutorials/cards?amount=*
+  
+  /public/tutorials/cards/{category}:
+    get:
+      tags:
+      - PUBLIC
+      summary: Get a an array of tutorial cards
+      description: "Gets all the tutorial cards of a given category, alternatively,
+                    if passed query params offset/outset, this will grab a specific portion of the card list"
+      operationId: getTutCardsByCategory
+      parameters:
+        - in: path
+          description: The tutorial category we wish to use for our card filter
+          name: category
+          required: true
+          schema:
+            type: string
+          example: /public/tutorials/cards/javascript
+        - in: query
+          description: The offset to begin at when filtering the card list
+          name: offset
+          required: false
+          schema:
+            type: number
+          example: /public/tutorials/cards/javascript?offset=0&outset=50
+        - in: query
+          description: The outset to begin at when filtering the card list
+          name: outset
+          required: false
+          schema:
+            type: number
+          example: /public/tutorials/cards/javascript?offset=0&outset=50
+      responses:
+        200:
+          description: "Returns an array of `TutorialCard`s"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PublicTutorialCardModel"
+        400:
+          description: "Bad request will occur when the query params are the wrong type"
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Query params for the category request must be integers."
+        404:
+          description: "404 Occurs when the passed path param category doesn't exist"
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "The given category does not exist."
+
   #
   #    Get all tutorials cards for this category
   #       /public/tutorials/cards/{category}?offset=*&outset=*
-  #
-  # Like/unlike tutorials (this will obv require much more thought ultimately and maybe even a user account
-  # or localStorage tracker of whether or not they've liked? Idk, something like that)
-  #       /public/tutorials/like?tutId=*
-  #       /public/tutorials/unlike?tutId=*
   #
   # Categories
   #     Get cat by id
@@ -219,6 +257,21 @@ paths:
 
 components:
   schemas:
+    PublicTutorialCardModel:
+      type: object
+      properties:
+        _id:
+          type: string
+        cardTutName:
+          type: string
+        category:
+          type: string
+        cardText:
+          type: string
+        authorName:
+          type: string
+        isAvailable:
+          type: boolean
     PublicTutorialModel:
       type: object
       properties:

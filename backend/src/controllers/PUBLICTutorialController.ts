@@ -61,7 +61,7 @@ export default class PUBLICTutorialController {
                         if (Number.isInteger(offset) && Number.isInteger(outset)) {
                             res.status(200).send(cards.splice(offset, outset));
                         } else {
-                            res.status(400).send("Query params for the category request must be integers");
+                            res.status(400).send("Query params for the category request must be integers.");
                         }
 
                     } else {

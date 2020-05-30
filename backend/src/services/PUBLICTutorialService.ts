@@ -45,12 +45,15 @@ export default class PUBLICTutorialService {
         });
     }
 
+
     /**
      * Gets all tutorial cards in a given category
-     * @param response
+     *
+     * @param {string} collectionName the collection name
+     * @param {string} queryCategory the category to query
      */
     public static getTutCardsInCategory(collectionName: string, queryCategory: string): Promise<TutorialCard[]> {
-        return new Promise((res, rej) => {
+        return new Promise((res) => {
             const tutCardProjection: FindOneOptions = {
                 projection: {
                     _id: 1,
@@ -66,7 +69,6 @@ export default class PUBLICTutorialService {
             .toArray().then(
                 (data) => {
                     // Now we need to strip the HTML out of the html tag, and create a 'tutorial card'
-                    // example:
                     const responseCards: TutorialCard[] = data.map(preparsedCard => {
                         const { _id, name, html, category, authorName, isAvailable } = preparsedCard;
                         // Remove all html related
