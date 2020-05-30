@@ -87,17 +87,30 @@ describe("PUBLICTutorialController", () => {
      * /PUBLIC/TUTORIALS/CARDS/{CATEGORY}?OFFSET=*&OUTSET=*
      */
     it("/public/tutorials/cards/{category} should return the parsed tutorial, with a 200 response", (done) => {
-        PUBLICTutorialService.db.collection("tutorials").find({}).toArray().then(resp => {
-            new App({ path: ".test.env" }).setupServer().then((app) => {
-                const agent = supertest(app);
-                agent.get(`/public/tutorials/cards/javascripT`)
-                    .expect(200)
-                    .expect(response => {
-                        console.log(response.body);
-                        expect(response.body).not.toEqual(null);
+        new App({ path: ".test.env" }).setupServer().then((app) => {
+            const agent = supertest(app);
+            agent.get(`/public/tutorials/cards/javascripT`)
+                .expect(200)
+                .expect(response => {
+                    expect(response.body).not.toEqual(null);
+                    expect(response.body[0].cardText).toEqual("Section 1  So this is my section, I'm talking crap here...  Section 2 more crap");
+                }).end(done);
+        });
+    });
 
-                    }).end(done);
-            });
+    it("/public/tutorials/cards/{category} should return 404, because the given category does not exist", (done) => {
+        new App({ path: ".test.env" }).setupServer().then((app) => {
+            const agent = supertest(app);
+            agent.get(`/public/tutorials/cards/javascripT-a-none-existent-category`)
+                .expect(404).end(done);
+        });
+    });
+
+    it("/public/tutorials/cards/{category}?offset=*&outset=* should return 400, because the given values aren't integers", (done) => {
+        new App({ path: ".test.env" }).setupServer().then((app) => {
+            const agent = supertest(app);
+            agent.get(`/public/tutorials/cards/javascripT?offset=bob&outset=harry`)
+                .expect(400).end(done);
         });
     });
 

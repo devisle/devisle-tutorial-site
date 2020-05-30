@@ -10,19 +10,19 @@ describe("PUBLICTutorialService", () => {
 
     // Setup the DB for testing
     beforeAll(async () => {
-        connection = await MongoClient.connect((global.__MONGO_URI__),{
-                poolSize: 10,
-                useNewUrlParser: true,
-                useUnifiedTopology: true
-            },
+        connection = await MongoClient.connect((global.__MONGO_URI__), {
+            poolSize: 10,
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        },
         );
-       PUBLICTutorialService.db = await connection.db(global.__MONGO_DB_NAME__);
+        PUBLICTutorialService.db = await connection.db(global.__MONGO_DB_NAME__);
 
         await PUBLICTutorialService.db.collection("tutorials").insertOne({
             name: "another name",
             html: "somestuff that won't be considered     <p>--## Section 1</p>  <p>So this is my section, I'm talking crap here... <p>--## Section 2</p> more crap",
             markdown: "",
-            category: "Something else",
+            category: "javascript",
             authorId: "5ec17321f63b3c281463fd2a",
             authorName: "alex",
             isAvailable: true
@@ -51,6 +51,16 @@ describe("PUBLICTutorialService", () => {
                 }
             );
         });
-
     });
+
+    it("getTutCardsInCategory should get a parsed tutorial cards", (done) => {
+        PUBLICTutorialService.getTutCardsInCategory("tutorials", "javascript").then(
+            (response) => {
+                expect(response).not.toEqual(null);
+                expect(response[0].cardText).toEqual("Section 1  So this is my section, I'm talking crap here...  Section 2 more crap");
+                done();
+            }
+        );
+    });
+
 });
