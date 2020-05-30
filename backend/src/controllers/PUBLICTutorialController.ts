@@ -38,10 +38,13 @@ export default class PUBLICTutorialController {
     /**
      * Grabs a specified amount of tutorial cards in a given category
      *  - Requires the category in the path param, string
-     *  - Query params are offset (number) & outset (string ['all'] / number), both numbers
+     *  - Query params are offset (number) & outset, both numbers, if omitted, it'll just return all
      *
      * An example of this endpoint would look like:
-     * @example /public/tutorials/cards/{category}?offset=*&outset=*
+     * @example
+     * /public/tutorials/cards/{category}?offset=*&outset=*
+     * or
+     * /public/tutorials/cards/{category}
      *
      * @async
      * @param {Request} req the users request obj
@@ -50,9 +53,22 @@ export default class PUBLICTutorialController {
     public static getSpecifiedTutorialCards(req: Request, res: Response): void {
         if (PUBLICTutorialController.verifyCategory(req.params.category)) {
             PUBLICTutorialService.getTutCardsInCategory("tutorials", req.params.category).then(
-                (response) => res.send(response)
+                (cards) => {
+                    if (req.query.offset && req.query.outset) {
+                        const offset: number = parseInt(req.query.offset);
+                        const outset: number = parseInt(req.query.outset);
+
+                        if (Number.isInteger(offset) && Number.isInteger(outset)) {
+                            res.status(200).send(cards.splice(offset, outset));
+                        } else {
+                            res.status(400).send("Query params for the category request must be integers");
+                        }
+
+                    } else {
+                        res.send(cards);
+                    }
+                }
             );
-            //res.send("working");
         } else {
             res.send("The given category does not exist.");
         }
