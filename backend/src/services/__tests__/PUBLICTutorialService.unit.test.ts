@@ -1,0 +1,56 @@
+import { MongoClient, ObjectId } from "mongodb";
+import PUBLICTutorialService from "../PUBLICTutorialService";
+import ITutorial from "src/interfaces/ITutorial";
+
+/**
+ * @author ale8k
+ */
+describe("PUBLICTutorialService", () => {
+    let connection;
+
+    // Setup the DB for testing
+    beforeAll(async () => {
+        connection = await MongoClient.connect((global.__MONGO_URI__),{
+                poolSize: 10,
+                useNewUrlParser: true,
+                useUnifiedTopology: true
+            },
+        );
+       PUBLICTutorialService.db = await connection.db(global.__MONGO_DB_NAME__);
+
+        await PUBLICTutorialService.db.collection("tutorials").insertOne({
+            name: "another name",
+            html: "somestuff that won't be considered     <p>--## Section 1</p>  <p>So this is my section, I'm talking crap here... <p>--## Section 2</p> more crap",
+            markdown: "",
+            category: "Something else",
+            authorId: "5ec17321f63b3c281463fd2a",
+            authorName: "alex",
+            isAvailable: true
+        });
+    });
+
+    // Clean up
+    afterAll(async () => {
+        // Clear mock tuts
+        await PUBLICTutorialService.db.collection("tutorials").deleteMany({});
+    });
+
+    it("getPublicTutById should get a parsed IProjectedTutorial in the form of PublicTutorial", (done) => {
+        PUBLICTutorialService.db.collection("tutorials").find({}).toArray().then(resp => {
+            const lastAdded: ITutorial = resp[resp.length - 1];
+            PUBLICTutorialService.getPublicTutById("tutorials", new ObjectId(lastAdded._id)).then(
+                (response) => {
+                    expect(response).not.toEqual(null);
+                    expect(response?.content).toHaveLength(2);
+                    expect(response?.content[0].sectionTitle).toEqual("Section 1");
+                    expect(response?.content[0].sectionBody).toEqual("<p>So this is my section, I'm talking crap here...");
+                    expect(response?.content[1].sectionTitle).toEqual("Section 2");
+                    expect(response?.content[1].sectionBody).toEqual("more crap");
+                    expect(Object.keys(response as Object).length).toEqual(5);
+                    done();
+                }
+            );
+        });
+
+    });
+});
