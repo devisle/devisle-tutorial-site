@@ -1,7 +1,7 @@
-import { Request, Response } from "express";
+import e, { Request, Response } from "express";
 import PUBLICTutorialService from "../services/PUBLICTutorialService";
 import { ObjectId, MongoError } from "mongodb";
-import { BAD_OBJECTID_PARSE_TEXT, INTERNAL_ERROR_TEXT } from "../constants";
+import { BAD_OBJECTID_PARSE_TEXT, INTERNAL_ERROR_TEXT, TUTORIAL_CATEGORIES } from "../constants";
 
 /**
  * PUBLIC Tutorial route controller
@@ -48,7 +48,26 @@ export default class PUBLICTutorialController {
      * @param {Response} res our res obj
      */
     public static getSpecifiedTutorialCards(req: Request, res: Response): void {
-        res.send("working");
+        if (PUBLICTutorialController.verifyCategory(req.params.category)) {
+            PUBLICTutorialService.getTutCardsInCategory("tutorials", req.params.category).then(
+                (response) => res.send(response)
+            );
+            //res.send("working");
+        } else {
+            res.send("The given category does not exist.");
+        }
+    }
+
+    /**
+     * Verifies if the category passed in exists in the CONSTANTS
+     *
+     * @param {string} category a tutorial category
+     */
+    private static verifyCategory(category: string): boolean {
+        if (TUTORIAL_CATEGORIES.includes(category)) {
+            return true;
+        }
+        return false;
     }
 
 }

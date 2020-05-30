@@ -2,6 +2,7 @@ import { Db, ObjectId, FindOneOptions } from "mongodb";
 import IProjectedTutorial from "../interfaces/IProjectedTutorial";
 import ISection from "../interfaces/ISection";
 import PublicTutorial from "../dtos/PublicTutorial.dto";
+import TutorialCard from "../dtos/TutorialCard.dto";
 
 /**
  * Static helper class resposible for handling PUBLIC db transactions
@@ -39,7 +40,46 @@ export default class PUBLICTutorialService {
                         rej(err);
                     }
                     res(PUBLICTutorialService.parsePublicProjectTut(result));
-                });
+                }
+            );
+        });
+    }
+
+    /**
+     * Gets all tutorial cards in a given category
+     * @param response
+     */
+    public static getTutCardsInCategory(collectionName: string, queryCategory: string): Promise<TutorialCard[]> {
+        return new Promise((res, rej) => {
+            const tutCardProjection: FindOneOptions = {
+                projection: {
+                    _id: 1,
+                    name: 1,
+                    html: 1,
+                    category: 1,
+                    authorName: 1,
+                    isAvailable: 1
+                }
+            };
+            PUBLICTutorialService.db.collection(collectionName)
+            .find<IProjectedTutorial & { _id: string }>({ category: queryCategory }, tutCardProjection)
+            .toArray().then(
+                (data) => {
+                    // Now we need to strip the HTML out of the html tag, and create a 'tutorial card'
+                    // example:
+                    const responseCards: TutorialCard[] = data.map(preparsedCard => {
+                        const { _id, name, html, category, authorName, isAvailable } = preparsedCard;
+                        // Remove all html related
+                        let cardText = html.replace(/<\/?[^>]+(>|$)/g, "");
+                        // Remove section markers and give it a trim
+                        cardText = cardText.replace("--##", "").trim();
+                        // Grab only 105 chars, may be subject to change
+                        cardText = cardText.substring(0, 105);
+                        return new TutorialCard(_id, name, category, cardText, authorName, isAvailable);
+                    });
+                    res(responseCards);
+                }
+            );
         });
     }
 
