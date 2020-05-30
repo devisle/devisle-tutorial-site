@@ -154,6 +154,13 @@ paths:
   #    Get tut by id
   #       /public/tutorials/{ID}
   #
+  # /public/tutorials/{id}:
+  #   get:
+  #     tags:
+  #     - PUBLIC
+  #     summary: Get a tutorial by it's ID
+  #     description: Gets a tutorial by it's ID
+  #     operationId: getTutById
   #    Get offset/outset amount of tutorials in a given category
   #       /public/tutorials/get?category=*&offset=*&outset=*
   #
