@@ -35,4 +35,20 @@ export default class PUBLICTutorialController {
         }
     }
 
+    /**
+     * Grabs a specified amount of tutorial cards in a given category
+     *  - Requires the category in the path param, string
+     *  - Query params are offset & outset, both numbers
+     *
+     * An example of this endpoint would look like:
+     * @example /public/tutorials/cards/{category}?offset=*&outset=*
+     *
+     * @async
+     * @param {Request} req the users request obj
+     * @param {Response} res our res obj
+     */
+    public static getSpecifiedTutorialCards(req: Request, res: Response): void {
+        res.send("working");
+    }
+
 }

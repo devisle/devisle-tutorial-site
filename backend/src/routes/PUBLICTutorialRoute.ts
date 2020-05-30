@@ -22,5 +22,6 @@ export default class PUBLICTutorialRoute implements IRoute {
      */
     constructor() {
         this.ROUTER.get(this.RESOURCE_LOC + "/:tutId", PUBLICTutorialController.getTutorialById);
+        this.ROUTER.get(this.RESOURCE_LOC + "/cards/:category", PUBLICTutorialController.getSpecifiedTutorialCards);
     }
 }
