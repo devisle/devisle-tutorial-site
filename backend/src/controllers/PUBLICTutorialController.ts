@@ -38,7 +38,7 @@ export default class PUBLICTutorialController {
     /**
      * Grabs a specified amount of tutorial cards in a given category
      *  - Requires the category in the path param, string
-     *  - Query params are offset & outset, both numbers
+     *  - Query params are offset (number) & outset (string ['all'] / number), both numbers
      *
      * An example of this endpoint would look like:
      * @example /public/tutorials/cards/{category}?offset=*&outset=*

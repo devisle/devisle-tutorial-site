@@ -10,6 +10,7 @@ export const BAD_OBJECTID_PARSE_TEXT = "ObjectID argument passed in [the query] 
  * Tutorial categories supported by the site
  *
  * Fill this as we progress into new technologies
+ * @todo store these in a .txt file tbh, they're more config than anything
  */
 export const TUTORIAL_CATEGORIES = [
     "javascript",
