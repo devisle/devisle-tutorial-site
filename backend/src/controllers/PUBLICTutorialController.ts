@@ -70,7 +70,7 @@ export default class PUBLICTutorialController {
                 }
             );
         } else {
-            res.send("The given category does not exist.");
+            res.status(404).send("The given category does not exist.");
         }
     }
 
