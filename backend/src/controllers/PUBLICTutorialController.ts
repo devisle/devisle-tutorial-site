@@ -2,8 +2,6 @@ import { Request, Response } from "express";
 import PUBLICTutorialService from "../services/PUBLICTutorialService";
 import { ObjectId, MongoError } from "mongodb";
 import { BAD_OBJECTID_PARSE_TEXT, INTERNAL_ERROR_TEXT } from "../constants";
-import PublicTutorial from "../dtos/PublicTutorial.dto";
-import ISection from "src/interfaces/ISection";
 
 /**
  * PUBLIC Tutorial route controller
