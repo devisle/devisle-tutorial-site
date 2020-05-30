@@ -1,4 +1,4 @@
-import e, { Request, Response } from "express";
+import { Request, Response } from "express";
 import PUBLICTutorialService from "../services/PUBLICTutorialService";
 import { ObjectId, MongoError } from "mongodb";
 import { BAD_OBJECTID_PARSE_TEXT, INTERNAL_ERROR_TEXT, TUTORIAL_CATEGORIES } from "../constants";
@@ -51,8 +51,9 @@ export default class PUBLICTutorialController {
      * @param {Response} res our res obj
      */
     public static getSpecifiedTutorialCards(req: Request, res: Response): void {
-        if (PUBLICTutorialController.verifyCategory(req.params.category)) {
-            PUBLICTutorialService.getTutCardsInCategory("tutorials", req.params.category).then(
+        const category = req.params.category.toLowerCase().replace("-", " ");
+        if (PUBLICTutorialController.verifyCategory(category)) {
+            PUBLICTutorialService.getTutCardsInCategory("tutorials", category).then(
                 (cards) => {
                     if (req.query.offset && req.query.outset) {
                         const offset: number = parseInt(req.query.offset);

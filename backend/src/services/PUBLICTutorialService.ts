@@ -71,10 +71,12 @@ export default class PUBLICTutorialService {
                     // Now we need to strip the HTML out of the html tag, and create a 'tutorial card'
                     const responseCards: TutorialCard[] = data.map(preparsedCard => {
                         const { _id, name, html, category, authorName, isAvailable } = preparsedCard;
+                        // Remove any stuff prior to first section, as it shouldn't be there
+                        let cardText = html.substring(html.indexOf("--##") + 4, html.length);
                         // Remove all html related
-                        let cardText = html.replace(/<\/?[^>]+(>|$)/g, "");
+                        cardText = cardText.replace(/<\/?[^>]+(>|$)/g, "");
                         // Remove section markers and give it a trim
-                        cardText = cardText.replace("--##", "").trim();
+                        cardText = cardText.replace(/--##/g, "").trim();
                         // Grab only 105 chars, may be subject to change
                         cardText = cardText.substring(0, 105);
                         return new TutorialCard(_id, name, category, cardText, authorName, isAvailable);

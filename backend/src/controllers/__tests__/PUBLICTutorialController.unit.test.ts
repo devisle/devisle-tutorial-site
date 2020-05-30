@@ -33,7 +33,7 @@ describe("PUBLICTutorialController", () => {
             name: "another name",
             html: "somestuff that won't be considered     <p>--## Section 1</p>  <p>So this is my section, I'm talking crap here... <p>--## Section 2</p> more crap",
             markdown: "",
-            category: "Something else",
+            category: "javascript",
             authorId: "5ec17321f63b3c281463fd2a",
             authorName: "alex",
             isAvailable: true
@@ -80,6 +80,24 @@ describe("PUBLICTutorialController", () => {
             const agent = supertest(app);
             agent.get(`/public/tutorials/000000000000000000000000`)
                 .expect(204).end(done);
+        });
+    });
+
+    /**
+     * /PUBLIC/TUTORIALS/CARDS/{CATEGORY}?OFFSET=*&OUTSET=*
+     */
+    it("/public/tutorials/cards/{category} should return the parsed tutorial, with a 200 response", (done) => {
+        PUBLICTutorialService.db.collection("tutorials").find({}).toArray().then(resp => {
+            new App({ path: ".test.env" }).setupServer().then((app) => {
+                const agent = supertest(app);
+                agent.get(`/public/tutorials/cards/javascripT`)
+                    .expect(200)
+                    .expect(response => {
+                        console.log(response.body);
+                        expect(response.body).not.toEqual(null);
+
+                    }).end(done);
+            });
         });
     });
 
