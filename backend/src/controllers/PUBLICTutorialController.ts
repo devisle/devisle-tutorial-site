@@ -76,6 +76,17 @@ export default class PUBLICTutorialController {
     }
 
     /**
+     * Grabs a all the categories from the constants
+     *
+     * @async
+     * @param {Request} req the users request obj
+     * @param {Response} res our res obj
+     */
+    public static getAllCategories(req: Request, res: Response): void {
+        res.status(200).send(TUTORIAL_CATEGORIES);
+    }
+
+    /**
      * Verifies if the category passed in exists in the CONSTANTS
      *
      * @param {string} category a tutorial category
