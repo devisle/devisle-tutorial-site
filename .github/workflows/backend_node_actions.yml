@@ -22,7 +22,6 @@ jobs:
       BCRYPT_SALT: ${{ secrets.BCRYPT_SALT }}
       JWT_KEY: ${{ secrets.JWT_KEY }}
       JWT_EXPIRY: ${{ secrets.JWT_EXPIRY }}
-      CI: true
 
     defaults:
       run:
@@ -40,6 +39,7 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+    - run: npm ci
     - run: npm i
     - run: npm run build --if-present
     - run: npm run test:unit
