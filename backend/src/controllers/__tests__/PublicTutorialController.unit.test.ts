@@ -1,5 +1,5 @@
 import * as log from "loglevel";
-import JestHelper from "../../../JestHelper";
+import JestHelper from "../../JestHelper";
 import App from "../../App";
 import PublicTutorialService from "../../services/PublicTutorialService";
 import supertest from "supertest";

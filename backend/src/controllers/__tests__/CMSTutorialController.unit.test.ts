@@ -3,7 +3,7 @@ import Server from "../../App";
 import supertest from "supertest";
 import PartialTutorial from "../../dtos/PartialTutorial.dto";
 import Tutorial from "../../dtos/Tutorial.dto";
-import JestHelper from "../../../JestHelper";
+import JestHelper from "../../JestHelper";
 import { MongoClient, Db, Collection } from "mongodb";
 import { BAD_REQUEST_TEXT, BAD_OBJECTID_PARSE_TEXT } from "../../constants";
 

@@ -1,7 +1,7 @@
 import * as log from "loglevel";
 import Server from "../../App";
 import supertest from "supertest";
-import JestHelper from "../../../JestHelper";
+import JestHelper from "../../JestHelper";
 import { MongoClient, Db, Collection } from "mongodb";
 import { UNAUTHORISED_TEXT, BAD_REQUEST_TEXT } from "../../constants";
 
