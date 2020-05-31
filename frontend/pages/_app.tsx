@@ -1,5 +1,5 @@
 import { AppProps } from "next/app";
-import "../styles/global.scss";
+import "../styles/grid/grids.scss"
 import "react-markdown-editor-lite/lib/index.css";
 import "react-notifications/lib/notifications.css";
 

@@ -3,29 +3,31 @@ interface IGeneralProperty {
   text: string;
 }
 
-interface IButton<T> {
-  default: T;
-  hover: T;
+interface IButton {
+  default: IGeneralProperty;
+  hover: IGeneralProperty;
 }
 
-interface IStatusButton<T> {
-  success: T;
-  warning: T;
-  danger: T;
+interface IStatusButton {
+  success: IButtoni;
+  warning: IButton;
+  danger: IButton;
 }
 
 export interface ITheme {
   body: string;
   text: string;
   border: string;
+  link: {
+    hovered: string;
+    text: string;
+  };
+  fadedText: string;
   svg: {
     fill: string;
   };
-  section: {
-    body: string;
-    text: string;
-  };
-  button: IStatusButton<IButton<IGeneralProperty>>;
+  section: { border: string } & IGeneralProperty;
+  button: IStatusButton;
 }
 
 const primary = {
@@ -40,17 +42,19 @@ const neutral = {
   text: "#000",
   textInverted: "#fff",
   "100": "#fff",
-  "200": "#f4f5f7",
+  "200": "#ededed",
   "300": "#e1e1e1",
   "400": "#737581",
   "500": "#4a4b53",
   "600": "#000",
+  "700": "#737070",
 };
 
 const success = {
   "100": "#529E66",
-  "200": "#367B48",
-  "300": "#276738",
+  "200": "#27AE60",
+  "300": "#367B48",
+  "400": "#276738",
 };
 
 const error = {
@@ -68,19 +72,26 @@ const warning = {
 const light: ITheme = {
   body: neutral.textInverted,
   text: neutral.text,
-  border: neutral["100"],
+  link: {
+    text: neutral.text,
+    hovered: primary.blue,
+  },
+  fadedText: neutral[700],
+  // border: neutral["100"],
+  border: primary.blue,
   svg: {
     fill: "",
   },
   section: {
-    body: neutral.textInverted,
+    body: neutral[200],
+    border: neutral[200],
     text: neutral.text,
   },
   button: {
     success: {
       default: {
-        body: "",
-        text: "",
+        body: success["200"],
+        text: "#fff",
       },
       hover: {
         body: "",
@@ -113,12 +124,18 @@ const light: ITheme = {
 const dark: ITheme = {
   body: neutral.text,
   text: neutral.textInverted,
+  link: {
+    text: neutral.text,
+    hovered: primary.blue,
+  },
+  fadedText: neutral[700],
   border: neutral.textInverted,
   svg: {
     fill: "",
   },
   section: {
     body: neutral.textInverted,
+    border: neutral.textInverted,
     text: neutral.text,
   },
   button: {
@@ -158,3 +175,8 @@ const dark: ITheme = {
 const getTheme = (mode: string): ITheme => (mode === "dark" ? dark : light);
 
 export { getTheme };
+
+// enum ThemeName {
+//   dark,
+//   light
+// }

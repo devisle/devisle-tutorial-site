@@ -1,6 +1,7 @@
 import React from "react";
 import { ThemeProvider } from "styled-components";
 import { getTheme, ITheme } from "./Theme";
+import Typography from "./Typography"
 
 interface IThemeContext {
   dark: boolean;
@@ -21,7 +22,7 @@ const ThemeContextProvider: React.FC = ({ children }) => {
     setDarkTheme(!dark);
   };
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={{...theme, ...Typography}}>
       <ThemeContext.Provider
         value={{
           dark: false,
