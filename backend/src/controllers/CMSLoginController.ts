@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import CMSAuthService from "../services/CMSAuthService";
-import { UNAUTHORISED_TEXT, BAD_REQUEST_TEXT, INTERNAL_ERROR_TEXT } from "../constants";
+import { UNAUTHORISED_TEXT, BAD_REQUEST_TEXT } from "../constants";
 
 /**
  * Confirms login credentials of a given CMS user

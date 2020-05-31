@@ -147,8 +147,189 @@ paths:
       security:
       - BearerAuth: []
 
+  # PUBLIC RESOURCES
+  #
+  # Get tutorials
+  #
+  #    Get tut by id
+  #       /public/tutorials/{ID}
+  #
+  /public/tutorials/{tutId}:
+    get:
+      tags:
+      - PUBLIC
+      summary: Get a tutorial by it's ID
+      description: Gets a tutorial by it's `ObjectId(id)` (represented as a string)
+      operationId: getTutById
+      parameters:
+        - in: path
+          description: The `ObjectId(id)` of the tutorial we wish retreive
+          name: tutId
+          required: true
+          schema:
+            type: string
+          example: /public/tutorials/5ec6aa4993014b10402122b2
+      responses:
+        200:
+          description: "Returns a `PublicTutorial` formatted object."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicTutorialModel"
+        204:
+          description: "Returns 204 if tutorial does not exist"
+        400:
+          description: "Bad request, will occur when the `ObjectId(id)` path param string byte size is incorrect"
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "ObjectID argument passed in [the query] must be a single String of 12 bytes or a string of 24 hex"
+  
+  /public/tutorials/cards/{category}:
+    get:
+      tags:
+      - PUBLIC
+      summary: Get a an array of tutorial cards
+      description: "Gets all the tutorial cards of a given category, alternatively,
+                    if passed query params offset/outset, this will grab a specific portion of the card list"
+      operationId: getTutCardsByCategory
+      parameters:
+        - in: path
+          description: The tutorial category we wish to use for our card filter
+          name: category
+          required: true
+          schema:
+            type: string
+          example: /public/tutorials/cards/javascript
+        - in: query
+          description: The offset to begin at when filtering the card list
+          name: offset
+          required: false
+          schema:
+            type: number
+          example: /public/tutorials/cards/javascript?offset=0&outset=50
+        - in: query
+          description: The outset to begin at when filtering the card list
+          name: outset
+          required: false
+          schema:
+            type: number
+          example: /public/tutorials/cards/javascript?offset=0&outset=50
+      responses:
+        200:
+          description: "Returns an array of `TutorialCard`s"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PublicTutorialCardModel"
+        400:
+          description: "Bad request will occur when the query params are the wrong type"
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Query params for the category request must be integers."
+        404:
+          description: "404 Occurs when the passed path param category doesn't exist"
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "The given category does not exist."
+
+  /public/tutorials/categories/all:
+    get:
+      tags:
+      - PUBLIC
+      summary: Gets all of the categories in an array
+      operationId: getAllCategories
+      responses:
+        200:
+          description: "Returns an array of category strings"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  example: javascript
+
+  /public/tutorials/paths/all:
+    get:
+      tags:
+      - PUBLIC
+      summary: Gets all of the potential paths to a tutorial
+      operationId: getAllPaths
+      responses:
+        200:
+          description: "Returns an array of path strings"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    tutId:
+                      type: string
+                    tutName:
+                      type: string
+
+  #
+  #    Get all tutorials cards for this category
+  #       /public/tutorials/cards/{category}?offset=*&outset=*
+  #
+  # Categories
+  #     Get cat by id
+  #       /public/tutorials/categories?catId=*
+  #
+  #     Get cats in offset/outset -> this endpoint will also be used by the CMS lol
+  #       /public/tutorials/categories?offset=*&outset=*
+  #
+  # Svg assets to be stored in NextJS server, not here.
+  # Asset should be named after category name, i.e., Learn JS = learn-js.png/svg/jpeg w/e
+  #
+
 components:
   schemas:
+    PublicTutorialCardModel:
+      type: object
+      properties:
+        _id:
+          type: string
+        cardTutName:
+          type: string
+        category:
+          type: string
+        cardText:
+          type: string
+        authorName:
+          type: string
+        isAvailable:
+          type: boolean
+    PublicTutorialModel:
+      type: object
+      properties:
+        name:
+          type: string
+        category:
+          type: string
+        authorName:
+          type: string
+        isAvailable:
+          type: boolean
+        content:
+          type: array
+          items:
+            type: object
+            properties:
+              sectionTitle:
+                type: string
+              sectionBody:
+                type: string
     MongoUpdateResponse:
       type: object
       properties:

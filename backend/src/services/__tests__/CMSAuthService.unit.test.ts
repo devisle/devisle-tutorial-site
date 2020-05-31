@@ -1,6 +1,6 @@
-import { MongoClient } from "mongodb";
 import CMSAuthService from "../CMSAuthService";
 import jwt from "jsonwebtoken";
+import { MongoClient } from "mongodb";
 
 /**
  * @author ale8k

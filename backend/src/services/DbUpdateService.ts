@@ -1,7 +1,7 @@
 import { MongoError, UpdateWriteOpResult, Db } from "mongodb";
 
 /**
- * Static helper class resposible for handling all DB operations/transactions
+ * Static helper class resposible for handling generic DB operations/transactions
  *
  * @class
  * @author ale8k, rakeshshubhu

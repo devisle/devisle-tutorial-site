@@ -2,13 +2,14 @@ import dotenv from "dotenv";
 import express, { Application } from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
-import routes from "./routes/index";
+import routes from "./routes";
 import { MongoClient } from "mongodb";
 import DbUpdateService from "./services/DbUpdateService";
 import CMSAuthService from "./services/CMSAuthService";
 import http from "http";
 import chalk from "chalk";
 import * as log from "loglevel";
+import PublicTutorialService from "./services/PublicTutorialService";
 
 /**
  * App wrapper
@@ -72,6 +73,8 @@ export default class App {
                             this._l.info(chalk.dim.cyan("CMSAuthService db reference stored..."));
                             DbUpdateService.db = client.db(process.env.DB_NAME as string);
                             this._l.info(chalk.dim.cyan("DbUpdateService db reference stored..."));
+                            PublicTutorialService.db = client.db(process.env.DB_NAME as string);
+                            this._l.info(chalk.dim.cyan("PublicTutorialService db reference stored..."));
                             this._l.info(chalk.dim.cyan("Resolving server..."));
                             resolve(this.APP);
                         }
