@@ -46,6 +46,8 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v2
       - name: Run npm ci
         if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci
