@@ -5,10 +5,11 @@ import Typography from "./Typography"
 
 /**
  * Pass the dark mode value
+ * 
  * @property {dark} boolean sets the dark mode
  * @property onToggle toggle the dark mode 
  */
-interface IThemeContext {
+export interface IThemeContext {
   dark: boolean;
   onToggle?: () => void;
 }

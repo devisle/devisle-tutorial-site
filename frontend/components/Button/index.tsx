@@ -2,9 +2,9 @@ import styled, {css} from "styled-components";
 
 /**
  * Button interface
- * @property {varientColor} string Color of the button
- * @property {varient} string Button type whether it's a link, solid or outline
- * @property {?size} ButtonSizes size of the button
+ * @property {string} varientColor Color of the button
+ * @property {string} varient Button type whether it's a link, solid or outline
+ * @property {ButtonSizes} size  size of the button
  * @todo icons use react-icons
  * @author rakeshShubhu
  */

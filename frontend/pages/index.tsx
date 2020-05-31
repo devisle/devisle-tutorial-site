@@ -1,10 +1,11 @@
 import { useState, useContext } from "react";
 import { ThemeContext } from "styled-components";
 
-import { HelperText, StyledH1, Grid } from "../styles/core-ui";
-import { Layout, Seo } from "../components";
+import { IThemeContext } from "../components/ThemeProvider/ThemeProvider";
 import FormInput from "../components/FormInput";
 import Button from "../components/Button";
+import { Layout, Seo } from "../components";
+import { HelperText, StyledH1, Grid } from "../styles/core-ui";
 
 /**
  * Get tutorials
@@ -28,7 +29,7 @@ export const getServerSideProps = async () => {
  */
 export default function index(props) {
   const [categories, setCategories] = useState(props.tutorials);
-  const theme: any = useContext(ThemeContext);
+  const theme: typeof ThemeContext = useContext(ThemeContext);
 
   return (
     <Layout>
