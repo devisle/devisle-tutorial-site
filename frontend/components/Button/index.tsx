@@ -2,6 +2,7 @@ import styled, {css} from "styled-components";
 
 /**
  * Button interface
+ * 
  * @property {string} varientColor Color of the button
  * @property {string} varient Button type whether it's a link, solid or outline
  * @property {ButtonSizes} size  size of the button
