@@ -11,7 +11,7 @@ import { BAD_OBJECTID_PARSE_TEXT, INTERNAL_ERROR_TEXT, TUTORIAL_CATEGORIES } fro
 export default class PublicTutorialController {
     /**
      * Grabs a PUBLIC tutorial by its Id
-     *  - Endpoint takes the tutorial Id from the path params
+     *  - Endpoint takes the tutorial Id from the path paramss
      *
      * @async
      * @param {Request} req the users request obj
