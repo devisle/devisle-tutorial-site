@@ -1,9 +1,9 @@
+import * as log from "loglevel";
 import Server from "../../App";
 import supertest from "supertest";
+import JestHelper from "../../../JestHelper";
 import { MongoClient, Db, Collection } from "mongodb";
 import { UNAUTHORISED_TEXT, BAD_REQUEST_TEXT } from "../../constants";
-import JestHelper from "../../../JestHelper";
-import * as log from "loglevel";
 
 /**
  * This test utilises [supertest]{@link https://www.npmjs.com/package/supertest}

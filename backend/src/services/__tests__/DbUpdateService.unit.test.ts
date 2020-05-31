@@ -1,5 +1,5 @@
-import { MongoClient } from "mongodb";
 import DbUpdateService from "../DbUpdateService";
+import { MongoClient } from "mongodb";
 
 /**
  * @author ale8k

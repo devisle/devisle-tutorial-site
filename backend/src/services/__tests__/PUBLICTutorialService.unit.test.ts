@@ -1,6 +1,6 @@
-import { MongoClient, ObjectId } from "mongodb";
 import PublicTutorialService from "../PublicTutorialService";
 import ITutorial from "src/interfaces/ITutorial";
+import { MongoClient, ObjectId } from "mongodb";
 
 /**
  * @author ale8k

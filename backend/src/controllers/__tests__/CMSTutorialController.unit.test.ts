@@ -1,11 +1,11 @@
+import * as log from "loglevel";
 import Server from "../../App";
 import supertest from "supertest";
-import { MongoClient, Db, Collection } from "mongodb";
-import { BAD_REQUEST_TEXT, BAD_OBJECTID_PARSE_TEXT } from "../../constants";
 import PartialTutorial from "../../dtos/PartialTutorial.dto";
 import Tutorial from "../../dtos/Tutorial.dto";
 import JestHelper from "../../../JestHelper";
-import * as log from "loglevel";
+import { MongoClient, Db, Collection } from "mongodb";
+import { BAD_REQUEST_TEXT, BAD_OBJECTID_PARSE_TEXT } from "../../constants";
 
 /**
  * This test utilises [supertest]{@link https://www.npmjs.com/package/supertest}
