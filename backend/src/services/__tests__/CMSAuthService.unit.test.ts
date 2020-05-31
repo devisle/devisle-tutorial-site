@@ -6,7 +6,7 @@ import { MongoClient } from "mongodb";
  * @author ale8k
  */
 describe("CMSAuthService", () => {
-    let connection;
+    let connection: MongoClient;
     let testJwt: string;
 
     // Setup the DB for testing
@@ -37,6 +37,7 @@ describe("CMSAuthService", () => {
     afterAll(async () => {
         // Clear mock users
         await CMSAuthService.db.collection("cms-users").deleteMany({});
+        connection.close();
     });
 
     it("checkLoginCredentials should confirm credentials safely", (done) => {

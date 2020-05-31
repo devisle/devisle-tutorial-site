@@ -6,7 +6,7 @@ import { MongoClient, ObjectId } from "mongodb";
  * @author ale8k
  */
 describe("PublicTutorialService", () => {
-    let connection;
+    let connection: MongoClient;
 
     // Setup the DB for testing
     beforeAll(async () => {
@@ -14,8 +14,7 @@ describe("PublicTutorialService", () => {
             poolSize: 10,
             useNewUrlParser: true,
             useUnifiedTopology: true
-        },
-        );
+        });
         PublicTutorialService.db = await connection.db(global.__MONGO_DB_NAME__);
 
         await PublicTutorialService.db.collection("tutorials").insertOne({
@@ -33,6 +32,7 @@ describe("PublicTutorialService", () => {
     afterAll(async () => {
         // Clear mock tuts
         await PublicTutorialService.db.collection("tutorials").deleteMany({});
+        connection.close();
     });
 
     it("getPublicTutById should get a parsed IProjectedTutorial in the form of PublicTutorial", (done) => {
