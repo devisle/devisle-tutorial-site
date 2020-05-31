@@ -42,6 +42,14 @@ describe("CMSTutorialController", () => {
         );
     });
 
+    afterEach(async () => {
+        await db.collection(tutorialsCollectionName).deleteMany({});
+    });
+
+    afterAll(() => {
+        connection.close();
+    });
+
     /**
      * /CMS/TUTORIALS/CREATE
      */
@@ -61,7 +69,7 @@ describe("CMSTutorialController", () => {
                             agent.get("/cms/tutorials/all").set("Authorization", `Bearer ${jwt}`).expect((response) => {
                                 const tutArr = response.body as Tutorial[];
                                 const tut = tutArr[0];
-                                expect(tut.isAvailable).toBeTruthy();
+                                expect(tut.isAvailable).toBe(true);
                             }).end(done);
                         });
                 });
@@ -89,7 +97,7 @@ describe("CMSTutorialController", () => {
      * /CMS/TUTORIALS/ALL
      */
     it("cms/tutorials/all should retrieve all tutorials, with a 200 response", async (done) => {
-        await tutorialsCollection.insertOne(new PartialTutorial("test tut", "html", "markdown", "category"));
+        await tutorialsCollection.insertOne(new Tutorial("test tut", "html", "markdown", "category", "1", "bob", true, "1"));
         new Server({ path: ".test.env" }).setupServer().then((app) => {
             let jwt: string;
             const agent = supertest(app);
@@ -112,7 +120,7 @@ describe("CMSTutorialController", () => {
      * /CMS/TUTORIALS/UPDATE?TUTID=******
      */
     it("cms/tutorials/update? should update a tutorial successfully, with a 200 response", async (done) => {
-        await tutorialsCollection.insertOne(new PartialTutorial("test tut", "html", "markdown", "category"));
+        await tutorialsCollection.insertOne(new Tutorial("test tut", "html", "markdown", "category", "1", "bob", true));
         new Server({ path: ".test.env" }).setupServer().then((app) => {
             let jwt: string;
             let tut: Tutorial;
@@ -126,13 +134,16 @@ describe("CMSTutorialController", () => {
                     agent.get("/cms/tutorials/all").set("Authorization", `Bearer ${jwt}`).expect(200).expect(response => {
                         const tutArr = response.body as Tutorial[];
                         tut = tutArr[0];
+                        console.log(tutArr[0]._id);
                     }).end(() => {
-                        agent.put(`/cms/tutorials/update?tutId=${tut._id}`).set("Authorization", `Bearer ${jwt}`)
-                            .send({ name: "changed", html: "changed", markdown: "changed", category: "changed" })
+                        // /cms/tutorials/update?tutId=
+                        agent.put("/cms/tutorials/update?tutId=" + tut._id).set("Authorization", `Bearer ${jwt}`)
+                            .send({ name: "shreyas has a name", html: "changed", markdown: "changed", category: "changed" })
                             .expect(200).expect(resp => {
                                 const respBody: MongoUpdateResponse = resp.body;
-                                expect(respBody.n).toBe(1);
+                                console.log(respBody);
                                 expect(respBody.ok).toBe(1);
+                                expect(respBody.n).toBe(1);
                                 expect(respBody.nModified).toBe(1);
                             }).end(done);
                     });
@@ -190,9 +201,5 @@ describe("CMSTutorialController", () => {
                     });
                 });
         });
-    });
-
-    afterAll(() => {
-        connection.close();
     });
 });
