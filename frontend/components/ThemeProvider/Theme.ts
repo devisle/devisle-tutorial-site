@@ -9,7 +9,7 @@ interface IButton {
 }
 
 interface IStatusButton {
-  success: IButtoni;
+  success: IButton;
   warning: IButton;
   danger: IButton;
 }
