@@ -8,8 +8,8 @@
     "dev": "nodemon",
     "start:dev": "ts-node src/Server.ts",
     "start": "node dist/Server.js",
-    "test:unit": "jest unit --detectOpenHandles --colors",
-    "test:int": "jest int --detectOpenHandles --colors",
+    "test:unit": "jest unit --detectOpenHandles --colors --forceExit",
+    "test:int": "jest int --detectOpenHandles --colors --forceExit",
     "test:unit:watch": "jest --watch unit --detectOpenHandles --colors"
   },
   "author": "Alexander Kilroy",
