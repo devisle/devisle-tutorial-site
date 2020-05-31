@@ -15,7 +15,14 @@ on:
 
 jobs:
   test:
-    
+    env:
+      PORT: ${{ secrets.PORT }}
+      DB_URL: ${{ secrets.DB_URL }}
+      DB_NAME: ${{ secrets.DB_NAME }}
+      BCRYPT_SALT: ${{ secrets.BCRYPT_SALT }}
+      JWT_KEY: ${{ secrets.JWT_KEY }}
+      JWT_EXPIRY: ${{ secrets.JWT_EXPIRY }}
+
     defaults:
       run:
         shell: bash
