@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import PUBLICTutorialService from "../services/PUBLICTutorialService";
+import PublicTutorialService from "../services/PublicTutorialService";
 import { ObjectId, MongoError } from "mongodb";
 import { BAD_OBJECTID_PARSE_TEXT, INTERNAL_ERROR_TEXT, TUTORIAL_CATEGORIES } from "../constants";
 
@@ -8,7 +8,7 @@ import { BAD_OBJECTID_PARSE_TEXT, INTERNAL_ERROR_TEXT, TUTORIAL_CATEGORIES } fro
  *
  * @author ale8k
  */
-export default class PUBLICTutorialController {
+export default class PublicTutorialController {
     /**
      * Grabs a PUBLIC tutorial by its Id
      *  - Endpoint takes the tutorial Id from the path params
@@ -20,7 +20,7 @@ export default class PUBLICTutorialController {
     public static getTutorialById(req: Request, res: Response): void {
         try {
             const tutObjectId = new ObjectId(req.params.tutId);
-            PUBLICTutorialService.getPublicTutById("tutorials", tutObjectId).then(
+            PublicTutorialService.getPublicTutById("tutorials", tutObjectId).then(
                 (response) => {
                     if (response === null) {
                         res.sendStatus(204).end();
@@ -52,8 +52,8 @@ export default class PUBLICTutorialController {
      */
     public static getSpecifiedTutorialCards(req: Request, res: Response): void {
         const category = req.params.category.toLowerCase().replace("-", " ");
-        if (PUBLICTutorialController.verifyCategory(category)) {
-            PUBLICTutorialService.getTutCardsInCategory("tutorials", category).then(
+        if (PublicTutorialController.verifyCategory(category)) {
+            PublicTutorialService.getTutCardsInCategory("tutorials", category).then(
                 (cards) => {
                     if (req.query.offset && req.query.outset) {
                         const offset: number = parseInt(req.query.offset);
@@ -94,7 +94,7 @@ export default class PUBLICTutorialController {
      * @param {Response} res our res obj
      */
     public static getAllPaths(req: Request, res: Response): void {
-        PUBLICTutorialService.getOnlyTutNamesAndIds("tutorials").then(
+        PublicTutorialService.getOnlyTutNamesAndIds("tutorials").then(
             (paths) => res.status(200).send(paths)
         );
     }

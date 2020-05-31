@@ -10,7 +10,7 @@ import TutorialCard from "../dtos/TutorialCard.dto";
  * @class
  * @author ale8k
  */
-export default class PUBLICTutorialService {
+export default class PublicTutorialService {
     /**
      * Single DB ref from Server
      */
@@ -34,12 +34,12 @@ export default class PUBLICTutorialService {
                     isAvailable: 1
                 }
             };
-            PUBLICTutorialService.db.collection(collectionName).findOne<IProjectedTutorial>({ _id: tutId }, publicTutProjection,
+            PublicTutorialService.db.collection(collectionName).findOne<IProjectedTutorial>({ _id: tutId }, publicTutProjection,
                 (err, result) => {
                     if (err) {
                         rej(err);
                     }
-                    res(PUBLICTutorialService.parsePublicProjectTut(result));
+                    res(PublicTutorialService.parsePublicProjectTut(result));
                 }
             );
         });
@@ -64,7 +64,7 @@ export default class PUBLICTutorialService {
                     isAvailable: 1
                 }
             };
-            PUBLICTutorialService.db.collection(collectionName)
+            PublicTutorialService.db.collection(collectionName)
                 .find<IProjectedTutorial & { _id: string }>({ category: queryCategory }, tutCardProjection)
                 .toArray().then(
                     (data) => {
@@ -100,7 +100,7 @@ export default class PUBLICTutorialService {
                     name: 1,
                 }
             };
-            PUBLICTutorialService.db.collection(collectionName).find<{ _id: string, name: string }>({}, pathProjection).toArray().then(
+            PublicTutorialService.db.collection(collectionName).find<{ _id: string, name: string }>({}, pathProjection).toArray().then(
                 (result) => {
                     const parsedPaths = result.map((path) => {
                         return {

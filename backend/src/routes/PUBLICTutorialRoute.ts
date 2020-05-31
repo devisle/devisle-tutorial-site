@@ -1,13 +1,13 @@
 import IRoute from "../interfaces/IRoute";
 import { Router } from "express";
-import PUBLICTutorialController from "../controllers/PUBLICTutorialController";
+import PublicTutorialController from "../controllers/PublicTutorialController";
 
 /**
  * The public tutorial route
  *
  * @author ale8k
  */
-export default class PUBLICTutorialRoute implements IRoute {
+export default class PublicTutorialRoute implements IRoute {
     /**
      * Router instance
      */
@@ -21,9 +21,9 @@ export default class PUBLICTutorialRoute implements IRoute {
      * Middleware & controller setup
      */
     constructor() {
-        this.ROUTER.get(this.RESOURCE_LOC + "/:tutId", PUBLICTutorialController.getTutorialById);
-        this.ROUTER.get(this.RESOURCE_LOC + "/cards/:category", PUBLICTutorialController.getSpecifiedTutorialCards);
-        this.ROUTER.get(this.RESOURCE_LOC + "/categories/all", PUBLICTutorialController.getAllCategories);
-        this.ROUTER.get(this.RESOURCE_LOC + "/paths/all", PUBLICTutorialController.getAllPaths);
+        this.ROUTER.get(this.RESOURCE_LOC + "/:tutId", PublicTutorialController.getTutorialById);
+        this.ROUTER.get(this.RESOURCE_LOC + "/cards/:category", PublicTutorialController.getSpecifiedTutorialCards);
+        this.ROUTER.get(this.RESOURCE_LOC + "/categories/all", PublicTutorialController.getAllCategories);
+        this.ROUTER.get(this.RESOURCE_LOC + "/paths/all", PublicTutorialController.getAllPaths);
     }
 }

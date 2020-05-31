@@ -1,11 +1,11 @@
 import { MongoClient, ObjectId } from "mongodb";
-import PUBLICTutorialService from "../PUBLICTutorialService";
+import PublicTutorialService from "../PublicTutorialService";
 import ITutorial from "src/interfaces/ITutorial";
 
 /**
  * @author ale8k
  */
-describe("PUBLICTutorialService", () => {
+describe("PublicTutorialService", () => {
     let connection;
 
     // Setup the DB for testing
@@ -16,9 +16,9 @@ describe("PUBLICTutorialService", () => {
             useUnifiedTopology: true
         },
         );
-        PUBLICTutorialService.db = await connection.db(global.__MONGO_DB_NAME__);
+        PublicTutorialService.db = await connection.db(global.__MONGO_DB_NAME__);
 
-        await PUBLICTutorialService.db.collection("tutorials").insertOne({
+        await PublicTutorialService.db.collection("tutorials").insertOne({
             name: "another name",
             html: "somestuff that won't be considered     <p>--## Section 1</p>  <p>So this is my section, I'm talking crap here... <p>--## Section 2</p> more crap",
             markdown: "",
@@ -32,13 +32,13 @@ describe("PUBLICTutorialService", () => {
     // Clean up
     afterAll(async () => {
         // Clear mock tuts
-        await PUBLICTutorialService.db.collection("tutorials").deleteMany({});
+        await PublicTutorialService.db.collection("tutorials").deleteMany({});
     });
 
     it("getPublicTutById should get a parsed IProjectedTutorial in the form of PublicTutorial", (done) => {
-        PUBLICTutorialService.db.collection("tutorials").find({}).toArray().then(resp => {
+        PublicTutorialService.db.collection("tutorials").find({}).toArray().then(resp => {
             const lastAdded: ITutorial = resp[resp.length - 1];
-            PUBLICTutorialService.getPublicTutById("tutorials", new ObjectId(lastAdded._id)).then(
+            PublicTutorialService.getPublicTutById("tutorials", new ObjectId(lastAdded._id)).then(
                 (response) => {
                     expect(response).not.toEqual(null);
                     expect(response?.content).toHaveLength(2);
@@ -54,7 +54,7 @@ describe("PUBLICTutorialService", () => {
     });
 
     it("getTutCardsInCategory should get a parsed tutorial cards", (done) => {
-        PUBLICTutorialService.getTutCardsInCategory("tutorials", "javascript").then(
+        PublicTutorialService.getTutCardsInCategory("tutorials", "javascript").then(
             (response) => {
                 expect(response).not.toEqual(null);
                 expect(response[0].cardText).toEqual("Section 1  So this is my section, I'm talking crap here...  Section 2 more crap");

@@ -2,7 +2,7 @@ import JestHelper from "../../../JestHelper";
 import { MongoClient } from "mongodb";
 import App from "../../App";
 import * as log from "loglevel";
-import PUBLICTutorialService from "../../services/PUBLICTutorialService";
+import PublicTutorialService from "../../services/PublicTutorialService";
 import supertest from "supertest";
 import ITutorial from "src/interfaces/ITutorial";
 import PublicTutorial from "src/dtos/PublicTutorial.dto";
@@ -14,7 +14,7 @@ import { BAD_OBJECTID_PARSE_TEXT } from "../../constants";
  *
  * @author ale8k
  */
-describe("PUBLICTutorialController", () => {
+describe("PublicTutorialController", () => {
     let connection: MongoClient;
 
     beforeAll(async () => {
@@ -27,9 +27,9 @@ describe("PUBLICTutorialController", () => {
             useUnifiedTopology: true
         });
 
-        PUBLICTutorialService.db = await connection.db(global.__MONGO_DB_NAME__);
+        PublicTutorialService.db = await connection.db(global.__MONGO_DB_NAME__);
 
-        await PUBLICTutorialService.db.collection("tutorials").insertOne({
+        await PublicTutorialService.db.collection("tutorials").insertOne({
             name: "another name",
             html: "somestuff that won't be considered     <p>--## Section 1</p>  <p>So this is my section, I'm talking crap here... <p>--## Section 2</p> more crap",
             markdown: "",
@@ -44,7 +44,7 @@ describe("PUBLICTutorialController", () => {
      * /PUBLIC/TUTORIALS/{TUTID}
      */
     it("/public/tutorials/{tutid} should return the parsed tutorial, with a 200 response", (done) => {
-        PUBLICTutorialService.db.collection("tutorials").find({}).toArray().then(resp => {
+        PublicTutorialService.db.collection("tutorials").find({}).toArray().then(resp => {
             const lastAdded: ITutorial = resp[resp.length - 1];
             new App({ path: ".test.env" }).setupServer().then((app) => {
                 const agent = supertest(app);

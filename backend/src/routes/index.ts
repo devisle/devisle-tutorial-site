@@ -1,9 +1,9 @@
 import CMSTutorialRoute from "./CMSTutorialRoute";
 import CMSLoginRoute from "./CMSLoginRoute";
-import PUBLICTutorialRoute from "./PUBLICTutorialRoute";
+import PublicTutorialRoute from "./PublicTutorialRoute";
 
 export default [
     CMSTutorialRoute,
     CMSLoginRoute,
-    PUBLICTutorialRoute
+    PublicTutorialRoute
 ];
