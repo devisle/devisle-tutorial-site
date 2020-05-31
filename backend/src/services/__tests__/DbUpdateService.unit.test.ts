@@ -29,7 +29,6 @@ describe("DbUpdateService", () => {
     afterEach(async () => {
         // Clear mock tuts
         await DbUpdateService.db.collection(collectionName).deleteMany({});
-        connection.close();
     });
 
     it("getAllDocuments<T> should return all documents in a given collection", (done) => {

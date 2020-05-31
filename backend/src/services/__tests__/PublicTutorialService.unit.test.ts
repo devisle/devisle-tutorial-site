@@ -32,7 +32,6 @@ describe("PublicTutorialService", () => {
     afterAll(async () => {
         // Clear mock tuts
         await PublicTutorialService.db.collection("tutorials").deleteMany({});
-        connection.close();
     });
 
     it("getPublicTutById should get a parsed IProjectedTutorial in the form of PublicTutorial", (done) => {
