@@ -6,7 +6,7 @@ export const GlobalStyles = createGlobalStyle`
         background: ${({ theme }) => theme.body};
         color: ${({ theme }) => theme.text};
         margin: 0;
-        border-top: ${({theme}) => `8px solid ${theme.border}`};
+        border-top: ${({ theme }) => `8px solid ${theme.border}`};
     }
 
     h1,
@@ -16,35 +16,35 @@ export const GlobalStyles = createGlobalStyle`
     h5,
     h6{
         margin: 0;
-        font-family: ${({theme}) => theme.fonts.heading};
+        font-family: ${({ theme }) => theme.fonts.heading};
     } 
 
     p{
         margin: 0;
-        font-family: ${({theme}) => theme.fonts.body};
+        font-family: ${({ theme }) => theme.fonts.body};
     }
 
     h1{
-        font-size: ${({theme}) => theme.fontSizes['3xl']};
-        ${props => {
-            props.capitalize ? "text-capitalize: capitalize;" : ''
+        font-size: ${({ theme }) => theme.fontSizes["3xl"]};
+        ${(props) => {
+          props.capitalize ? "text-capitalize: capitalize;" : "";
         }}
     }
 
     h2{
-        font-size: ${({theme}) => theme.fontSizes['2xl']};
+        font-size: ${({ theme }) => theme.fontSizes["2xl"]};
     }
 
     h3{
-        font-size: ${({theme}) => theme.fontSizes['xl']};
+        font-size: ${({ theme }) => theme.fontSizes["xl"]};
     }
 
     h4{
-        font-size: ${({theme}) => theme.fontSizes['lg']};
+        font-size: ${({ theme }) => theme.fontSizes["lg"]};
     }
 
     h5{
-        font-size: ${({theme}) => theme.fontSizes['md']};
+        font-size: ${({ theme }) => theme.fontSizes["md"]};
     }
 
     a{
