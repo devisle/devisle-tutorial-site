@@ -30,7 +30,6 @@
     "nodemon": "2.0.2",
     "supertest": "4.0.2",
     "ts-jest": "26.0.0",
-    "ts-lint": "4.5.1",
     "ts-node": "8.6.2",
     "typescript": "3.8.3"
   },

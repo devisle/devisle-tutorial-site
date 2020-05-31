@@ -100,6 +100,5 @@ export default class App {
             this.APP.use(new route().ROUTER);
         });
     }
-
 }
 
