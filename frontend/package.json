@@ -11,6 +11,7 @@
     "@testing-library/jest-dom": "^5.8.0",
     "@testing-library/react": "^10.0.4",
     "@testing-library/user-event": "^10.3.3",
+    "babel-plugin-styled-components": "^1.10.7",
     "markdown-it": "^11.0.0",
     "next": "9.4.0",
     "react": "16.13.1",
@@ -18,7 +19,8 @@
     "react-markdown-editor-lite": "^1.1.2",
     "react-modal": "^3.11.2",
     "react-notifications": "^1.6.0",
-    "sass": "^1.26.5"
+    "sass": "^1.26.5",
+    "styled-components": "^5.1.0"
   },
   "devDependencies": {
     "@types/jest": "^25.2.3",
