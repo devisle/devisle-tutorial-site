@@ -1,3 +1,7 @@
+/** 
+ * Design System Implementation.
+ * Only these values should be used in the application.
+ */
 export default {
     fonts: {
         heading: '"Inter", sans-serif',

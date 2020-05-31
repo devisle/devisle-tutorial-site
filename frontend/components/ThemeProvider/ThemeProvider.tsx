@@ -3,15 +3,22 @@ import { ThemeProvider } from "styled-components";
 import { getTheme, ITheme } from "./Theme";
 import Typography from "./Typography"
 
+/**
+ * Pass the dark mode value
+ * @property {dark} boolean sets the dark mode
+ * @property onToggle toggle the dark mode 
+ */
 interface IThemeContext {
   dark: boolean;
   onToggle?: () => void;
 }
 
+/** Theme context */
 const ThemeContext = React.createContext<IThemeContext>({
   dark: false,
 });
 
+/** Get the Theme context i.e. whether dark-mode is false or true */
 const useTheme = (): IThemeContext => React.useContext(ThemeContext);
 
 const ThemeContextProvider: React.FC = ({ children }) => {
