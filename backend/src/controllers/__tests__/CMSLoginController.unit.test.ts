@@ -40,10 +40,6 @@ describe("CMSLoginController", () => {
         );
     });
 
-    afterAll(() => {
-        connection.close();
-    });
-
     /**
      * /CMS/AUTH/LOGIN
      */
@@ -107,4 +103,7 @@ describe("CMSLoginController", () => {
         });
     });
 
+    afterAll(() => {
+        connection.close();
+    });
 });

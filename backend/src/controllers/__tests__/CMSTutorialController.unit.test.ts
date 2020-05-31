@@ -46,10 +46,6 @@ describe("CMSTutorialController", () => {
         await db.collection(tutorialsCollectionName).deleteMany({});
     });
 
-    afterAll(() => {
-        connection.close();
-    });
-
     /**
      * /CMS/TUTORIALS/CREATE
      */
@@ -134,14 +130,12 @@ describe("CMSTutorialController", () => {
                     agent.get("/cms/tutorials/all").set("Authorization", `Bearer ${jwt}`).expect(200).expect(response => {
                         const tutArr = response.body as Tutorial[];
                         tut = tutArr[0];
-                        console.log(tutArr[0]._id);
                     }).end(() => {
                         // /cms/tutorials/update?tutId=
                         agent.put("/cms/tutorials/update?tutId=" + tut._id).set("Authorization", `Bearer ${jwt}`)
                             .send({ name: "shreyas has a name", html: "changed", markdown: "changed", category: "changed" })
                             .expect(200).expect(resp => {
                                 const respBody: MongoUpdateResponse = resp.body;
-                                console.log(respBody);
                                 expect(respBody.ok).toBe(1);
                                 expect(respBody.n).toBe(1);
                                 expect(respBody.nModified).toBe(1);
@@ -201,5 +195,9 @@ describe("CMSTutorialController", () => {
                     });
                 });
         });
+    });
+
+    afterAll(() => {
+        connection.close();
     });
 });

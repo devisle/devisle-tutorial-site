@@ -40,10 +40,6 @@ describe("PublicTutorialController", () => {
         });
     });
 
-    afterAll(() => {
-        connection.close();
-    });
-
     /**
      * /PUBLIC/TUTORIALS/{TUTID}
      */
@@ -118,4 +114,7 @@ describe("PublicTutorialController", () => {
         });
     });
 
+    afterAll(() => {
+        connection.close();
+    });
 });
