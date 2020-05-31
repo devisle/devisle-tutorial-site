@@ -1,19 +1,19 @@
 openapi: 3.0.2
 info:
-    title: Tutorial site API
-    description: The API for the NextJS tutorial site developed by DevIsle. 
-    version: 1.0.0
-    contact: 
-        name: DevIsle Team
-        
-tags: 
+  title: Tutorial site API
+  description: The API for the NextJS tutorial site developed by DevIsle.
+  version: 1.0.0
+  contact:
+    name: DevIsle Team
+
+tags:
   - name: CMS
     description: All CMS related endpoints
 
 paths:
   /cms/auth/login:
     post:
-      tags: 
+      tags:
         - CMS
       summary: Logs into the CMS
       description: Verifies credentials and returns some meta data of the user, alongside a 2 day JWT in the body.
@@ -34,8 +34,8 @@ paths:
 
   /cms/auth/confirm:
     get:
-      tags: 
-      - CMS
+      tags:
+        - CMS
       summary: Verifys the users JWT
       description: Performs a verification check of the users JWT and responds accordingly.
       operationId: verifyCmsUsersJWT
@@ -46,20 +46,16 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/requestBodies/CMSUserLoginBody"
-              example: 
-                {
-                  username: "Alex",
-                  userId: "5ech7083300gh30f202efaf9"
-                }
+              example: { username: "Alex", userId: "5ech7083300gh30f202efaf9" }
         401:
           $ref: "#/components/responses/Unauthorised"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
 
   /cms/tutorials/all:
     get:
       tags:
-      - CMS
+        - CMS
       summary: Get all tutorials
       description: Gets all the tutorials in their **full** format.
       operationId: getAllTutorialsCMS
@@ -78,12 +74,12 @@ paths:
                 type: string
                 example: "Something went wrong on our side! See here: Example Error"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
 
   /cms/tutorials/create:
     post:
       tags:
-      - CMS
+        - CMS
       summary: Create tutorial
       description: Creates a tutorial.
       operationId: createATutorialCMS
@@ -111,12 +107,12 @@ paths:
                 type: string
                 example: "Something went wrong on our side! See here: Example Error"
       security:
-      - BearerAuth: []
-  
+        - BearerAuth: []
+
   /cms/tutorials/update:
     put:
       tags:
-      - CMS
+        - CMS
       summary: Update a tutorial
       description: Updates a tutorial by it's `ObjectId(id)`
       operationId: updateATutorialCMS
@@ -145,7 +141,7 @@ paths:
                 type: string
                 example: "Server cannot process this request!"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
 
   # PUBLIC RESOURCES
   #
@@ -157,7 +153,7 @@ paths:
   /public/tutorials/{tutId}:
     get:
       tags:
-      - PUBLIC
+        - PUBLIC
       summary: Get a tutorial by it's ID
       description: Gets a tutorial by it's `ObjectId(id)` (represented as a string)
       operationId: getTutById
@@ -185,14 +181,15 @@ paths:
               schema:
                 type: string
                 example: "ObjectID argument passed in [the query] must be a single String of 12 bytes or a string of 24 hex"
-  
+
   /public/tutorials/cards/{category}:
     get:
       tags:
-      - PUBLIC
+        - PUBLIC
       summary: Get a an array of tutorial cards
-      description: "Gets all the tutorial cards of a given category, alternatively,
-                    if passed query params offset/outset, this will grab a specific portion of the card list"
+      description:
+        "Gets all the tutorial cards of a given category, alternatively,
+        if passed query params offset/outset, this will grab a specific portion of the card list"
       operationId: getTutCardsByCategory
       parameters:
         - in: path
@@ -243,7 +240,7 @@ paths:
   /public/tutorials/categories/all:
     get:
       tags:
-      - PUBLIC
+        - PUBLIC
       summary: Gets all of the categories in an array
       operationId: getAllCategories
       responses:
@@ -260,7 +257,7 @@ paths:
   /public/tutorials/paths/all:
     get:
       tags:
-      - PUBLIC
+        - PUBLIC
       summary: Gets all of the potential paths to a tutorial
       operationId: getAllPaths
       responses:
@@ -277,6 +274,37 @@ paths:
                       type: string
                     tutName:
                       type: string
+
+  /public/tutorials/categories/query:
+    get:
+      tags:
+        - PUBLIC
+      summary: Gets categories based on query
+      operationId: getSpecifiedCategories
+      parameters:
+        - in: query
+          description: The offset to begin at when filtering the category list
+          name: offset
+          required: true
+          schema:
+            type: number
+          example: /public/tutorials/categories/query?offset=0&outset=50
+        - in: query
+          description: The outset to begin at when filtering the category list
+          name: outset
+          required: true
+          schema:
+            type: number
+          example: /public/tutorials/categories/query?offset=0&outset=50
+      responses:
+        200:
+          description: "Returns an array of category strings"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
 
   #
   #    Get all tutorials cards for this category
@@ -345,7 +373,7 @@ components:
         - $ref: "#/components/schemas/MongoUpdateResponse"
         - type: object
           properties:
-            nModified: 
+            nModified:
               type: integer
           required:
             - nModified
@@ -356,7 +384,7 @@ components:
           type: string
         password:
           type: string
-      required: 
+      required:
         - username
         - password
     CMSUserLoginRespModel:
@@ -401,7 +429,7 @@ components:
         - isAvailable
     CMSAllTutorialsArrayModel:
       type: array
-      items: 
+      items:
         $ref: "#/components/schemas/CMSTutorialModel"
     TutorialCreateUpdateModel:
       type: object
@@ -452,13 +480,12 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/CMSUserLoginModel"
-            
+
   securitySchemes:
     BearerAuth:
       type: http
       scheme: bearer
-    
-servers:
-    - url: http://127.0.0.1:3000/
-      description: Development
 
+servers:
+  - url: http://127.0.0.1:3000/
+    description: Development
