@@ -176,7 +176,3 @@ const getTheme = (mode: string): ITheme => (mode === "dark" ? dark : light);
 
 export { getTheme };
 
-// enum ThemeName {
-//   dark,
-//   light
-// }
