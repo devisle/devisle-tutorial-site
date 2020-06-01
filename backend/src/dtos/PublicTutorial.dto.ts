@@ -11,11 +11,12 @@ export default class PublicTutorial {
      * Set given DTO fields
      */
     constructor(
-            name: string,
-            category: string,
-            authorName: string,
-            isAvailable: boolean,
-            content: ISection[]) {
+        name: string,
+        category: string,
+        authorName: string,
+        isAvailable: boolean,
+        content: ISection[]
+    ) {
         this.name = name;
         this.category = category;
         this.authorName = authorName;

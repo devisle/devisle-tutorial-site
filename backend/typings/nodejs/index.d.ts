@@ -1,11 +1,11 @@
 /**
  * NodeJS GLOBAL type extension
- * This is used for adding Jest globals, 
+ * This is used for adding Jest globals,
  * so that our *.unit/int.test.ts can pickup on the globals
- * 
+ *
  * @author ale8k
  */
-declare module NodeJS {
+declare namespace NodeJS {
     interface Global {
         /** Pre-determined by our @shelf/jest-mongodb preset */
         __MONGO_URI__: string;
