@@ -10,7 +10,11 @@
         "start": "node dist/Server.js",
         "test:unit": "jest unit --detectOpenHandles --colors --forceExit",
         "test:int": "jest int --detectOpenHandles --colors --forceExit",
-        "test:unit:watch": "jest --watch unit --detectOpenHandles --colors"
+        "test:unit:watch": "jest --watch unit --detectOpenHandles --colors",
+        "format": "prettier --write */**/*.{ts,tsx}",
+        "lint": "eslint --quiet --fix */**/*.{ts,tsx}",
+        "ci:type-errors": "tsc --noEmit",
+        "ci:lint": "eslint '*/**/*.{ts,tsx}' --quiet"
     },
     "author": "Alexander Kilroy",
     "license": "ISC",
