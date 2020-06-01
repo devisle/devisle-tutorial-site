@@ -25,9 +25,18 @@ export default class CMSTutorialRoute implements IRoute {
      */
     constructor() {
         this.ROUTER.use(this.RESOURCE_LOC, this.authorisationCheck);
-        this.ROUTER.get(this.RESOURCE_LOC + "/all", CMSTutorialController.getAllTutorials);
-        this.ROUTER.post(this.RESOURCE_LOC + "/create", CMSTutorialController.createTutorial);
-        this.ROUTER.put(this.RESOURCE_LOC + "/update", CMSTutorialController.updateTutorialById);
+        this.ROUTER.get(
+            this.RESOURCE_LOC + "/all",
+            CMSTutorialController.getAllTutorials
+        );
+        this.ROUTER.post(
+            this.RESOURCE_LOC + "/create",
+            CMSTutorialController.createTutorial
+        );
+        this.ROUTER.put(
+            this.RESOURCE_LOC + "/update",
+            CMSTutorialController.updateTutorialById
+        );
     }
 
     /**
@@ -40,7 +49,11 @@ export default class CMSTutorialRoute implements IRoute {
      * @param {Response} res the response object
      * @param {NextFunction} next express.next() function to proceed in the middleware chain
      */
-    private authorisationCheck(req: Request<ParamsDictionary>, res: Response, next: NextFunction): void {
+    private authorisationCheck(
+        req: Request<ParamsDictionary>,
+        res: Response,
+        next: NextFunction
+    ): void {
         const token: string | undefined = req.headers.authorization;
         const authorised = CMSAuthService.verifyJWT(token);
         if (!authorised) {

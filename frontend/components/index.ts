@@ -1,4 +1,4 @@
-import Layout from './Layout'
-import Seo from './Seo'
+import Layout from "./Layout";
+import Seo from "./Seo";
 
-export {Layout, Seo}
+export { Layout, Seo };

@@ -1,36 +1,60 @@
 {
-  "name": "frontend",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start"
-  },
-  "dependencies": {
-    "@testing-library/jest-dom": "^5.8.0",
-    "@testing-library/react": "^10.0.4",
-    "@testing-library/user-event": "^10.3.3",
-    "babel-plugin-styled-components": "^1.10.7",
-    "markdown-it": "^11.0.0",
-    "next": "9.4.0",
-    "react": "16.13.1",
-    "react-dom": "16.13.1",
-    "react-markdown-editor-lite": "^1.1.2",
-    "react-modal": "^3.11.2",
-    "react-notifications": "^1.6.0",
-    "sass": "^1.26.5",
-    "styled-components": "^5.1.0"
-  },
-  "devDependencies": {
-    "@types/jest": "^25.2.3",
-    "@types/markdown-it": "^10.0.1",
-    "@types/node": "^14.0.1",
-    "@types/react": "^16.9.35",
-    "@types/react-dom": "^16.9.8",
-    "@types/react-modal": "^3.10.5",
-    "dotenv": "^8.2.0",
-    "ts-lint": "^4.5.1",
-    "typescript": "^3.9.2"
-  }
+	"name": "frontend",
+	"version": "0.1.0",
+	"private": true,
+	"scripts": {
+		"dev": "next dev",
+		"build": "next build",
+		"start": "next start",
+		"format": "prettier --write */**/*.{ts,tsx}",
+		"lint": "eslint --quiet --fix */**/*.{ts,tsx}",
+		"ci:type-errors": "tsc --noEmit",
+		"ci:lint": "eslint '*/**/*.{ts,tsx}' --quiet"
+	},
+	"dependencies": {
+		"@testing-library/jest-dom": "^5.8.0",
+		"@testing-library/react": "^10.0.4",
+		"@testing-library/user-event": "^10.3.3",
+		"babel-plugin-styled-components": "^1.10.7",
+		"markdown-it": "^11.0.0",
+		"next": "9.4.0",
+		"react": "16.13.1",
+		"react-dom": "16.13.1",
+		"react-markdown-editor-lite": "^1.1.2",
+		"react-modal": "^3.11.2",
+		"react-notifications": "^1.6.0",
+		"sass": "^1.26.5",
+		"styled-components": "^5.1.0"
+	},
+	"devDependencies": {
+		"@types/jest": "^25.2.3",
+		"@types/markdown-it": "^10.0.1",
+		"@types/node": "^14.0.1",
+		"@types/react": "^16.9.35",
+		"@types/react-dom": "^16.9.8",
+		"@types/react-modal": "^3.10.5",
+		"@typescript-eslint/eslint-plugin": "^3.0.2",
+		"@typescript-eslint/eslint-plugin-tslint": "^3.0.2",
+		"@typescript-eslint/parser": "^3.0.2",
+		"dotenv": "^8.2.0",
+		"eslint": "^7.1.0",
+		"eslint-config-prettier": "^6.11.0",
+		"eslint-plugin-prettier": "^3.1.3",
+		"eslint-plugin-react": "^7.20.0",
+		"husky": "^4.2.5",
+		"lint-staged": "^10.2.7",
+		"prettier": "^2.0.5",
+		"tslint": "^6.1.2",
+		"typescript": "^3.9.2"
+	},
+	"husky": {
+		"hooks": {
+			"pre-commit": "lint-staged"
+		}
+	},
+	"lint-staged": {
+		"*.{js,ts,tsx}": [
+			"eslint --fix"
+		]
+	}
 }

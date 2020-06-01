@@ -5,5 +5,5 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         { icon: "devicon-javascript-plain", categoryName: "JavaScript" },
         { icon: "devicon-python-plain", categoryName: "Python" }
     ];
-    res.json(tutorials)
+    res.json(tutorials);
 };

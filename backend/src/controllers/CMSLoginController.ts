@@ -21,7 +21,7 @@ export default class CMSLoginController {
      * @param {Response} res our res obj
      */
     public static login(req: Request, res: Response): void {
-        if(CMSLoginController.validateLoginCredentials(req.body)) {
+        if (CMSLoginController.validateLoginCredentials(req.body)) {
             const { username, password } = req.body;
 
             CMSAuthService.checkLoginCredentials(username, password).then(
@@ -31,20 +31,33 @@ export default class CMSLoginController {
                         // Currently it's at 2 days because I feel this is enough time to produce a tutorial,
                         // we may alternatively opt for 'maxAge' property if this causes issues
                         res.json({
-                            "successfulLogin": true,
-                            "jwt": jwt.sign({ username: checkedUsername, userId },
+                            successfulLogin: true,
+                            jwt: jwt.sign(
+                                { username: checkedUsername, userId },
                                 process.env.JWT_KEY as string,
-                                { expiresIn: process.env.JWT_EXPIRY }),
-                            "username": checkedUsername,
-                            "userId": userId
-                        }).status(200).end();
+                                { expiresIn: process.env.JWT_EXPIRY }
+                            ),
+                            username: checkedUsername,
+                            userId
+                        })
+                            .status(200)
+                            .end();
                     } else {
                         res.status(401).send(UNAUTHORISED_TEXT).end();
                     }
                 },
-                (err) => {
+                err => {
                     // Create error object instance
-                    res.status(503).send("Error name: " + err.name + "Code: " + err.code + "Msg: " + err.errmsg).end();
+                    res.status(503)
+                        .send(
+                            "Error name: " +
+                                err.name +
+                                "Code: " +
+                                err.code +
+                                "Msg: " +
+                                err.errmsg
+                        )
+                        .end();
                 }
             );
         } else {
@@ -63,7 +76,9 @@ export default class CMSLoginController {
 
         if (CMSAuthService.verifyJWT(token)) {
             const tokenArr: string[] = token ? token.split(" ") : [];
-            const { username, userId } = jwt.decode(tokenArr[1] as string) as TokenPayload;
+            const { username, userId } = jwt.decode(
+                tokenArr[1]
+            ) as TokenPayload;
             res.status(200).json({ username, userId }).end();
         } else {
             res.status(401).send(UNAUTHORISED_TEXT).end();
@@ -79,10 +94,18 @@ export default class CMSLoginController {
      * @param {any} data the unknown data type
      * @returns {boolean} whether or not the data passed the structural check
      */
-    private static validateLoginCredentials(data: any): data is LoginCredentials {
+    private static validateLoginCredentials(
+        data: any
+    ): data is LoginCredentials {
         if (Object.keys(data).length === 2) {
-            if (typeof data.username === "string" && typeof data.password === "string") {
-                if (data.username !== undefined && data.password !== undefined) {
+            if (
+                typeof data.username === "string" &&
+                typeof data.password === "string"
+            ) {
+                if (
+                    data.username !== undefined &&
+                    data.password !== undefined
+                ) {
                     if (data.username !== "" && data.password !== "") {
                         return true;
                     }
@@ -91,6 +114,4 @@ export default class CMSLoginController {
         }
         return false;
     }
-
 }
-

@@ -14,7 +14,7 @@ export default function Tutorial(props): JSX.Element {
     console.log("props here in component", props);
     return (
         <h2>
-            {router.query.category} - {router.query.tutorial}
+            {router.query.category} -{router.query.tutorial}
         </h2>
     );
 }
@@ -30,7 +30,7 @@ export const getServerSideProps: GetServerSideProps = async (
     // console.log(ctx.res, "ctx.res");
     return {
         props: {
-            query: { ...ctx.params },
-        },
+            query: { ...ctx.params }
+        }
     };
 };
