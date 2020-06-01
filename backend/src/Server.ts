@@ -26,4 +26,5 @@ class Server {
         });
     }
 }
+
 new Server("trace");
