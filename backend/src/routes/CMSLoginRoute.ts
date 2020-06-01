@@ -22,8 +22,13 @@ export default class CMSLoginRoute implements IRoute {
      * Middleware & controller setup
      */
     constructor() {
-        this.ROUTER.post(this.RESOURCE_LOC + "/login", CMSLoginController.login);
-        this.ROUTER.get(this.RESOURCE_LOC + "/confirm", CMSLoginController.confirmUserLoggedIn);
+        this.ROUTER.post(
+            this.RESOURCE_LOC + "/login",
+            CMSLoginController.login
+        );
+        this.ROUTER.get(
+            this.RESOURCE_LOC + "/confirm",
+            CMSLoginController.confirmUserLoggedIn
+        );
     }
-
 }
