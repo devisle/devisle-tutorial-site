@@ -19,8 +19,9 @@ describe("PublicTutorialService", () => {
 
         await PublicTutorialService.db.collection("tutorials").insertOne({
             name: "another name",
-            html: `somestuff that won't be considered     <p>--## Section 1</p>
-            <p>So this is my section, I'm talking crap here... <p>--## Section 2</p> more crap`,
+            html:
+                "somestuff that won't be considered  " +
+                "   <p>--## Section 1</p>  <p>So this is my section, I'm talking crap here... <p>--## Section 2</p> more crap",
             markdown: "",
             category: "javascript",
             authorId: "5ec17321f63b3c281463fd2a",
