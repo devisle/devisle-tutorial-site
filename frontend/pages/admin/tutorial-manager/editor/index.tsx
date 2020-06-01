@@ -1,4 +1,4 @@
-import dynamic from 'next/dynamic';
+import dynamic from "next/dynamic";
 
 /**
  * Our editor page,
@@ -12,10 +12,10 @@ import dynamic from 'next/dynamic';
  */
 export default function Editor(): JSX.Element {
     const MdEditor = dynamic(() =>
-        import('../../../../components/CMS/MdEditor')
+        import("../../../../components/CMS/MdEditor")
     );
     return (
-        <div className={'Editor'}>
+        <div className={"Editor"}>
             <MdEditor />
         </div>
     );

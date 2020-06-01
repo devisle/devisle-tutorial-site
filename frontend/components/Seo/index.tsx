@@ -1,6 +1,6 @@
-import Head from 'next/head';
+import Head from "next/head";
 
-import { TITLE } from '../../constants/Seo';
+import { TITLE } from "../../constants/Seo";
 
 /**
  * Properties for Seo component

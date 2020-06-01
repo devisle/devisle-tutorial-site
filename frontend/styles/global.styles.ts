@@ -26,8 +26,8 @@ export const GlobalStyles = createGlobalStyle`
 
     h1{
         font-size: ${({ theme }) => theme.fontSizes["3xl"]};
-        ${(props) => {
-          props.capitalize ? "text-capitalize: capitalize;" : "";
+        ${props => {
+            props.capitalize ? "text-capitalize: capitalize;" : "";
         }}
     }
 

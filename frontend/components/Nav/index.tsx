@@ -16,6 +16,6 @@ const Nav: React.FC = () => {
                 </h2>
             </div>
         </StyledNav>
-    )
-}
+    );
+};
 export default Nav;

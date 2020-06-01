@@ -1,4 +1,4 @@
-import Navigation from '../Nav'
+import Navigation from "../Nav";
 /**
  * Binds a page component within itself providing the layout features
  * to maintain consistency in all pages
@@ -6,15 +6,15 @@ import Navigation from '../Nav'
  * @param {React.ReactNode} children
  * @author rakeshshubhu
  */
-const Layout: React.FC = ({children}) => {
+const Layout: React.FC = ({ children }) => {
     return (
         <>
             <div className="container">
-                <Navigation/>
+                <Navigation />
                 {children}
             </div>
         </>
-    )
-}
+    );
+};
 
 export default Layout;

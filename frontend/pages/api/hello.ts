@@ -1,5 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextApiRequest, NextApiResponse } from "next";
 
 // Declaring the type of data received in Response
 
@@ -12,5 +12,5 @@ type Data = {
 };
 
 export default (req: NextApiRequest, res: NextApiResponse<Data>) => {
-    res.status(200).json({ name: 'John Doe' });
+    res.status(200).json({ name: "John Doe" });
 };
