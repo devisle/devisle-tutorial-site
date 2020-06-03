@@ -26,8 +26,8 @@ export const GlobalStyles = createGlobalStyle`
 
     h1{
         font-size: ${({ theme }) => theme.fontSizes["3xl"]};
-        ${(props) => {
-          props.capitalize ? "text-capitalize: capitalize;" : "";
+        ${props => {
+            props.capitalize ? "text-capitalize: capitalize;" : "";
         }}
     }
 
@@ -36,15 +36,15 @@ export const GlobalStyles = createGlobalStyle`
     }
 
     h3{
-        font-size: ${({ theme }) => theme.fontSizes["xl"]};
+        font-size: ${({ theme }) => theme.fontSizes.xl};
     }
 
     h4{
-        font-size: ${({ theme }) => theme.fontSizes["lg"]};
+        font-size: ${({ theme }) => theme.fontSizes.lg};
     }
 
     h5{
-        font-size: ${({ theme }) => theme.fontSizes["md"]};
+        font-size: ${({ theme }) => theme.fontSizes.md};
     }
 
     a{

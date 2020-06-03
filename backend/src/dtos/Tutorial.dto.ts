@@ -11,14 +11,15 @@ export default class Tutorial extends PartialTutorial {
      * Set given DTO fields
      */
     constructor(
-            name: string,
-            html: string,
-            markdown: string,
-            category: string,
-            authorId: string,
-            authorName: string,
-            isAvailable: boolean,
-            id?: string) {
+        name: string,
+        html: string,
+        markdown: string,
+        category: string,
+        authorId: string,
+        authorName: string,
+        isAvailable: boolean,
+        id?: string
+    ) {
         super(name, html, markdown, category, id);
         this.authorId = authorId;
         this.authorName = authorName;

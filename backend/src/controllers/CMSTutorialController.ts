@@ -3,22 +3,19 @@ import { ObjectId, MongoError } from "mongodb";
 import jwt from "jsonwebtoken";
 import Tutorial from "../dtos/Tutorial.dto";
 import PartialTutorial from "../dtos/PartialTutorial.dto";
-import { INTERNAL_ERROR_TEXT, SUCCESSFUL_DOC_CREATION, BAD_REQUEST_TEXT } from "../constants";
-import TutorialUpdateService from "../services/TutorialUpdateService";
+import {
+    INTERNAL_ERROR_TEXT,
+    BAD_REQUEST_TEXT,
+    BAD_OBJECTID_PARSE_TEXT
+} from "../constants";
+import DbUpdateService from "../services/DbUpdateService";
 
 /**
- * Tutorial route controller
+ * CMS Tutorial route controller
  *
  * @author ale8k
  */
 export default class CMSTutorialController {
-    /**
-     * HTTP method handlers
-     */
-    public static get: (req: Request, res: Response) => void = CMSTutorialController.getAllTutorials;
-    public static post: (req: Request, res: Response) => void = CMSTutorialController.createTutorial;
-    public static put: (req: Request, res: Response) => void = CMSTutorialController.updateTutorialById;
-
     /**
      * Grabs all the {@link tutorialDocs Tutoriall[]} and responds
      *
@@ -26,10 +23,14 @@ export default class CMSTutorialController {
      * @param {Request} req the users request obj
      * @param {Response} res our res obj
      */
-    private static getAllTutorials(req: Request, res: Response): void {
-        TutorialUpdateService.getAllDocuments<Tutorial>("tutorials").then(
-            (tutorials) => res.status(200).json(tutorials).end(),
-            (err) => res.status(500).send(INTERNAL_ERROR_TEXT + JSON.stringify(err)).end()
+    public static getAllTutorials(req: Request, res: Response): void {
+        DbUpdateService.getAllDocuments<Tutorial>("tutorials").then(
+            tutorials => res.status(200).json(tutorials).end(),
+            err =>
+                res
+                    .status(500)
+                    .send(INTERNAL_ERROR_TEXT + JSON.stringify(err))
+                    .end()
         );
     }
 
@@ -40,22 +41,35 @@ export default class CMSTutorialController {
      * @param {Request} req the users request obj
      * @param {Response} res our res obj
      */
-    private static createTutorial(req: Request, res: Response): void {
+    public static createTutorial(req: Request, res: Response): void {
         if (CMSTutorialController.validateTutorialData(req.body, 4)) {
             const token: string | undefined = req.headers.authorization;
             const tokenArr: string[] = token ? token.split(" ") : [];
-            const { userId, username } = jwt.decode(tokenArr[1] as string) as TokenPayload;
+            const { userId, username } = jwt.decode(
+                tokenArr[1]
+            ) as TokenPayload;
             const { name, html, markdown, category } = req.body;
-            const dto = new Tutorial(name, html, markdown, category, userId, username, true);
+            const dto = new Tutorial(
+                name,
+                html,
+                markdown,
+                category,
+                userId,
+                username,
+                true
+            );
 
-            TutorialUpdateService.createDocument<Tutorial>("tutorials", dto).then(
-                () => res.status(200).send(SUCCESSFUL_DOC_CREATION).end(),
-                () => res.status(500).send(INTERNAL_ERROR_TEXT + "TODO").end()
+            DbUpdateService.createDocument<Tutorial>("tutorials", dto).then(
+                result => res.status(201).send(result).end(),
+                () =>
+                    res
+                        .status(500)
+                        .send(INTERNAL_ERROR_TEXT + "TODO")
+                        .end()
             );
         } else {
             res.status(400).send(BAD_REQUEST_TEXT).end();
         }
-
     }
 
     /**
@@ -65,16 +79,49 @@ export default class CMSTutorialController {
      * @param {Request} req the users request obj
      * @param {Response} res our res obj
      */
-    private static updateTutorialById(req: Request, res: Response): void {
-        if (CMSTutorialController.validateTutorialData(req.body, 5)) {
-            const { _id, category, name, html, markdown } = req.body;
-            const atomicDto = { $set: { ...new PartialTutorial(name, html, markdown, category) } };
-            const predicateId = { _id: new ObjectId(_id) };
+    public static updateTutorialById(req: Request, res: Response): void {
+        const tutId = req.query.tutId;
 
-            TutorialUpdateService.updateSingleDocument("tutorials", predicateId, atomicDto).then(
-                (resp) => res.status(200).json(resp).end(),
-                (err: MongoError) => res.status(503).send("Error name: " + err.name + "Code: " + err.code + "Msg: " + err.errmsg)
-            );
+        if (CMSTutorialController.validateTutorialData(req.body, 4) && tutId) {
+            const { category, name, html, markdown } = req.body;
+            const atomicDto = {
+                $set: { ...new PartialTutorial(name, html, markdown, category) }
+            };
+
+            try {
+                const predicateId = { _id: new ObjectId(tutId) };
+                // Maybe send 304 on nModified: 0, but if we do, the body is absent.
+                DbUpdateService.updateSingleDocument(
+                    "tutorials",
+                    predicateId,
+                    atomicDto
+                ).then(
+                    resp => {
+                        const {
+                            result: { n, nModified, ok }
+                        } = resp;
+                        const formattedResponse: MongoUpdateResponse = {
+                            ok,
+                            n,
+                            nModified
+                        };
+                        res.status(200).json(formattedResponse).end();
+                    },
+                    (err: MongoError) =>
+                        res
+                            .status(503)
+                            .send(
+                                "Error name: " +
+                                    err.name +
+                                    "Code: " +
+                                    err.code +
+                                    "Msg: " +
+                                    err.errmsg
+                            )
+                );
+            } catch (e) {
+                res.status(400).send(BAD_OBJECTID_PARSE_TEXT).end();
+            }
         } else {
             res.status(400).send(BAD_REQUEST_TEXT).end();
         }
@@ -88,21 +135,27 @@ export default class CMSTutorialController {
      * be 5
      * @returns {boolean} whether or not the data passed the structural check
      */
-    private static validateTutorialData(data: any, keyLength: number): data is PartialTutorial {
+    private static validateTutorialData(
+        data: any,
+        keyLength: number
+    ): data is PartialTutorial {
         if (Object.keys(data).length === keyLength) {
-            if (typeof data.html === "string"
-                && typeof data.name === "string"
-                && typeof data.markdown === "string"
-                && typeof data.category === "string") {
-                if (data.html !== undefined
-                    && data.name !== undefined
-                    && data.markdown !== undefined
-                    && data.category !== undefined) {
+            if (
+                typeof data.html === "string" &&
+                typeof data.name === "string" &&
+                typeof data.markdown === "string" &&
+                typeof data.category === "string"
+            ) {
+                if (
+                    data.html !== undefined &&
+                    data.name !== undefined &&
+                    data.markdown !== undefined &&
+                    data.category !== undefined
+                ) {
                     return true;
                 }
             }
         }
         return false;
     }
-
 }

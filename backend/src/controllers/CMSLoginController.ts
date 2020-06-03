@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import CMSAuthService from "../services/CMSAuthService";
-import { UNAUTHORISED_TEXT, BAD_REQUEST_TEXT, INTERNAL_ERROR_TEXT } from "../constants";
+import { UNAUTHORISED_TEXT, BAD_REQUEST_TEXT } from "../constants";
 
 /**
  * Confirms login credentials of a given CMS user
@@ -10,12 +10,6 @@ import { UNAUTHORISED_TEXT, BAD_REQUEST_TEXT, INTERNAL_ERROR_TEXT } from "../con
  * @author ale8k, shreyas1307
  */
 export default class CMSLoginController {
-    /**
-     * HTTP method handlers
-     */
-    public static post: (req: Request, res: Response) => void = CMSLoginController.login;
-    public static get: (req: Request, res: Response) => void = CMSLoginController.confirmUserLoggedIn;
-
     /**
      * Attempts to log a user in
      *  - Validates the credentials format
@@ -26,27 +20,44 @@ export default class CMSLoginController {
      * @param {Request} req the users request obj
      * @param {Response} res our res obj
      */
-    private static login(req: Request, res: Response): void {
-        if(CMSLoginController.validateLoginCredentials(req.body)) {
-            const { attemptedUsername, password } = req.body;
-            console.log("username:", attemptedUsername, "password:", password);
+    public static login(req: Request, res: Response): void {
+        if (CMSLoginController.validateLoginCredentials(req.body)) {
+            const { username, password } = req.body;
 
-            CMSAuthService.checkLoginCredentials(attemptedUsername, password).then(
-                ({ username, userId, confirmation }) => {
+            CMSAuthService.checkLoginCredentials(username, password).then(
+                ({ checkedUsername, userId, confirmation }) => {
                     if (confirmation) {
                         // Note, this is able to take zeit/ms for expiry: [https://github.com/zeit/ms]
                         // Currently it's at 2 days because I feel this is enough time to produce a tutorial,
                         // we may alternatively opt for 'maxAge' property if this causes issues
                         res.json({
-                            "successfulLogin": true,
-                            "jwt": jwt.sign({ username, userId }, process.env.JWT_KEY as string, { expiresIn: process.env.JWT_EXPIRY })
-                        }).status(200).end();
+                            successfulLogin: true,
+                            jwt: jwt.sign(
+                                { username: checkedUsername, userId },
+                                process.env.JWT_KEY as string,
+                                { expiresIn: process.env.JWT_EXPIRY }
+                            ),
+                            username: checkedUsername,
+                            userId
+                        })
+                            .status(200)
+                            .end();
                     } else {
                         res.status(401).send(UNAUTHORISED_TEXT).end();
                     }
                 },
-                (err) => {
-                    res.status(503).send("Error name: " + err.name + "Code: " + err.code + "Msg: " + err.errmsg).end();
+                err => {
+                    // Create error object instance
+                    res.status(503)
+                        .send(
+                            "Error name: " +
+                                err.name +
+                                "Code: " +
+                                err.code +
+                                "Msg: " +
+                                err.errmsg
+                        )
+                        .end();
                 }
             );
         } else {
@@ -65,7 +76,9 @@ export default class CMSLoginController {
 
         if (CMSAuthService.verifyJWT(token)) {
             const tokenArr: string[] = token ? token.split(" ") : [];
-            const { username, userId } = jwt.decode(tokenArr[1] as string) as TokenPayload;
+            const { username, userId } = jwt.decode(
+                tokenArr[1]
+            ) as TokenPayload;
             res.status(200).json({ username, userId }).end();
         } else {
             res.status(401).send(UNAUTHORISED_TEXT).end();
@@ -81,11 +94,19 @@ export default class CMSLoginController {
      * @param {any} data the unknown data type
      * @returns {boolean} whether or not the data passed the structural check
      */
-    private static validateLoginCredentials(data: any): data is LoginCredentials {
+    private static validateLoginCredentials(
+        data: any
+    ): data is LoginCredentials {
         if (Object.keys(data).length === 2) {
-            if (typeof data.attemptedUsername === "string" && typeof data.password === "string") {
-                if (data.attemptedUsername !== undefined && data.password !== undefined) {
-                    if (data.attemptedUsername !== "" && data.password !== "") {
+            if (
+                typeof data.username === "string" &&
+                typeof data.password === "string"
+            ) {
+                if (
+                    data.username !== undefined &&
+                    data.password !== undefined
+                ) {
+                    if (data.username !== "" && data.password !== "") {
                         return true;
                     }
                 }
@@ -93,6 +114,4 @@ export default class CMSLoginController {
         }
         return false;
     }
-
 }
-
