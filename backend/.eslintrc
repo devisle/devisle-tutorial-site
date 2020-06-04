@@ -54,7 +54,7 @@
         "@typescript-eslint/prefer-for-of": "warn",
         "@typescript-eslint/prefer-function-type": "warn",
         "@typescript-eslint/prefer-namespace-keyword": "warn",
-        "@typescript-eslint/quotes": ["warn", "double"],
+        "@typescript-eslint/quotes": ["warn", "single"],
         "@typescript-eslint/semi": ["warn"],
         "@typescript-eslint/no-floating-promises": "off",
         "@typescript-eslint/no-unsafe-assignment": "off",

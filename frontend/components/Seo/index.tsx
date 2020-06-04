@@ -1,6 +1,6 @@
-import Head from "next/head";
+import Head from 'next/head';
 
-import { TITLE } from "../../constants/Seo";
+import { TITLE } from '../../constants/Seo';
 
 /**
  * Properties for Seo component
@@ -21,10 +21,10 @@ export interface IProps {
 const Seo: React.FC<IProps> = ({ title: dynamicTitle, children }) => (
     <Head>
         <title>{dynamicTitle || TITLE}</title>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel='icon' href='/favicon.ico' />
         <link
-            rel="stylesheet"
-            href="https://cdn.rawgit.com/konpa/devicon/df6431e323547add1b4cf45992913f15286456d3/devicon.min.css"
+            rel='stylesheet'
+            href='https://cdn.rawgit.com/konpa/devicon/df6431e323547add1b4cf45992913f15286456d3/devicon.min.css'
         />
         {children}
     </Head>

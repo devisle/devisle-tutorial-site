@@ -5,5 +5,5 @@
  * @author ale8k
  */
 export default function Admin(): JSX.Element {
-    return <div className="Admin">admin</div>;
+    return <div className='Admin'>admin</div>;
 }

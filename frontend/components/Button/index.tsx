@@ -1,4 +1,4 @@
-import styled, { css } from "styled-components";
+import styled, { css } from 'styled-components';
 
 /**
  * Button interface
@@ -12,7 +12,7 @@ import styled, { css } from "styled-components";
 interface IButtonProps {
     varientColor: string;
     varient: string;
-    size: "sm" | "md" | "lg";
+    size: 'sm' | 'md' | 'lg';
     ariaLabel: string;
     disabled?: boolean;
 }
@@ -55,12 +55,7 @@ const StyledButton = styled.button`
     }
 `;
 
-const Button: React.FC<IButtonProps> = ({
-    children,
-    ariaLabel,
-    disabled = false,
-    ...props
-}) => {
+const Button: React.FC<IButtonProps> = ({ children, ariaLabel, disabled = false, ...props }) => {
     return (
         <StyledButton {...props} aria-label={ariaLabel} disabled={disabled}>
             {children}

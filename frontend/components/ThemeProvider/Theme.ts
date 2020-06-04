@@ -31,42 +31,42 @@ export interface ITheme {
 }
 
 const primary = {
-    blue: "#581B98",
-    purple: "#9C1DE7",
-    pink: "#F3558E",
-    yellow: "#F3558E",
-    grey: "#AF9FC0"
+    blue: '#581B98',
+    purple: '#9C1DE7',
+    pink: '#F3558E',
+    yellow: '#F3558E',
+    grey: '#AF9FC0'
 };
 
 const neutral = {
-    text: "#000",
-    textInverted: "#fff",
-    "100": "#fff",
-    "200": "#ededed",
-    "300": "#e1e1e1",
-    "400": "#737581",
-    "500": "#4a4b53",
-    "600": "#000",
-    "700": "#737070"
+    text: '#000',
+    textInverted: '#fff',
+    '100': '#fff',
+    '200': '#ededed',
+    '300': '#e1e1e1',
+    '400': '#737581',
+    '500': '#4a4b53',
+    '600': '#000',
+    '700': '#737070'
 };
 
 const success = {
-    "100": "#529E66",
-    "200": "#27AE60",
-    "300": "#367B48",
-    "400": "#276738"
+    '100': '#529E66',
+    '200': '#27AE60',
+    '300': '#367B48',
+    '400': '#276738'
 };
 
 const error = {
-    "100": "#D0454C",
-    "200": "#B54248",
-    "300": "#95353A"
+    '100': '#D0454C',
+    '200': '#B54248',
+    '300': '#95353A'
 };
 
 const warning = {
-    "100": "#E1C542",
-    "200": "#CAB23F",
-    "300": "#B49E35"
+    '100': '#E1C542',
+    '200': '#CAB23F',
+    '300': '#B49E35'
 };
 
 const light: ITheme = {
@@ -80,7 +80,7 @@ const light: ITheme = {
     // border: neutral["100"],
     border: primary.blue,
     svg: {
-        fill: ""
+        fill: ''
     },
     section: {
         body: neutral[200],
@@ -90,32 +90,32 @@ const light: ITheme = {
     button: {
         success: {
             default: {
-                body: success["200"],
-                text: "#fff"
+                body: success['200'],
+                text: '#fff'
             },
             hover: {
-                body: "",
-                text: ""
+                body: '',
+                text: ''
             }
         },
         warning: {
             default: {
-                body: "",
-                text: ""
+                body: '',
+                text: ''
             },
             hover: {
-                body: "",
-                text: ""
+                body: '',
+                text: ''
             }
         },
         danger: {
             default: {
-                body: "",
-                text: ""
+                body: '',
+                text: ''
             },
             hover: {
-                body: "",
-                text: ""
+                body: '',
+                text: ''
             }
         }
     }
@@ -131,7 +131,7 @@ const dark: ITheme = {
     fadedText: neutral[700],
     border: neutral.textInverted,
     svg: {
-        fill: ""
+        fill: ''
     },
     section: {
         body: neutral.textInverted,
@@ -141,37 +141,37 @@ const dark: ITheme = {
     button: {
         success: {
             default: {
-                body: "",
-                text: ""
+                body: '',
+                text: ''
             },
             hover: {
-                body: "",
-                text: ""
+                body: '',
+                text: ''
             }
         },
         warning: {
             default: {
-                body: "",
-                text: ""
+                body: '',
+                text: ''
             },
             hover: {
-                body: "",
-                text: ""
+                body: '',
+                text: ''
             }
         },
         danger: {
             default: {
-                body: "",
-                text: ""
+                body: '',
+                text: ''
             },
             hover: {
-                body: "",
-                text: ""
+                body: '',
+                text: ''
             }
         }
     }
 };
 
-const getTheme = (mode: string): ITheme => (mode === "dark" ? dark : light);
+const getTheme = (mode: string): ITheme => (mode === 'dark' ? dark : light);
 
 export { getTheme };

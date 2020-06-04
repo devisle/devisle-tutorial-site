@@ -1,15 +1,15 @@
-import dotenv from "dotenv";
-import express, { Application } from "express";
-import cors from "cors";
-import bodyParser from "body-parser";
-import routes from "./routes";
-import { MongoClient } from "mongodb";
-import DbUpdateService from "./services/DbUpdateService";
-import CMSAuthService from "./services/CMSAuthService";
-import http from "http";
-import chalk from "chalk";
-import * as log from "loglevel";
-import PublicTutorialService from "./services/PublicTutorialService";
+import dotenv from 'dotenv';
+import express, { Application } from 'express';
+import cors from 'cors';
+import bodyParser from 'body-parser';
+import routes from './routes';
+import { MongoClient } from 'mongodb';
+import DbUpdateService from './services/DbUpdateService';
+import CMSAuthService from './services/CMSAuthService';
+import http from 'http';
+import chalk from 'chalk';
+import * as log from 'loglevel';
+import PublicTutorialService from './services/PublicTutorialService';
 
 /**
  * App wrapper
@@ -39,7 +39,7 @@ export default class App {
      *  - App instance
      */
     constructor(configPath: { path: string }) {
-        this._l.info(chalk.dim.cyan("Setting up environment..."));
+        this._l.info(chalk.dim.cyan('Setting up environment...'));
         dotenv.config(configPath);
         this.APP = express();
     }
@@ -49,7 +49,7 @@ export default class App {
      */
     public async setupServer(): Promise<Application> {
         return await new Promise<Application>(res => {
-            this._l.info(chalk.dim.cyan("Setting up middleware..."));
+            this._l.info(chalk.dim.cyan('Setting up middleware...'));
             this.APP.use(cors());
             this.APP.use(
                 bodyParser.urlencoded({
@@ -61,7 +61,7 @@ export default class App {
 
             res(
                 new Promise(resolve => {
-                    this._l.info(chalk.dim.cyan("Setting up db connection..."));
+                    this._l.info(chalk.dim.cyan('Setting up db connection...'));
                     MongoClient.connect(
                         process.env.DB_URL as string,
                         {
@@ -73,33 +73,13 @@ export default class App {
                             if (err) {
                                 throw err;
                             } else {
-                                CMSAuthService.db = client.db(
-                                    process.env.DB_NAME as string
-                                );
-                                this._l.info(
-                                    chalk.dim.cyan(
-                                        "CMSAuthService db reference stored..."
-                                    )
-                                );
-                                DbUpdateService.db = client.db(
-                                    process.env.DB_NAME as string
-                                );
-                                this._l.info(
-                                    chalk.dim.cyan(
-                                        "DbUpdateService db reference stored..."
-                                    )
-                                );
-                                PublicTutorialService.db = client.db(
-                                    process.env.DB_NAME as string
-                                );
-                                this._l.info(
-                                    chalk.dim.cyan(
-                                        "PublicTutorialService db reference stored..."
-                                    )
-                                );
-                                this._l.info(
-                                    chalk.dim.cyan("Resolving server...")
-                                );
+                                CMSAuthService.db = client.db(process.env.DB_NAME as string);
+                                this._l.info(chalk.dim.cyan('CMSAuthService db reference stored...'));
+                                DbUpdateService.db = client.db(process.env.DB_NAME as string);
+                                this._l.info(chalk.dim.cyan('DbUpdateService db reference stored...'));
+                                PublicTutorialService.db = client.db(process.env.DB_NAME as string);
+                                this._l.info(chalk.dim.cyan('PublicTutorialService db reference stored...'));
+                                this._l.info(chalk.dim.cyan('Resolving server...'));
                                 resolve(this.APP);
                             }
                         }

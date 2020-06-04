@@ -1,5 +1,5 @@
-import MdEditor from "react-markdown-editor-lite";
-import MarkdownIt from "markdown-it";
+import MdEditor from 'react-markdown-editor-lite';
+import MarkdownIt from 'markdown-it';
 
 /**
  * Wraps the editor in another component, to be used when dynamically CSR rendering
@@ -13,8 +13,8 @@ export default function MyEditor(): JSX.Element {
     return (
         <div>
             <MdEditor
-                value=""
-                style={{ height: "100vh", width: "100%" }}
+                value=''
+                style={{ height: '100vh', width: '100%' }}
                 renderHTML={text => mdParser.render(text)}
                 onChange={e => console.log(e)}
             />

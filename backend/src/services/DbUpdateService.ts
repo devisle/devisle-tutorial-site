@@ -1,4 +1,4 @@
-import { MongoError, UpdateWriteOpResult, Db } from "mongodb";
+import { MongoError, UpdateWriteOpResult, Db } from 'mongodb';
 
 /**
  * Static helper class resposible for handling generic DB operations/transactions
@@ -38,19 +38,14 @@ export default class DbUpdateService {
      * @param {T} data any object type to be parsed and created as a document
      * @returns {Promise<MongoUpdateResponse>} the base response for an update in mongo
      */
-    public static createDocument<T>(
-        collectionName: string,
-        data: T
-    ): Promise<MongoUpdateResponse> {
+    public static createDocument<T>(collectionName: string, data: T): Promise<MongoUpdateResponse> {
         return new Promise((res, rej) => {
             DbUpdateService.db
                 .collection(collectionName)
                 .insertOne(data)
                 .then(
                     ({ result }) =>
-                        result.ok
-                            ? res({ ok: result.ok, n: result.n })
-                            : rej({ ok: result.ok, n: result.n }),
+                        result.ok ? res({ ok: result.ok, n: result.n }) : rej({ ok: result.ok, n: result.n }),
                     () => rej()
                 );
         });
@@ -72,13 +67,9 @@ export default class DbUpdateService {
         return new Promise((res, rej) => {
             DbUpdateService.db
                 .collection(collectionName)
-                .updateOne(
-                    predicate,
-                    newValue,
-                    (err: MongoError, response: UpdateWriteOpResult) => {
-                        err ? rej(err) : res(response);
-                    }
-                );
+                .updateOne(predicate, newValue, (err: MongoError, response: UpdateWriteOpResult) => {
+                    err ? rej(err) : res(response);
+                });
         });
     }
 }
