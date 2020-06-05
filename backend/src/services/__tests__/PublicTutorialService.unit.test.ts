@@ -20,8 +20,8 @@ describe('PublicTutorialService', () => {
         await PublicTutorialService.db.collection('tutorials').insertOne({
             name: 'another name',
             html:
-                "somestuff that won't be considered  " +
-                "   <p>--## Section 1</p>  <p>So this is my section, I'm talking crap here... <p>--## Section 2</p> more crap",
+                'somestuff that won\'t be considered  ' +
+                '   <p>--## Section 1</p>  <p>So this is my section, I\'m talking crap here... <p>--## Section 2</p> more crap',
             markdown: '',
             category: 'javascript',
             authorId: '5ec17321f63b3c281463fd2a',
@@ -48,7 +48,7 @@ describe('PublicTutorialService', () => {
                     expect(response?.content).toHaveLength(2);
                     expect(response?.content[0].sectionTitle).toEqual('Section 1');
                     expect(response?.content[0].sectionBody).toEqual(
-                        "<p>So this is my section, I'm talking crap here..."
+                        '<p>So this is my section, I\'m talking crap here...'
                     );
                     expect(response?.content[1].sectionTitle).toEqual('Section 2');
                     expect(response?.content[1].sectionBody).toEqual('more crap');
@@ -62,7 +62,7 @@ describe('PublicTutorialService', () => {
         PublicTutorialService.getTutCardsInCategory('tutorials', 'javascript').then(response => {
             expect(response).not.toEqual(null);
             expect(response[0].cardText).toEqual(
-                "Section 1  So this is my section, I'm talking crap here...  Section 2 more crap"
+                'Section 1  So this is my section, I\'m talking crap here...  Section 2 more crap'
             );
             done();
         });

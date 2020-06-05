@@ -36,15 +36,15 @@ export const GlobalStyles = createGlobalStyle`
     }
 
     h3{
-        font-size: ${({ theme }) => theme.fontSizes['xl']};
+        font-size: ${({ theme }) => theme.fontSizes.xl};
     }
 
     h4{
-        font-size: ${({ theme }) => theme.fontSizes['lg']};
+        font-size: ${({ theme }) => theme.fontSizes.lg};
     }
 
     h5{
-        font-size: ${({ theme }) => theme.fontSizes['md']};
+        font-size: ${({ theme }) => theme.fontSizes.md};
     }
 
     a{

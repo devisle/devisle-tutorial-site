@@ -126,17 +126,6 @@
             }
         ],
         "use-isnan": "warn",
-        "valid-typeof": "off",
-        "@typescript-eslint/tslint/config": [
-            "warn",
-            {
-                "rules": {
-                    "no-constructor-vars": true,
-                    "no-trailing-comma": true,
-                    "no-unreachable": true,
-                    "use-strict": [true, "check-module"]
-                }
-            }
-        ]
+        "valid-typeof": "off"
     }
 }
