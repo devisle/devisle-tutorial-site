@@ -10,7 +10,9 @@
         "lint": "eslint --fix */**/*.{ts,tsx}",
         "ci:type-errors": "tsc --noEmit",
         "ci:lint": "eslint '*/**/*.{ts,tsx}' --quiet",
-        "test": "jest"
+        "test:unit": "jest unit --detectOpenHandles --colors --forceExit",
+        "test:int": "jest int --detectOpenHandles --colors --forceExit",
+        "test:unit:watch": "jest --watch unit --detectOpenHandles --colors"
     },
     "dependencies": {
         "@testing-library/jest-dom": "^5.8.0",
