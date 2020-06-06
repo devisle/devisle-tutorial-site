@@ -1,12 +1,15 @@
-import Head from "next/head";
-import Link from "next/link";
-import { useState } from "react";
+import { useState, useContext } from 'react';
+import { ThemeContext } from 'styled-components';
 
-import {Layout, Seo} from '../components'
+import { IThemeContext } from '../components/ThemeProvider/ThemeProvider';
+import FormInput from '../components/FormInput';
+import Button from '../components/Button';
+import { Layout, Seo } from '../components';
+import { HelperText, StyledH1, Grid } from '../styles/core-ui';
 
 /**
- * Get tutorials 
- * 
+ * Get tutorials
+ *
  * @todo typescript types
  * @returns tutorials
  */
@@ -16,8 +19,8 @@ export const getServerSideProps = async () => {
         props: {
             tutorials: await response.json()
         }
-    }
-}
+    };
+};
 
 /**
  * Index Page - renders on '/' route
@@ -26,60 +29,29 @@ export const getServerSideProps = async () => {
  */
 export default function index(props) {
     const [categories, setCategories] = useState(props.tutorials);
+    const theme: typeof ThemeContext = useContext(ThemeContext);
+
     return (
-        <Layout>     
-            <Seo/>
-            <main>
-                <header>
-                    <div className="navbar">
-                        <div className="nav-title">Dev Isle Tutorials</div>
-                        {/* {user?.isAuthenticated ? (
-                            <div className="nav-items">Welcome</div>
-                        ) : ( */}
-                        <div className="nav-items">Login</div>
-                        {/* )} */}
-                    </div>
-                </header>
-                <main>
-                    <div className="main">
-                        <div className="w-75">
-                            <div>
-                                <input
-                                    type="search"
-                                    className="tutorial-search"
-                                    placeholder="Search a tutorial..."
-                                />
-                            </div>
-                            <div>
-                                <div>Categories</div>
-                            </div>
-                            <div className="category-list">
-                                {categories.map((categ, index) => {
-                                    return (
-                                        <div
-                                            key={index}
-                                            className="category-item"
-                                        >
-                                            <div>{categ.categoryName}</div>
-                                            <i className={categ.icon}></i>
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        </div>
-                        <div
-                            className="w-25"
-                            style={{
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                            }}
-                        >
-                            Ads
-                        </div>
-                    </div>
-                </main>
-            </main>
+        <Layout>
+            <Seo />
+            <Grid columns='2' align='center'>
+                <div>
+                    <StyledH1 textTransform='capitalize'>Find the best courses and become a master</StyledH1>
+                    <HelperText faded fontSize={theme.fontSizes.lg}>
+                        All resources are 100% free. All courses are contributed by the open source community or
+                        platform Dev Isle. You can join us on discord.
+                    </HelperText>
+                    <Grid columns='1' rowGap='20px' marginTop='20px'>
+                        <FormInput name='search_courses' placeholder='Search...' />
+                        <Button varientColor='success' varient='solid' size='md' ariaLabel='Join us'>
+                            Join Us
+                        </Button>
+                    </Grid>
+                </div>
+                <div>
+                    <img src='/assets/index-banner.svg' alt='girl reading book' width='100%' />
+                </div>
+            </Grid>
         </Layout>
     );
 }

@@ -1,6 +1,6 @@
-import App from "./App";
-import * as log from "loglevel";
-import chalk from "chalk";
+import App from './App';
+import * as log from 'loglevel';
+import chalk from 'chalk';
 
 /**
  * Entry point
@@ -11,9 +11,9 @@ import chalk from "chalk";
 class Server {
     constructor(logLevel: log.LogLevelDesc) {
         log.setDefaultLevel(logLevel);
-        new App({ path: ".env"}).setupServer().then(app => {
+        new App({ path: '.env' }).setupServer().then(app => {
             const l = log.noConflict();
-            l.info(chalk.dim.cyan("Spinning up server..."));
+            l.info(chalk.dim.cyan('Spinning up server...'));
             app.listen(process.env.PORT, () =>
                 l.info(chalk.greenBright.bold(`Server running on PORT:${chalk.yellow(process.env.PORT)}`))
             );
@@ -21,4 +21,4 @@ class Server {
     }
 }
 
-new Server("trace");
+new Server('trace');

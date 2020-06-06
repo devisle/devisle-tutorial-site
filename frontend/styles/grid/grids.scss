@@ -1,0 +1,144 @@
+$gap-horizontal: 10px;
+$gap-vertical: $gap-horizontal;
+$grid-gap: 10px;
+$grid-columns: 12px;
+
+@mixin grid{
+    // fallback for IE
+    &::before, &::after {
+        content: '';
+        display: table;
+    }
+    
+    &::after {
+        clear: both;
+    }
+
+    > * {
+        float: left;
+        margin-right: $gap-horizontal;
+        margin-bottom: $gap-vertical;
+    }
+
+    @supports(grid-area: auto){
+        display: grid;
+        grid-column-gap: $gap-horizontal;
+        grid-row-gap: $gap-vertical;
+
+        &::after, &::before {
+            content: none;
+        }
+        
+        > * {
+            margin-right: 0;
+            margin-bottom: 0;
+        }
+    }
+}
+
+@mixin gridAuto($min-width, $fallback: 3){
+    > * {
+        float: left;
+        width: calc(100%/#{$fallback} - #{$gap-horizontal});
+    
+        &:nth-child(#{$fallback}n + 1) {
+            clear: both;
+        }
+    }
+
+    @supports(grid-area: auto){
+        grid-template-columns: repeat(auto-fit, minmax($min-width, 1fr));
+
+        > * {
+            width: auto;
+            margin: 0;
+        }
+    }
+}
+
+/**
+* Use this class when you need a flexible grid of same size
+*/
+.gallery-grid{
+    @include grid;
+    @include gridAuto(260px);
+}
+
+/** 
+* One dimensional layout
+* You can create classes like:
+* <div className="col col-6"/>
+* <div className="col col-6"/>
+*/
+.flex-grid{
+    display: flex;
+    flex-wrap: wrap;
+    margin: calc($grid-gap * -1) 0 0 calc($grid-gap * -1);
+}
+
+.col{
+    padding: calc($grid-gap) 0 0 calc($grid-gap);
+    flex-basis: 100%;
+    background-clip: content-box;
+}
+
+@function roundWidth($i){
+    $width: floor(100 * $i * 100/ $grid-columns)/ 100;
+    @return $width#{"%"};
+}
+
+@for $i from 1 through $grid-columns{
+    .col-#{$i}{
+        flex-basis: roundWidth ($i);
+        max-width: roundWidth ($i);
+    }
+}
+
+
+/** @todo add media queries **/
+@media only screen and (min-width: 600px) {
+  @for $i from 1 through $grid-columns {
+    .col--md-#{$i} {
+      flex-basis: round-width ($i);
+      max-width: round-width ($i); 
+    }
+  }
+}
+
+/**
+* Two dimensional grid layout
+* One dimensional grid layout is column-wise so for row-wise 
+* use this grid system design
+* This should be used with `grid-auto-rows` & `grid mixin`
+* Example: 
+* .grid{ @include grid; @include gridLayout((2,3), (7,2)); grid-auto-rows: 120px;}
+*/
+@mixin gridLayout($cols...){
+    grid-template-columns: repeat($grid-columns, 1fr);
+
+    $i : 1;
+    @each $col in $cols{
+        > :nth-of-type(#{$i}) {
+            grid-column-end: span nth($col, 1);
+            @if(length($col) > 1){
+                grid-row-end: span nth($col, 2);
+            }
+        }
+        $i: $i + 1;
+    }
+}
+
+@mixin gridAdvanced($cols...){
+    grid-template-columns: repeat($grid-columns, 1fr);
+
+    $i: 1;
+    @each $col in $cols {
+      > :nth-of-type(#{$i}) {
+        grid-column-start: nth($col,1);
+        grid-column-end: nth($col,2);
+        grid-row-start: nth($col,3);
+        grid-row-end: nth($col,4);
+      }
+      $i: $i + 1;
+    }
+}

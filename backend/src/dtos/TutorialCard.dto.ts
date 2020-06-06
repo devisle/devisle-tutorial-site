@@ -11,12 +11,13 @@ export default class TutorialCard {
      * Set given DTO fields
      */
     constructor(
-            id: string,
-            tutName: string,
-            category: string,
-            cardText: string,
-            authorName: string,
-            isAvailable: boolean) {
+        id: string,
+        tutName: string,
+        category: string,
+        cardText: string,
+        authorName: string,
+        isAvailable: boolean
+    ) {
         this._id = id;
         this.cardTutName = tutName;
         this.category = category;

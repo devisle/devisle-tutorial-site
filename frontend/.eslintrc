@@ -1,0 +1,142 @@
+{
+    "parser": "@typescript-eslint/parser", // Specifies the ESLint parser
+    "parserOptions": {
+        "ecmaVersion": 2020, // Allows for the parsing of modern ECMAScript features
+        "sourceType": "module", // Allows for the use of imports
+        "ecmaFeatures": {
+            "jsx": true // Allows for the parsing of JSX
+        },
+        "project": "tsconfig.json"
+    },
+    "plugins": ["@typescript-eslint", "@typescript-eslint/tslint"],
+    "settings": {
+        "react": {
+            "version": "detect" // Tells eslint-plugin-react to automatically detect the version of React to use
+        }
+    },
+    "extends": [
+        "plugin:json/recommended",
+        "plugin:react/recommended", // Uses the recommended rules from @eslint-plugin-react
+        "plugin:@typescript-eslint/recommended", // Uses the recommended rules from the @typescript-eslint/eslint-plugin
+        "prettier/@typescript-eslint", // Uses eslint-config-prettier to disable ESLint rules from @typescript-eslint/eslint-plugin that would conflict with prettier
+        "plugin:prettier/recommended" // Enables eslint-plugin-prettier and eslint-config-prettier. This will display prettier errors as ESLint errors. Make sure this is always the last configuration in the extends array.
+    ],
+    "rules": {
+        "react/react-in-jsx-scope": "off",
+        "react/prop-types": "off",
+        "@typescript-eslint/unbound-method": "off",
+        "@typescript-eslint/restrict-plus-operands": "off",
+        "@typescript-eslint/adjacent-overload-signatures": "warn",
+        "@typescript-eslint/array-type": [
+            "warn",
+            {
+                "default": "array"
+            }
+        ],
+        "@typescript-eslint/ban-types": "off",
+
+        "@typescript-eslint/consistent-type-assertions": "warn",
+        "@typescript-eslint/dot-notation": "warn",
+        // "@typescript-eslint/indent": "warn",
+        "@typescript-eslint/member-delimiter-style": [
+            "warn",
+            {
+                "multiline": {
+                    "delimiter": "semi",
+                    "requireLast": true
+                },
+                "singleline": {
+                    "delimiter": "semi",
+                    "requireLast": false
+                }
+            }
+        ],
+        "@typescript-eslint/no-empty-function": "off",
+        "@typescript-eslint/no-empty-interface": "warn",
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-misused-new": "warn",
+        "@typescript-eslint/no-namespace": "warn",
+        "@typescript-eslint/no-parameter-properties": "off",
+        "@typescript-eslint/no-require-imports": "off",
+        "@typescript-eslint/no-unused-expressions": "off",
+        "@typescript-eslint/no-unused-vars": "warn",
+        "@typescript-eslint/no-use-before-define": "warn",
+        "@typescript-eslint/no-var-requires": "warn",
+        "@typescript-eslint/prefer-for-of": "warn",
+        "@typescript-eslint/prefer-function-type": "warn",
+        "@typescript-eslint/prefer-namespace-keyword": "warn",
+        "@typescript-eslint/quotes": ["warn", "single"],
+        "@typescript-eslint/semi": ["warn"],
+        "@typescript-eslint/no-floating-promises": "off",
+        "@typescript-eslint/no-unsafe-assignment": "off",
+        "@typescript-eslint/no-unsafe-return": "off",
+        "@typescript-eslint/no-unsafe-call": "off",
+        "@typescript-eslint/no-unsafe-member-access": "off",
+        "@typescript-eslint/triple-slash-reference": [
+            "warn",
+            {
+                "path": "always",
+                "types": "prefer-import",
+                "lib": "always"
+            }
+        ],
+        "@typescript-eslint/unified-signatures": "warn",
+        // "indent": ["warn", 4],
+        "brace-style": ["warn", "1tbs"],
+        "camelcase": "warn",
+        "capitalized-comments": ["off", "never"],
+        "complexity": "off",
+        "constructor-super": "warn",
+        "curly": "warn",
+        "eol-last": "warn",
+        "eqeqeq": ["warn", "smart"],
+        "guard-for-in": "warn",
+        "id-blacklist": "warn",
+        "id-match": "warn",
+        "max-classes-per-file": ["warn", 1],
+        "max-len": [
+            "warn",
+            {
+                "code": 140
+            }
+        ],
+        "new-parens": "warn",
+        "no-bitwise": "off",
+        "no-caller": "warn",
+        "no-cond-assign": "warn",
+        "no-console": "off",
+        "no-debugger": "warn",
+        "no-empty": "off",
+        "no-eval": "warn",
+        "no-fallthrough": "off",
+        "no-invalid-this": "off",
+        "no-new-wrappers": "off",
+        "no-redeclare": "warn",
+        "no-shadow": [
+            "warn",
+            {
+                "hoist": "all"
+            }
+        ],
+        "no-throw-literal": "warn",
+        "no-trailing-spaces": "warn",
+        "no-undef-init": "warn",
+        "no-underscore-dangle": "off",
+        "no-unsafe-finally": "warn",
+        "no-unused-labels": "warn",
+        "no-var": "warn",
+        "object-shorthand": "warn",
+        "one-var": ["warn", "never"],
+        "prefer-const": "warn",
+        "radix": "off",
+        "spaced-comment": [
+            "off",
+            "always",
+            {
+                "markers": ["/"]
+            }
+        ],
+        "use-isnan": "warn",
+        "valid-typeof": "off"
+    }
+}

@@ -1,4 +1,4 @@
-import ITutorial from "src/interfaces/ITutorial";
+import ITutorial from 'src/interfaces/ITutorial';
 
 /**
  * Represents a PARTIAL tutorial, typically data sent
@@ -11,12 +11,7 @@ export default class PartialTutorial implements ITutorial {
     /**
      * Set given DTO fields
      */
-    constructor(
-            name: string,
-            html: string,
-            markdown: string,
-            category: string,
-            id?: string) {
+    constructor(name: string, html: string, markdown: string, category: string, id?: string) {
         this.name = name;
         this.html = html;
         this.markdown = markdown;

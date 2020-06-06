@@ -1,4 +1,4 @@
-import { MongoError, UpdateWriteOpResult, Db } from "mongodb";
+import { MongoError, UpdateWriteOpResult, Db } from 'mongodb';
 
 /**
  * Static helper class resposible for handling generic DB operations/transactions
@@ -21,9 +21,12 @@ export default class DbUpdateService {
      */
     public static getAllDocuments<T>(collectionName: string): Promise<T[]> {
         return new Promise((res, rej) => {
-            DbUpdateService.db.collection<T>(collectionName).find({}).toArray((err, result) => {
-                result.length ? res(result) : rej(err);
-            });
+            DbUpdateService.db
+                .collection<T>(collectionName)
+                .find({})
+                .toArray((err, result) => {
+                    result.length ? res(result) : rej(err);
+                });
         });
     }
 
@@ -37,10 +40,14 @@ export default class DbUpdateService {
      */
     public static createDocument<T>(collectionName: string, data: T): Promise<MongoUpdateResponse> {
         return new Promise((res, rej) => {
-            DbUpdateService.db.collection(collectionName).insertOne(data).then(
-                ({ result }) => result.ok ? res({ ok: result.ok, n: result.n }) : rej({ ok: result.ok, n: result.n }),
-                () => rej()
-            );
+            DbUpdateService.db
+                .collection(collectionName)
+                .insertOne(data)
+                .then(
+                    ({ result }) =>
+                        result.ok ? res({ ok: result.ok, n: result.n }) : rej({ ok: result.ok, n: result.n }),
+                    () => rej()
+                );
         });
     }
 
@@ -52,16 +59,17 @@ export default class DbUpdateService {
      * @param {T} data the data to write over
      * @returns {Promise<UpdateWriteOpResult>} the mongo result object
      */
-    public static updateSingleDocument(collectionName: string, predicate: object, newValue: object): Promise<UpdateWriteOpResult> {
+    public static updateSingleDocument(
+        collectionName: string,
+        predicate: object,
+        newValue: object
+    ): Promise<UpdateWriteOpResult> {
         return new Promise((res, rej) => {
-            DbUpdateService.db.collection(collectionName).updateOne(
-                predicate,
-                newValue,
-                (err: MongoError, response: UpdateWriteOpResult) => {
+            DbUpdateService.db
+                .collection(collectionName)
+                .updateOne(predicate, newValue, (err: MongoError, response: UpdateWriteOpResult) => {
                     err ? rej(err) : res(response);
-                }
-            );
+                });
         });
     }
-
 }

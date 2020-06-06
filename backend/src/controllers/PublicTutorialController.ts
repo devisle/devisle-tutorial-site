@@ -1,11 +1,7 @@
-import { Request, Response } from "express";
-import PublicTutorialService from "../services/PublicTutorialService";
-import { ObjectId, MongoError } from "mongodb";
-import {
-    BAD_OBJECTID_PARSE_TEXT,
-    INTERNAL_ERROR_TEXT,
-    TUTORIAL_CATEGORIES,
-} from "../constants";
+import { Request, Response } from 'express';
+import PublicTutorialService from '../services/PublicTutorialService';
+import { ObjectId, MongoError } from 'mongodb';
+import { BAD_OBJECTID_PARSE_TEXT, INTERNAL_ERROR_TEXT, TUTORIAL_CATEGORIES } from '../constants';
 
 /**
  * PUBLIC Tutorial route controller
@@ -24,11 +20,8 @@ export default class PublicTutorialController {
     public static getTutorialById(req: Request, res: Response): void {
         try {
             const tutObjectId = new ObjectId(req.params.tutId);
-            PublicTutorialService.getPublicTutById(
-                "tutorials",
-                tutObjectId
-            ).then(
-                (response) => {
+            PublicTutorialService.getPublicTutById('tutorials', tutObjectId).then(
+                response => {
                     if (response === null) {
                         res.sendStatus(204).end();
                     } else {
@@ -62,12 +55,9 @@ export default class PublicTutorialController {
      * @param {Response} res our res obj
      */
     public static getSpecifiedTutorialCards(req: Request, res: Response): void {
-        const category = req.params.category.toLowerCase().replace("-", " ");
+        const category = req.params.category.toLowerCase().replace('-', ' ');
         if (PublicTutorialController.verifyCategory(category)) {
-            PublicTutorialService.getTutCardsInCategory(
-                "tutorials",
-                category
-            ).then((cards) => {
+            PublicTutorialService.getTutCardsInCategory('tutorials', category).then(cards => {
                 if (req.query.offset && req.query.outset) {
                     const offset: number = parseInt(req.query.offset);
                     const outset: number = parseInt(req.query.outset);
@@ -75,16 +65,14 @@ export default class PublicTutorialController {
                     if (Number.isInteger(offset) && Number.isInteger(outset)) {
                         res.status(200).send(cards.splice(offset, outset));
                     } else {
-                        res.status(400).send(
-                            "Query params for the category request must be integers."
-                        );
+                        res.status(400).send('Query params for the category request must be integers.');
                     }
                 } else {
                     res.send(cards);
                 }
             });
         } else {
-            res.status(404).send("The given category does not exist.");
+            res.status(404).send('The given category does not exist.');
         }
     }
 
@@ -107,9 +95,7 @@ export default class PublicTutorialController {
      * @param {Response} res our res obj
      */
     public static getAllPaths(req: Request, res: Response): void {
-        PublicTutorialService.getOnlyTutNamesAndIds("tutorials").then((paths) =>
-            res.status(200).send(paths)
-        );
+        PublicTutorialService.getOnlyTutNamesAndIds('tutorials').then(paths => res.status(200).send(paths));
     }
 
     /**
@@ -129,15 +115,11 @@ export default class PublicTutorialController {
         const outset: number = parseInt(req.query.outset);
 
         if (!offset || !outset) {
-            res.status(400).send(
-                "This endpoint requires query parameters, offset and outset, of type integer."
-            );
+            res.status(400).send('This endpoint requires query parameters, offset and outset, of type integer.');
         } else if (Number.isInteger(offset) && Number.isInteger(outset)) {
             res.status(200).send(TUTORIAL_CATEGORIES.slice(offset, outset));
         } else {
-            res.status(400).send(
-                "Query params for the category request must be integers."
-            );
+            res.status(400).send('Query params for the category request must be integers.');
         }
     }
 }

@@ -1,5 +1,5 @@
-import { useRouter } from "next/router";
-import { GetServerSideProps, GetServerSidePropsContext } from "next";
+import { useRouter } from 'next/router';
+import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 
 /**
  * Example of a Dynamic route
@@ -11,26 +11,24 @@ import { GetServerSideProps, GetServerSidePropsContext } from "next";
  */
 export default function Tutorial(props): JSX.Element {
     const router = useRouter();
-    console.log("props here in component", props);
+    console.log('props here in component', props);
     return (
         <h2>
-            {router.query.category} - {router.query.tutorial}
+            {router.query.category} -{router.query.tutorial}
         </h2>
     );
 }
 
-export const getServerSideProps: GetServerSideProps = async (
-    ctx: GetServerSidePropsContext
-) => {
-    console.log(ctx.params, "ctx.params");
-    console.log(ctx.preview, "ctx.preview");
-    console.log(ctx.previewData, "ctx.previewData");
-    console.log(ctx.query, "ctx.query");
+export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
+    console.log(ctx.params, 'ctx.params');
+    console.log(ctx.preview, 'ctx.preview');
+    console.log(ctx.previewData, 'ctx.previewData');
+    console.log(ctx.query, 'ctx.query');
     // console.log(ctx.req, "ctx.req");
     // console.log(ctx.res, "ctx.res");
     return {
         props: {
-            query: { ...ctx.params },
-        },
+            query: { ...ctx.params }
+        }
     };
 };

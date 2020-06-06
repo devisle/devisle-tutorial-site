@@ -1,4 +1,4 @@
-import ISection from "src/interfaces/ISection";
+import ISection from 'src/interfaces/ISection';
 
 /**
  * Represents a PUBLICALLY AVAILABLE tutorial
@@ -10,12 +10,7 @@ export default class PublicTutorial {
     /**
      * Set given DTO fields
      */
-    constructor(
-            name: string,
-            category: string,
-            authorName: string,
-            isAvailable: boolean,
-            content: ISection[]) {
+    constructor(name: string, category: string, authorName: string, isAvailable: boolean, content: ISection[]) {
         this.name = name;
         this.category = category;
         this.authorName = authorName;
