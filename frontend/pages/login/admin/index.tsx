@@ -30,12 +30,11 @@ const AdminLogin: React.FC = (props: any) => {
             body: JSON.stringify({ ...credentials })
         }).then(resp => {
             if (resp.status === 200) {
-                // We're storing the JWT client side, ideally we wanna DB this
-                // so we not storing ANYONE client side, for now, this is OK
                 resp.json().then(data => {
                     const { jwt, successfulLogin, userId, username } = data;
                     if (successfulLogin) {
-                        window.localStorage.setItem('userAuthData', JSON.stringify({ jwt, userId, username }));
+                        window.document.cookie = `jwt=${jwt}`;
+                        window.localStorage.setItem('userData', JSON.stringify({ userId, username }));
                         props.setGlobalState(prevState => ({ ...prevState, loggedIn: true }));
                         router.push('/admin/tutorial-manager');
                     }
