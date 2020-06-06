@@ -1,10 +1,9 @@
 import { render } from '@testing-library/react';
 import 'jest-styled-components';
-
 import { ThemeContextProvider } from '../../ThemeProvider/ThemeProvider';
 import Nav from '../index';
 
-it('nav renders correctly', () => {
+test('nav renders correctly', () => {
     const { container } = render(
         <ThemeContextProvider>
             <Nav />
