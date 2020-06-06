@@ -1,4 +1,4 @@
-import PartialTutorial from "./PartialTutorial.dto";
+import PartialTutorial from './PartialTutorial.dto';
 
 /**
  * Represents a FULL tutorial, with no optionals (aside from _id)

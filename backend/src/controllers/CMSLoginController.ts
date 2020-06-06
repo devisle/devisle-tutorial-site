@@ -1,7 +1,7 @@
-import { Request, Response } from "express";
-import jwt from "jsonwebtoken";
-import CMSAuthService from "../services/CMSAuthService";
-import { UNAUTHORISED_TEXT, BAD_REQUEST_TEXT } from "../constants";
+import { Request, Response } from 'express';
+import jwt from 'jsonwebtoken';
+import CMSAuthService from '../services/CMSAuthService';
+import { UNAUTHORISED_TEXT, BAD_REQUEST_TEXT } from '../constants';
 
 /**
  * Confirms login credentials of a given CMS user
@@ -32,11 +32,9 @@ export default class CMSLoginController {
                         // we may alternatively opt for 'maxAge' property if this causes issues
                         res.json({
                             successfulLogin: true,
-                            jwt: jwt.sign(
-                                { username: checkedUsername, userId },
-                                process.env.JWT_KEY as string,
-                                { expiresIn: process.env.JWT_EXPIRY }
-                            ),
+                            jwt: jwt.sign({ username: checkedUsername, userId }, process.env.JWT_KEY as string, {
+                                expiresIn: process.env.JWT_EXPIRY
+                            }),
                             username: checkedUsername,
                             userId
                         })
@@ -49,14 +47,7 @@ export default class CMSLoginController {
                 err => {
                     // Create error object instance
                     res.status(503)
-                        .send(
-                            "Error name: " +
-                                err.name +
-                                "Code: " +
-                                err.code +
-                                "Msg: " +
-                                err.errmsg
-                        )
+                        .send('Error name: ' + err.name + 'Code: ' + err.code + 'Msg: ' + err.errmsg)
                         .end();
                 }
             );
@@ -75,10 +66,8 @@ export default class CMSLoginController {
         const token: string | undefined = req.headers.authorization;
 
         if (CMSAuthService.verifyJWT(token)) {
-            const tokenArr: string[] = token ? token.split(" ") : [];
-            const { username, userId } = jwt.decode(
-                tokenArr[1]
-            ) as TokenPayload;
+            const tokenArr: string[] = token ? token.split(' ') : [];
+            const { username, userId } = jwt.decode(tokenArr[1]) as TokenPayload;
             res.status(200).json({ username, userId }).end();
         } else {
             res.status(401).send(UNAUTHORISED_TEXT).end();
@@ -94,19 +83,11 @@ export default class CMSLoginController {
      * @param {any} data the unknown data type
      * @returns {boolean} whether or not the data passed the structural check
      */
-    private static validateLoginCredentials(
-        data: any
-    ): data is LoginCredentials {
+    private static validateLoginCredentials(data: any): data is LoginCredentials {
         if (Object.keys(data).length === 2) {
-            if (
-                typeof data.username === "string" &&
-                typeof data.password === "string"
-            ) {
-                if (
-                    data.username !== undefined &&
-                    data.password !== undefined
-                ) {
-                    if (data.username !== "" && data.password !== "") {
+            if (typeof data.username === 'string' && typeof data.password === 'string') {
+                if (data.username !== undefined && data.password !== undefined) {
+                    if (data.username !== '' && data.password !== '') {
                         return true;
                     }
                 }

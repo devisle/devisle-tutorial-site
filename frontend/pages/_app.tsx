@@ -1,10 +1,10 @@
-import { AppProps } from "next/app";
-import "../styles/grid/grids.scss";
-import "react-markdown-editor-lite/lib/index.css";
-import "react-notifications/lib/notifications.css";
+import { AppProps } from 'next/app';
+import '../styles/grid/grids.scss';
+import 'react-markdown-editor-lite/lib/index.css';
+import 'react-notifications/lib/notifications.css';
 
-import { ThemeContextProvider } from "../components/ThemeProvider/ThemeProvider";
-import { GlobalStyles } from "../styles/global.styles";
+import { ThemeContextProvider } from '../components/ThemeProvider/ThemeProvider';
+import { GlobalStyles } from '../styles/global.styles';
 
 /**
  * This App component is the top-level component which will be common across all the different pages. You

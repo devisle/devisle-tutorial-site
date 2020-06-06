@@ -1,4 +1,4 @@
-import { Input } from "./form-input.styles";
+import { Input } from './form-input.styles';
 
 interface IInputProps {
     name: string;
@@ -7,12 +7,7 @@ interface IInputProps {
     text?: string;
 }
 
-const FormInput: React.FC<IInputProps> = ({
-    name,
-    placeholder = "",
-    bg = "",
-    text = ""
-}) => {
+const FormInput: React.FC<IInputProps> = ({ name, placeholder = '', bg = '', text = '' }) => {
     return <Input placeholder={placeholder} name={name} />;
 };
 

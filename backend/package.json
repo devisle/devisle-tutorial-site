@@ -11,8 +11,8 @@
         "test:unit": "jest unit --detectOpenHandles --colors --forceExit",
         "test:int": "jest int --detectOpenHandles --colors --forceExit",
         "test:unit:watch": "jest --watch unit --detectOpenHandles --colors",
-        "format": "prettier --write */**/*.{ts,tsx}",
-        "lint": "eslint --quiet --fix */**/*.{ts,tsx}",
+        "format": "prettier --write */**/*.ts",
+        "lint": "eslint --fix */**/*.ts",
         "ci:type-errors": "tsc --noEmit",
         "ci:lint": "eslint '*/**/*.{ts,tsx}' --quiet"
     },

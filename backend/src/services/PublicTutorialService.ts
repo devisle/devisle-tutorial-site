@@ -1,8 +1,8 @@
-import { Db, ObjectId, FindOneOptions } from "mongodb";
-import IProjectedTutorial from "../interfaces/IProjectedTutorial";
-import ISection from "../interfaces/ISection";
-import PublicTutorial from "../dtos/PublicTutorial.dto";
-import TutorialCard from "../dtos/TutorialCard.dto";
+import { Db, ObjectId, FindOneOptions } from 'mongodb';
+import IProjectedTutorial from '../interfaces/IProjectedTutorial';
+import ISection from '../interfaces/ISection';
+import PublicTutorial from '../dtos/PublicTutorial.dto';
+import TutorialCard from '../dtos/TutorialCard.dto';
 
 /**
  * Static helper class resposible for handling PUBLIC db transactions
@@ -23,10 +23,7 @@ export default class PublicTutorialService {
      * @param {string} collectionName collection name
      * @returns {Promise<T>} an array of the given documents
      */
-    public static getPublicTutById(
-        collectionName: string,
-        tutId: ObjectId
-    ): Promise<PublicTutorial | null> {
+    public static getPublicTutById(collectionName: string, tutId: ObjectId): Promise<PublicTutorial | null> {
         return new Promise((res, rej) => {
             const publicTutProjection: FindOneOptions = {
                 projection: {
@@ -39,18 +36,12 @@ export default class PublicTutorialService {
             };
             PublicTutorialService.db
                 .collection(collectionName)
-                .findOne<IProjectedTutorial>(
-                    { _id: tutId },
-                    publicTutProjection,
-                    (err, result) => {
-                        if (err) {
-                            rej(err);
-                        }
-                        res(
-                            PublicTutorialService.parsePublicProjectTut(result)
-                        );
+                .findOne<IProjectedTutorial>({ _id: tutId }, publicTutProjection, (err, result) => {
+                    if (err) {
+                        rej(err);
                     }
-                );
+                    res(PublicTutorialService.parsePublicProjectTut(result));
+                });
         });
     }
 
@@ -60,10 +51,7 @@ export default class PublicTutorialService {
      * @param {string} collectionName the collection name
      * @param {string} queryCategory the category to query
      */
-    public static getTutCardsInCategory(
-        collectionName: string,
-        queryCategory: string
-    ): Promise<TutorialCard[]> {
+    public static getTutCardsInCategory(collectionName: string, queryCategory: string): Promise<TutorialCard[]> {
         return new Promise(res => {
             const tutCardProjection: FindOneOptions = {
                 projection: {
@@ -77,44 +65,22 @@ export default class PublicTutorialService {
             };
             PublicTutorialService.db
                 .collection(collectionName)
-                .find<IProjectedTutorial & { _id: string }>(
-                    { category: queryCategory },
-                    tutCardProjection
-                )
+                .find<IProjectedTutorial & { _id: string }>({ category: queryCategory }, tutCardProjection)
                 .toArray()
                 .then(data => {
                     // Now we need to strip the HTML out of the html tag, and create a 'tutorial card'
-                    const responseCards: TutorialCard[] = data.map(
-                        preparsedCard => {
-                            const {
-                                _id,
-                                name,
-                                html,
-                                category,
-                                authorName,
-                                isAvailable
-                            } = preparsedCard;
-                            // Remove any stuff prior to first section, as it shouldn't be there
-                            let cardText = html.substring(
-                                html.indexOf("--##") + 4,
-                                html.length
-                            );
-                            // Remove all html related
-                            cardText = cardText.replace(/<\/?[^>]+(>|$)/g, "");
-                            // Remove section markers and give it a trim
-                            cardText = cardText.replace(/--##/g, "").trim();
-                            // Grab only 105 chars, may be subject to change
-                            cardText = cardText.substring(0, 105);
-                            return new TutorialCard(
-                                _id,
-                                name,
-                                category,
-                                cardText,
-                                authorName,
-                                isAvailable
-                            );
-                        }
-                    );
+                    const responseCards: TutorialCard[] = data.map(preparsedCard => {
+                        const { _id, name, html, category, authorName, isAvailable } = preparsedCard;
+                        // Remove any stuff prior to first section, as it shouldn't be there
+                        let cardText = html.substring(html.indexOf('--##') + 4, html.length);
+                        // Remove all html related
+                        cardText = cardText.replace(/<\/?[^>]+(>|$)/g, '');
+                        // Remove section markers and give it a trim
+                        cardText = cardText.replace(/--##/g, '').trim();
+                        // Grab only 105 chars, may be subject to change
+                        cardText = cardText.substring(0, 105);
+                        return new TutorialCard(_id, name, category, cardText, authorName, isAvailable);
+                    });
                     res(responseCards);
                 });
         });
@@ -125,9 +91,7 @@ export default class PublicTutorialService {
      *
      * @param response
      */
-    public static getOnlyTutNamesAndIds(
-        collectionName: string
-    ): Promise<{ tutId: string; tutName: string }[]> {
+    public static getOnlyTutNamesAndIds(collectionName: string): Promise<{ tutId: string; tutName: string }[]> {
         return new Promise(res => {
             const pathProjection: FindOneOptions = {
                 projection: {
@@ -143,7 +107,7 @@ export default class PublicTutorialService {
                     const parsedPaths = result.map(path => {
                         return {
                             tutId: path._id,
-                            tutName: path.name.replace(" ", "-").toLowerCase()
+                            tutName: path.name.replace(' ', '-').toLowerCase()
                         };
                     });
                     res(parsedPaths);
@@ -156,30 +120,24 @@ export default class PublicTutorialService {
      *
      * @param {IProjectedTutorial} response the projected tutorial brought back from the getter here
      */
-    private static parsePublicProjectTut(
-        response: IProjectedTutorial | null
-    ): PublicTutorial | null {
+    private static parsePublicProjectTut(response: IProjectedTutorial | null): PublicTutorial | null {
         if (response === null) {
             return null;
         }
         const html = response.html;
         // Remove bad starts, MUST start with a section
-        const safeHtml = html.substring(html.indexOf("#") - 5);
+        const safeHtml = html.substring(html.indexOf('#') - 5);
         // Perform initial split, break the sections down into single string + body
-        const sectionsSplit = safeHtml.split("<p>--##");
+        const sectionsSplit = safeHtml.split('<p>--##');
         sectionsSplit.shift();
         // Next, break section down into section title + body
         const sectionsBroken: ISection[] = [];
 
         sectionsSplit.forEach(sectionString => {
             // Grab section title
-            const sectionTitle = sectionString
-                .substring(0, sectionString.indexOf("</p>"))
-                .trim();
+            const sectionTitle = sectionString.substring(0, sectionString.indexOf('</p>')).trim();
             // Grab the body html for this particular section
-            const sectionBody = sectionString
-                .substring(sectionString.indexOf("</p>") + 4)
-                .trim();
+            const sectionBody = sectionString.substring(sectionString.indexOf('</p>') + 4).trim();
             sectionsBroken.push({
                 sectionTitle,
                 sectionBody
@@ -187,12 +145,6 @@ export default class PublicTutorialService {
         });
 
         const { name, category, authorName, isAvailable } = response;
-        return new PublicTutorial(
-            name,
-            category,
-            authorName,
-            isAvailable,
-            sectionsBroken
-        );
+        return new PublicTutorial(name, category, authorName, isAvailable, sectionsBroken);
     }
 }

@@ -54,7 +54,7 @@
         "@typescript-eslint/prefer-for-of": "warn",
         "@typescript-eslint/prefer-function-type": "warn",
         "@typescript-eslint/prefer-namespace-keyword": "warn",
-        "@typescript-eslint/quotes": ["warn", "double"],
+        "@typescript-eslint/quotes": ["warn", "single"],
         "@typescript-eslint/semi": ["warn"],
         "@typescript-eslint/no-floating-promises": "off",
         "@typescript-eslint/no-unsafe-assignment": "off",
@@ -126,17 +126,6 @@
             }
         ],
         "use-isnan": "warn",
-        "valid-typeof": "off",
-        "@typescript-eslint/tslint/config": [
-            "warn",
-            {
-                "rules": {
-                    "no-constructor-vars": true,
-                    "no-trailing-comma": true,
-                    "no-unreachable": true,
-                    "use-strict": [true, "check-module"]
-                }
-            }
-        ]
+        "valid-typeof": "off"
     }
 }

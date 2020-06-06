@@ -1,4 +1,4 @@
-import { createGlobalStyle } from "styled-components";
+import { createGlobalStyle } from 'styled-components';
 
 export const GlobalStyles = createGlobalStyle`
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');    
@@ -25,14 +25,14 @@ export const GlobalStyles = createGlobalStyle`
     }
 
     h1{
-        font-size: ${({ theme }) => theme.fontSizes["3xl"]};
+        font-size: ${({ theme }) => theme.fontSizes['3xl']};
         ${props => {
-            props.capitalize ? "text-capitalize: capitalize;" : "";
+            props.capitalize ? 'text-capitalize: capitalize;' : '';
         }}
     }
 
     h2{
-        font-size: ${({ theme }) => theme.fontSizes["2xl"]};
+        font-size: ${({ theme }) => theme.fontSizes['2xl']};
     }
 
     h3{

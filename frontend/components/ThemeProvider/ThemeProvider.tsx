@@ -1,7 +1,7 @@
-import React from "react";
-import { ThemeProvider } from "styled-components";
-import { getTheme, ITheme } from "./Theme";
-import Typography from "./Typography";
+import React from 'react';
+import { ThemeProvider } from 'styled-components';
+import { getTheme, ITheme } from './Theme';
+import Typography from './Typography';
 
 /**
  * Pass the dark mode value
@@ -24,7 +24,7 @@ const useTheme = (): IThemeContext => React.useContext(ThemeContext);
 
 const ThemeContextProvider: React.FC = ({ children }) => {
     const [dark, setDarkTheme] = React.useState<boolean>(false);
-    const theme: ITheme = dark ? getTheme("dark") : getTheme("light");
+    const theme: ITheme = dark ? getTheme('dark') : getTheme('light');
 
     const handleToggle = (): void => {
         setDarkTheme(!dark);
