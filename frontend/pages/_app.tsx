@@ -2,9 +2,9 @@ import { AppProps } from 'next/app';
 import '../styles/grid/grids.scss';
 import 'react-markdown-editor-lite/lib/index.css';
 import 'react-notifications/lib/notifications.css';
-
 import { ThemeContextProvider } from '../components/ThemeProvider/ThemeProvider';
 import { GlobalStyles } from '../styles/global.styles';
+import { useState, useEffect } from 'react';
 
 /**
  * This App component is the top-level component which will be common across all the different pages. You
@@ -14,16 +14,24 @@ import { GlobalStyles } from '../styles/global.styles';
  * on assign...
  * Any questions, ask me (Alex)
  *
+ * -------
+ * We use a global RxJS subject to update the global store here.
+ * Notice how we further pass the subject in via { ... }, this lets us access it in any page.
+ * Above this comment, you'll see the subject creation point and subscribers.
+ * -------
+ *
  * @see [docs]{@link https://nextjs.org/learn/basics/assets-metadata-css/global-styles}
  * @author shreyas1307, ale8k
  */
 export default function App({ Component, pageProps }: AppProps): JSX.Element {
+    const [globalState, setGlobalState] = useState({ loggedIn: false });
+
     // We extend the pageProps with global properties we wish to use elsewhere, but have
     // access to in the entire app. You cannot however re-assign them
     return (
         <ThemeContextProvider>
             <GlobalStyles />
-            <Component {...pageProps} />
+            <Component {...pageProps} {...{ globalState, setGlobalState }} />
         </ThemeContextProvider>
     );
 }

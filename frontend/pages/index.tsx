@@ -13,22 +13,22 @@ import { HelperText, StyledH1, Grid } from '../styles/core-ui';
  * @todo typescript types
  * @returns tutorials
  */
-export const getServerSideProps = async () => {
-    const response = await fetch('http://localhost:3000/api/getTutorial');
-    return {
-        props: {
-            tutorials: await response.json()
-        }
-    };
-};
+// export const getServerSideProps = async (): Promise<object> => {
+//     const response = await fetch('http://localhost:3001/api/getTutorial');
+//     return {
+//         props: {
+//             tutorials: await response.json()
+//         }
+//     };
+// };
 
 /**
  * Index Page - renders on '/' route
  *
  * @author shreyas1307, rakeshshubhu
  */
-export default function index(props) {
-    const [categories, setCategories] = useState(props.tutorials);
+export default function index(): JSX.Element {
+    // const [categories, setCategories] = useState(props.tutorials);
     const theme: typeof ThemeContext = useContext(ThemeContext);
 
     return (
@@ -42,7 +42,7 @@ export default function index(props) {
                         platform Dev Isle. You can join us on discord.
                     </HelperText>
                     <Grid columns='1' rowGap='20px' marginTop='20px'>
-                        <FormInput name='search_courses' placeholder='Search...' />
+                        <FormInput type='text' name='search_courses' placeholder='Search...' />
                         <Button varientColor='success' varient='solid' size='md' ariaLabel='Join us'>
                             Join Us
                         </Button>
