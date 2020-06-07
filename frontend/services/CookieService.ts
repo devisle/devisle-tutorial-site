@@ -4,15 +4,15 @@
  * @class
  * @author ale8k
  */
-export default class CookieServer {
+export default class CookieService {
     /**
      * Grabs a cookie by it's name
      *
      * @param {string} name the cookie name
      * @returns the cookie
      */
-    public static getCookie(name: string): string {
-        const cookie = window.document.cookie.split(';').map(ckie => {
+    public static getCookie(name: string, cookiesStr: string): string {
+        const cookie = cookiesStr.split(';').map(ckie => {
             const [key, value] = ckie.trim().split('=');
             return { key, value };
         });

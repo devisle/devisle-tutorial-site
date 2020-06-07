@@ -1,30 +1,59 @@
 import FormInput from '../../components/FormInput';
 import { StyledLogin } from './login.styles';
 import Button from '../../components/Button';
-import Link from 'next/link';
+import { StyledH1 } from '../../styles/core-ui';
+import { useState, FormEvent } from 'react';
+import { useRouter } from 'next/router';
+import AuthService from '../../services/AuthService';
+
+type Credentials = { username: string; password: string };
 
 /**
- * Login page for PUBLIC users
+ * Login page
  */
 const Login: React.FC = () => {
-    console.log('its me');
-    // const theme = useContext<ThemeContext>(ThemeContext);
+    const [credentials, setCredentials] = useState<Credentials>({ username: '', password: '' });
+    const router = useRouter();
+
+    function handleCredentialChange<T>(e: FormEvent<HTMLInputElement>): T {
+        e.persist();
+        const target = e.target as HTMLInputElement;
+        setCredentials(prevCreds => ({ ...prevCreds, [target.name]: target.value }));
+        return;
+    }
+
+    const attemptLogin = (): void => {
+        AuthService.login(credentials).then(response => {
+            if (response === 'successful login') {
+                router.push('/');
+            } else {
+                console.log('fuck unauthorised man');
+            }
+        });
+    };
+
     return (
         <StyledLogin>
-            <h1>Login!</h1>
-            <FormInput inputType='text' name='username' placeholder='Enter your username...'></FormInput>
-            <FormInput inputType='password' name='password' placeholder='Enter your password...'></FormInput>
-            <Button
-                onClick={(): any => console.log('TODO')}
-                varientColor='success'
-                varient='solid'
-                size='md'
-                ariaLabel='Click to login'
-            >
+            <StyledH1>Login:</StyledH1>
+            <FormInput
+                onChange={handleCredentialChange}
+                value={credentials.username}
+                inputType='text'
+                name='username'
+                placeholder='Enter your username...'
+            ></FormInput>
+            <FormInput
+                onChange={handleCredentialChange}
+                value={credentials.password}
+                inputType='password'
+                name='password'
+                placeholder='Enter your password...'
+            ></FormInput>
+            <Button onClick={attemptLogin} varientColor='success' varient='solid' size='md' ariaLabel='Click to login'>
                 Login
             </Button>
-            Are you an admin? <Link href='/login/admin'>Click here!</Link>
         </StyledLogin>
     );
 };
+
 export default Login;

@@ -1,26 +1,47 @@
+import Router from 'next/router';
+import AuthService from '../../../services/AuthService';
 import { NextPageContext } from 'next';
-
-export async function getServerSideProps(ctx: NextPageContext): Promise<object> {
-    // Fetch data from external API
-    //const res = await fetch('https://.../data');
-    //const data = await res.json();
-
-    /**
-     * ALEX: take cookie from context request, verify here, send it in the props
-     *
-     */
-
-    // Pass data to the page via props
-    return { props: {} };
-}
+import { useEffect } from 'react';
 
 /**
- * Our tutorial manager page,
- * - todo
+ * Gets auth props
+ */
+export const getServerSideProps = async (ctx: NextPageContext): Promise<object> => {
+    const cookies = ctx.req.headers.cookie;
+    let auth;
+    if (cookies) {
+        auth = await AuthService.confirm(cookies);
+    } else {
+        auth = 'Unauthorised';
+    }
+    return {
+        props: {
+            userData: auth
+        }
+    };
+};
+
+/**
+ * Tutorial manager page
+ *  - Lists all tutorials created by this Admin users
+ *  - Layout is TODO
  *
  * @author ale8k
  */
-export default function TutorialManager(props): JSX.Element {
-    console.log(props);
+const TutorialManager: React.FC<{
+    userData: { permissionLevel: number; userId: string; username: string } | string;
+}> = ({ userData }) => {
+    useEffect(() => {
+        checkAuth();
+    }, [userData]);
+
+    const checkAuth = () => {
+        if (userData === 'Unauthorised') {
+            Router.push('/');
+        }
+    };
+
     return <div className='TutorialManager'>tut manager</div>;
-}
+};
+
+export default TutorialManager;
