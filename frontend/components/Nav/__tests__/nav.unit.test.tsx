@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
 import 'jest-styled-components';
-import { ThemeContextProvider } from '../../ThemeProvider/ThemeProvider';
+import { ThemeContextProvider } from '../../../context/ThemeProvider/ThemeProvider';
 import Nav from '../index';
 
 test('nav renders correctly', () => {
