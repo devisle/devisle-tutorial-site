@@ -1,11 +1,13 @@
 import { useContext } from 'react';
 import { ThemeContext } from 'styled-components';
+
+import { IThemeContext } from '../context/ThemeProvider/ThemeProvider';
+import FormInput from '../components/FormInput';
 import Button from '../components/Button';
 import { Layout, Seo } from '../components';
 import { HelperText, StyledH1, Grid } from '../styles/core-ui';
 import AuthService from '../services/AuthService';
 import { NextPageContext } from 'next';
-import FormInput from '../components/FormInput';
 
 /**
  * Get tutorials
@@ -47,7 +49,7 @@ export default function index(props: object): JSX.Element {
                     </HelperText>
                     <Grid columns={1} rowGap='20px' marginTop='20px'>
                         <FormInput type='text' name='search_courses' placeholder='Search...' />
-                        <Button varientColor='success' varient='solid' size='md' ariaLabel='Join us'>
+                        <Button onClick={() => {}} varientColor='success' varient='solid' size='md' ariaLabel='Join us'>
                             Join Us
                         </Button>
                     </Grid>

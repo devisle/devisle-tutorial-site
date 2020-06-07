@@ -2,7 +2,8 @@ import { AppProps } from 'next/app';
 import '../styles/grid/grids.scss';
 import 'react-markdown-editor-lite/lib/index.css';
 import 'react-notifications/lib/notifications.css';
-import { ThemeContextProvider } from '../components/ThemeProvider/ThemeProvider';
+
+import { ThemeContextProvider } from '../context/ThemeProvider/ThemeProvider';
 import { GlobalStyles } from '../styles/global.styles';
 
 /**

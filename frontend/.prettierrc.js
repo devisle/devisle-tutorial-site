@@ -10,5 +10,5 @@ module.exports = {
     jsxBracketSameLine: false,
     arrowParens: 'avoid',
     // default range
-    endOfLine: 'auto'
+    endOfLine: 'crlf'
 };
