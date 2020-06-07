@@ -1,7 +1,7 @@
 import { useState, useContext } from 'react';
 import { ThemeContext } from 'styled-components';
 
-import { IThemeContext } from '../components/ThemeProvider/ThemeProvider';
+import { IThemeContext } from '../context/ThemeProvider/ThemeProvider';
 import FormInput from '../components/FormInput';
 import Button from '../components/Button';
 import { Layout, Seo } from '../components';

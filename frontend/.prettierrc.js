@@ -3,12 +3,12 @@ module.exports = {
     useTabs: false,
     semi: true,
     singleQuote: true,
-    quoteProps: "as-needed",
+    quoteProps: 'as-needed',
     jsxSingleQuote: true,
-    trailingComma: "none",
+    trailingComma: 'none',
     bracketSpacing: true,
     jsxBracketSameLine: false,
-    arrowParens: "avoid",
+    arrowParens: 'avoid',
     // default range
-    endOfLine: "lf"
+    endOfLine: 'crlf'
 };
