@@ -1,11 +1,12 @@
 import { useState, useContext } from 'react';
 import { ThemeContext } from 'styled-components';
 
-import { IThemeContext } from '../components/ThemeProvider/ThemeProvider';
+// import { IThemeContext } from '../components/ThemeProvider/ThemeProvider';
 import FormInput from '../components/FormInput';
 import Button from '../components/Button';
 import { Layout, Seo } from '../components';
-import { HelperText, StyledH1, Grid } from '../styles/core-ui';
+import { HelperText, StyledH1, Grid, StyledSectionHeading } from '../styles/core-ui';
+import CategoriesGrid from '../components/CategoriesGrid';
 
 /**
  * Get tutorials
@@ -27,8 +28,8 @@ export const getServerSideProps = async () => {
  *
  * @author shreyas1307, rakeshshubhu
  */
-export default function index(props) {
-    const [categories, setCategories] = useState(props.tutorials);
+const index: React.FC = props => {
+    // const [categories, setCategories] = useState(props.tutorials);
     const theme: typeof ThemeContext = useContext(ThemeContext);
 
     return (
@@ -52,6 +53,10 @@ export default function index(props) {
                     <img src='/assets/index-banner.svg' alt='girl reading book' width='100%' />
                 </div>
             </Grid>
+            <StyledSectionHeading>Categories</StyledSectionHeading>
+            <CategoriesGrid />
         </Layout>
     );
-}
+};
+
+export default index;
