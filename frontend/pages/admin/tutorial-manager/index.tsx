@@ -29,7 +29,7 @@ export const getServerSideProps = async (ctx: NextPageContext): Promise<object> 
  * @author ale8k
  */
 const TutorialManager: React.FC<{
-    userData: { permissionLevel: number; userId: string; username: string } | string;
+    userData: UserDataOrString;
 }> = ({ userData }) => {
     useEffect(() => {
         checkAuth();

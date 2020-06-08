@@ -9,7 +9,7 @@ import { ReactNode } from 'react';
  */
 const Layout: React.FC<{
     children: ReactNode;
-    userData: { permissionLevel: number; userId: string; username: string } | string;
+    userData: UserDataOrString;
 }> = ({ children, userData }) => {
     return (
         <>

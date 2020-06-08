@@ -1,9 +1,7 @@
 import Link from 'next/link';
 import { StyledNav } from './nav.styles';
 
-const Nav: React.FC<{ userData: { permissionLevel: number; userId: string; username: string } | string }> = ({
-    userData
-}) => {
+const Nav: React.FC<{ userData: UserDataOrString }> = ({ userData }) => {
     const renderNavTabs = () => {
         if (userData === 'Unauthorised') {
             return (
@@ -12,11 +10,7 @@ const Nav: React.FC<{ userData: { permissionLevel: number; userId: string; usern
                 </Link>
             );
         } else {
-            const { permissionLevel, userId, username } = (userData as unknown) as {
-                permissionLevel: number;
-                userId: string;
-                username: string;
-            };
+            const { permissionLevel, userId, username } = userData as UserData;
             const navTabs = [];
 
             switch (true) {

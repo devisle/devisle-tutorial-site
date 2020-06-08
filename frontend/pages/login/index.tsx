@@ -41,14 +41,14 @@ const Login: React.FC = () => {
                 inputType='text'
                 name='username'
                 placeholder='Enter your username...'
-            ></FormInput>
+            />
             <FormInput
                 onChange={handleCredentialChange}
                 value={credentials.password}
                 inputType='password'
                 name='password'
                 placeholder='Enter your password...'
-            ></FormInput>
+            />
             <Button onClick={attemptLogin} varientColor='success' varient='solid' size='md' ariaLabel='Click to login'>
                 Login
             </Button>
