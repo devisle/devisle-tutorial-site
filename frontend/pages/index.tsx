@@ -1,7 +1,6 @@
-import { useState, useContext } from 'react';
+import { useContext } from 'react';
 import { ThemeContext } from 'styled-components';
-
-// import { IThemeContext } from '../components/ThemeProvider/ThemeProvider';
+import { IThemeContext } from '../context/ThemeProvider/ThemeProvider';
 import FormInput from '../components/FormInput';
 import Button from '../components/Button';
 import { Layout, Seo } from '../components';
@@ -28,9 +27,9 @@ export const getServerSideProps = async () => {
  *
  * @author shreyas1307, rakeshshubhu
  */
-const index: React.FC = props => {
+const index: React.FC = () => {
     // const [categories, setCategories] = useState(props.tutorials);
-    const theme: typeof ThemeContext = useContext(ThemeContext);
+    const theme: typeof ThemeContext = useContext<IThemeContext>(ThemeContext);
 
     return (
         <Layout>

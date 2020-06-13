@@ -1,5 +1,5 @@
-import styled, { css } from 'styled-components';
-import { ITheme } from '../../components/ThemeProvider/Theme';
+import styled from 'styled-components';
+import { ITheme } from '../../context/ThemeProvider/Theme';
 
 interface IGrid extends ITheme {
     columns: number;

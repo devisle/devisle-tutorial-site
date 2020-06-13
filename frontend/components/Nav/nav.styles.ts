@@ -14,6 +14,6 @@ export const StyledNav = styled.nav`
     }
 
     h2 {
-        font-weight: ${({ theme }) => theme.fontWeights.light};
+        font-weight: ${({ theme }): string => theme.fontWeights.light};
     }
 `;
