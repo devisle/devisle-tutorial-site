@@ -18,8 +18,6 @@ import { GlobalStyles } from '../styles/global.styles';
  * @author shreyas1307, ale8k
  */
 export default function App({ Component, pageProps }: AppProps): JSX.Element {
-    // We extend the pageProps with global properties we wish to use elsewhere, but have
-    // access to in the entire app. You cannot however re-assign them
     return (
         <ThemeContextProvider>
             <GlobalStyles />

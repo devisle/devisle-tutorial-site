@@ -1,16 +1,20 @@
 import Navigation from '../Nav';
+import { ReactNode } from 'react';
 /**
  * Binds a page component within itself providing the layout features
  * to maintain consistency in all pages
  *
  * @param {React.ReactNode} children
- * @author rakeshshubhu
+ * @author rakeshshubhu, ale8k
  */
-const Layout: React.FC = ({ children }) => {
+const Layout: React.FC<{
+    children: ReactNode;
+    userData: UserDataOrString;
+}> = ({ children, userData }) => {
     return (
         <>
             <div className='container'>
-                <Navigation />
+                <Navigation userData={userData} />
                 {children}
             </div>
         </>

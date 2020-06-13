@@ -25,18 +25,23 @@ export default class CMSLoginController {
             const { username, password } = req.body;
 
             CMSAuthService.checkLoginCredentials(username, password).then(
-                ({ checkedUsername, userId, confirmation }) => {
+                ({ checkedUsername, userId, confirmation, permissionLevel }) => {
                     if (confirmation) {
                         // Note, this is able to take zeit/ms for expiry: [https://github.com/zeit/ms]
                         // Currently it's at 2 days because I feel this is enough time to produce a tutorial,
                         // we may alternatively opt for 'maxAge' property if this causes issues
                         res.json({
                             successfulLogin: true,
-                            jwt: jwt.sign({ username: checkedUsername, userId }, process.env.JWT_KEY as string, {
-                                expiresIn: process.env.JWT_EXPIRY
-                            }),
+                            jwt: jwt.sign(
+                                { username: checkedUsername, userId, permissionLevel },
+                                process.env.JWT_KEY as string,
+                                {
+                                    expiresIn: process.env.JWT_EXPIRY
+                                }
+                            ),
                             username: checkedUsername,
-                            userId
+                            userId,
+                            permissionLevel
                         })
                             .status(200)
                             .end();
@@ -67,8 +72,8 @@ export default class CMSLoginController {
 
         if (CMSAuthService.verifyJWT(token)) {
             const tokenArr: string[] = token ? token.split(' ') : [];
-            const { username, userId } = jwt.decode(tokenArr[1]) as TokenPayload;
-            res.status(200).json({ username, userId }).end();
+            const { username, userId, permissionLevel } = jwt.decode(tokenArr[1]) as TokenPayload;
+            res.status(200).json({ username, userId, permissionLevel }).end();
         } else {
             res.status(401).send(UNAUTHORISED_TEXT).end();
         }

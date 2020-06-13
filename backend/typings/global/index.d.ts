@@ -9,6 +9,7 @@
 declare type TokenPayload = {
     username: string;
     userId: string;
+    permissionLevel: number;
     iat: number;
     exp: number;
 };

@@ -4,11 +4,12 @@ import jwt from 'jsonwebtoken';
 import chalk from 'chalk';
 import * as log from 'loglevel';
 
-type user = { _id: ObjectId; username: string; password: string };
+type user = { _id: ObjectId; permissionLevel: number; username: string; password: string };
 type LoginCredentialsResponse = {
     checkedUsername: string;
     confirmation: boolean;
     userId: string;
+    permissionLevel: number;
 };
 
 /**
@@ -49,16 +50,19 @@ export default class CMSAuthService {
                     res({
                         checkedUsername: '',
                         confirmation: false,
-                        userId: ''
+                        userId: '',
+                        permissionLevel: 0
                     });
                 } else {
                     const correctPassword = (result as user).password;
+                    const permissionLevel = (result as user).permissionLevel;
 
                     this.comparePasswords(attemptedPassword, correctPassword).then(bool => {
                         res({
                             checkedUsername: username,
                             confirmation: bool,
-                            userId: result._id
+                            userId: result._id,
+                            permissionLevel
                         });
                     });
                 }

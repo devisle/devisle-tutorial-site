@@ -14,6 +14,7 @@ interface IButtonProps {
     varient: string;
     size: 'sm' | 'md' | 'lg';
     ariaLabel: string;
+    onClick: Function;
     disabled?: boolean;
 }
 
@@ -55,9 +56,9 @@ const StyledButton = styled.button`
     }
 `;
 
-const Button: React.FC<IButtonProps> = ({ children, ariaLabel, disabled = false, ...props }) => {
+const Button: React.FC<IButtonProps> = ({ children, ariaLabel, disabled = false, onClick, ...props }) => {
     return (
-        <StyledButton {...props} aria-label={ariaLabel} disabled={disabled}>
+        <StyledButton {...props} aria-label={ariaLabel} disabled={disabled} onClick={onClick}>
             {children}
         </StyledButton>
     );
