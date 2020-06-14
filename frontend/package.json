@@ -3,7 +3,7 @@
     "version": "0.1.0",
     "private": true,
     "scripts": {
-        "dev": "next dev",
+        "dev": "next dev -p 3001",
         "build": "next build",
         "start": "next start",
         "format": "prettier --write */**/*.{ts,tsx}",
@@ -30,6 +30,7 @@
         "react-markdown-editor-lite": "^1.1.2",
         "react-modal": "^3.11.2",
         "react-notifications": "^1.6.0",
+        "rxjs": "^6.5.5",
         "sass": "^1.26.5",
         "styled-components": "^5.1.0"
     },
@@ -40,6 +41,7 @@
         "@types/react": "^16.9.35",
         "@types/react-dom": "^16.9.8",
         "@types/react-modal": "^3.10.5",
+        "@types/styled-components": "^5.1.0",
         "@typescript-eslint/eslint-plugin": "^3.0.2",
         "@typescript-eslint/eslint-plugin-tslint": "^3.0.2",
         "@typescript-eslint/parser": "^3.0.2",

@@ -6,6 +6,8 @@ import Button from '../components/Button';
 import { Layout, Seo } from '../components';
 import { HelperText, StyledH1, Grid, StyledSectionHeading } from '../styles/core-ui';
 import CategoriesGrid from '../components/CategoriesGrid';
+import AuthService from '../services/AuthService';
+import { NextPageContext } from 'next';
 
 /**
  * Get tutorials
@@ -13,11 +15,17 @@ import CategoriesGrid from '../components/CategoriesGrid';
  * @todo typescript types
  * @returns tutorials
  */
-export const getServerSideProps = async () => {
-    const response = await fetch('http://localhost:3000/api/getTutorial');
+export const getServerSideProps = async (ctx: NextPageContext): Promise<object> => {
+    const cookies = ctx.req.headers.cookie;
+    let auth;
+    if (cookies) {
+        auth = await AuthService.confirm(cookies);
+    } else {
+        auth = 'Unauthorised';
+    }
     return {
         props: {
-            tutorials: await response.json()
+            userData: auth
         }
     };
 };
@@ -27,23 +35,21 @@ export const getServerSideProps = async () => {
  *
  * @author shreyas1307, rakeshshubhu
  */
-const index: React.FC = () => {
-    // const [categories, setCategories] = useState(props.tutorials);
-    const theme: typeof ThemeContext = useContext<IThemeContext>(ThemeContext);
-
+export default function index(props: object): JSX.Element {
+    const theme: typeof ThemeContext = useContext(ThemeContext);
     return (
-        <Layout>
+        <Layout userData={props.userData}>
             <Seo />
-            <Grid columns='2' align='center'>
+            <Grid columns={2} align='center'>
                 <div>
                     <StyledH1 textTransform='capitalize'>Find the best courses and become a master</StyledH1>
                     <HelperText faded fontSize={theme.fontSizes.lg}>
                         All resources are 100% free. All courses are contributed by the open source community or
                         platform Dev Isle. You can join us on discord.
                     </HelperText>
-                    <Grid columns='1' rowGap='20px' marginTop='20px'>
-                        <FormInput name='search_courses' placeholder='Search...' />
-                        <Button varientColor='success' varient='solid' size='md' ariaLabel='Join us'>
+                    <Grid columns={1} rowGap='20px' marginTop='20px'>
+                        <FormInput type='text' name='search_courses' placeholder='Search...' />
+                        <Button onClick={() => {}} varientColor='success' varient='solid' size='md' ariaLabel='Join us'>
                             Join Us
                         </Button>
                     </Grid>
@@ -58,4 +64,3 @@ const index: React.FC = () => {
     );
 };
 
-export default index;
