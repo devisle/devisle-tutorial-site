@@ -1,14 +1,9 @@
-import { render } from '@testing-library/react';
 import 'jest-styled-components';
-import { ThemeContextProvider } from '../../../context/ThemeProvider/ThemeProvider';
+import { render } from '../../../test/test-utils';
 import Nav from '../index';
 
 test('nav renders correctly', () => {
-    const { container } = render(
-        <ThemeContextProvider>
-            <Nav />
-        </ThemeContextProvider>
-    );
+    const { container } = render(<Nav />);
     expect(container.firstChild).toMatchInlineSnapshot(`
         .c0 {
           display: -webkit-box;

@@ -22,12 +22,12 @@ const categories: ICategory[] = [
 const CategoriesGrid: React.FC = () => {
     return (
         <GalleryGrid align='center' rowGap='30px' columnGap='10px'>
-            {categories.map((category: ICategory) => (
+            {categories.map((category: ICategory, index: number) => (
                 <img
                     src={categoryPath(category.src)}
                     alt={category.alt || category.title}
                     title={category.title}
-                    key={category.title}
+                    key={index}
                     style={{
                         width: '100%'
                     }}

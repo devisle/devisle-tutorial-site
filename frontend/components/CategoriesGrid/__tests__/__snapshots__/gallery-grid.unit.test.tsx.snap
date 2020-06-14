@@ -1,0 +1,71 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders 1`] = `
+.c0 {
+  display: grid;
+  grid-template-columns: repeat(,1fr);
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  grid-row-gap: 30px;
+  grid-column-gap: 10px;
+  margin-top: 0;
+  grid-template-columns: repeat(auto-fill,minmax(200px,1fr));
+}
+
+<div>
+  <section
+    class="gridstyles__Grid-sc-1kg0xgl-0 c0"
+  >
+    <img
+      alt="javascript icon"
+      src="/assets/categories/js.jpg"
+      style="width: 100%;"
+      title="javascript"
+    />
+    <img
+      alt="python"
+      src="/assets/categories/python.png"
+      style="width: 100%;"
+      title="python"
+    />
+    <img
+      alt="javascript icon"
+      src="/assets/categories/js.jpg"
+      style="width: 100%;"
+      title="javascript"
+    />
+    <img
+      alt="python"
+      src="/assets/categories/python.png"
+      style="width: 100%;"
+      title="python"
+    />
+    <img
+      alt="javascript icon"
+      src="/assets/categories/js.jpg"
+      style="width: 100%;"
+      title="javascript"
+    />
+    <img
+      alt="python"
+      src="/assets/categories/python.png"
+      style="width: 100%;"
+      title="python"
+    />
+    <img
+      alt="javascript icon"
+      src="/assets/categories/js.jpg"
+      style="width: 100%;"
+      title="javascript"
+    />
+    <img
+      alt="python"
+      src="/assets/categories/python.png"
+      style="width: 100%;"
+      title="python"
+    />
+  </section>
+</div>
+`;

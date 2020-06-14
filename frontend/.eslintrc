@@ -138,5 +138,17 @@
         ],
         "use-isnan": "warn",
         "valid-typeof": "off"
-    }
+    },
+    "overrides": [
+        {
+            "files": ["**/__tests__/**"],
+            "settings": {
+                "import/resolver": {
+                    "jest": {
+                        "jestConfigFile": "./jest.config.js"
+                    }
+                }
+            }
+        }
+    ]
 }
