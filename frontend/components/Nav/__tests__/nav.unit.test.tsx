@@ -1,5 +1,5 @@
 import 'jest-styled-components';
-import { render } from '../../../test/test-utils';
+import { render } from 'test-utils';
 import Nav from '../index';
 
 test('nav renders correctly', () => {

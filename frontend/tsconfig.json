@@ -6,6 +6,10 @@
 			"dom.iterable",
 			"esnext"
 		],
+		"baseUrl": ".",
+        "paths": {
+            "test-utils": ["./test/test-utils.tsx"]
+        },
 		"allowJs": true,
 		"skipLibCheck": true,
 		"strict": false,
