@@ -9,6 +9,6 @@ RUN npm run build
 # BCrypt issues,  woo.
 RUN npm rebuild bcrypt --build-from-source
 
-EXPOSE 3001
+EXPOSE 3000
 
 CMD ["node", "dist/Server.js"]

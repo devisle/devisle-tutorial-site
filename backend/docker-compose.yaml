@@ -1,0 +1,16 @@
+version: '3'
+services:
+    db:
+        image: mongo
+        container_name: mongo-db
+        ports:
+            - '27018:27017'
+    server:
+        container_name: backendserver
+        links:
+            - db
+        build: .
+        depends_on:
+            - db
+        ports:
+            - '80:3000'
