@@ -1,3 +1,27 @@
+export interface ITypography {
+    fonts: {
+        heading: string;
+        body: string;
+        mono: string;
+    };
+    fontSizes: {
+        xs: string;
+        sm: string;
+        md: string;
+        lg: string;
+        xl: string;
+        '2xl': string;
+        '3xl': string;
+        '4xl': string;
+        '5xl': string;
+        '6xl': string;
+    };
+    fontWeights: {
+        light: number;
+        normal: number;
+        bold: number;
+    };
+}
 /**
  * Design System Implementation.
  * Only these values should be used in the application.

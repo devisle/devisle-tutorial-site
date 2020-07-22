@@ -4,3 +4,4 @@
 *.scss
 *.svg
 *.ico
+jest.config.js
