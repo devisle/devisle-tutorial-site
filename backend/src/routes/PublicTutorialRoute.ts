@@ -5,7 +5,7 @@ import PublicTutorialController from '../controllers/PublicTutorialController';
 /**
  * The public tutorial route
  *
- * @author ale8k
+ * @author ale8k, shreyas1307
  */
 export default class PublicTutorialRoute implements IRoute {
     /**
@@ -25,5 +25,6 @@ export default class PublicTutorialRoute implements IRoute {
         this.ROUTER.get(this.RESOURCE_LOC + '/cards/:category', PublicTutorialController.getSpecifiedTutorialCards);
         this.ROUTER.get(this.RESOURCE_LOC + '/categories/all', PublicTutorialController.getAllCategories);
         this.ROUTER.get(this.RESOURCE_LOC + '/paths/all', PublicTutorialController.getAllPaths);
+        this.ROUTER.get(this.RESOURCE_LOC + '/categories/query', PublicTutorialController.getSpecifiedCategories);
     }
 }

@@ -6,7 +6,7 @@ import { BAD_OBJECTID_PARSE_TEXT, INTERNAL_ERROR_TEXT, TUTORIAL_CATEGORIES } fro
 /**
  * PUBLIC Tutorial route controller
  *
- * @author ale8k
+ * @author ale8k, shreyas1307
  */
 export default class PublicTutorialController {
     /**
@@ -108,5 +108,18 @@ export default class PublicTutorialController {
             return true;
         }
         return false;
+    }
+
+    public static getSpecifiedCategories(req: Request, res: Response): void {
+        const offset: number = parseInt(req.query.offset);
+        const outset: number = parseInt(req.query.outset);
+
+        if (!offset || !outset) {
+            res.status(400).send('This endpoint requires query parameters, offset and outset, of type integer.');
+        } else if (Number.isInteger(offset) && Number.isInteger(outset)) {
+            res.status(200).send(TUTORIAL_CATEGORIES.slice(offset, outset));
+        } else {
+            res.status(400).send('Query params for the category request must be integers.');
+        }
     }
 }

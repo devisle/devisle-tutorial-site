@@ -12,7 +12,7 @@ import { BAD_OBJECTID_PARSE_TEXT } from '../../constants';
  * This test utilises [supertest]{@link https://www.npmjs.com/package/supertest}
  * and initialises the full server to perform the test per test.
  *
- * @author ale8k
+ * @author ale8k, shreyas1307
  */
 describe('PublicTutorialController', () => {
     let connection: MongoClient;
@@ -62,7 +62,7 @@ describe('PublicTutorialController', () => {
                             expect(tut.content).toHaveLength(2);
                             expect(tut.content[0].sectionTitle).toEqual('Section 1');
                             expect(tut.content[0].sectionBody).toEqual(
-                                '<p>So this is my section, I\'m talking crap here...'
+                                "<p>So this is my section, I'm talking crap here..."
                             );
                             expect(tut.content[1].sectionTitle).toEqual('Section 2');
                             expect(tut.content[1].sectionBody).toEqual('more crap');
@@ -105,7 +105,7 @@ describe('PublicTutorialController', () => {
                 .expect(response => {
                     expect(response.body).not.toEqual(null);
                     expect(response.body[0].cardText).toEqual(
-                        'Section 1  So this is my section, I\'m talking crap here...  Section 2 more crap'
+                        "Section 1  So this is my section, I'm talking crap here...  Section 2 more crap"
                     );
                 })
                 .end(done);
@@ -119,10 +119,17 @@ describe('PublicTutorialController', () => {
         });
     });
 
-    it('/public/tutorials/cards/{category}?offset=*&outset=* should return 400, because the given values aren\'t integers', done => {
+    it("/public/tutorials/cards/{category}?offset=*&outset=* should return 400, because the given values aren't integers", done => {
         new App({ path: '.test.env' }).setupServer().then(app => {
             const agent = supertest(app);
-            agent.get('/public/tutorials/cards/javascripT?offset=bob&outset=harry').expect(400).end(done);
+            agent.get(`/public/tutorials/cards/javascripT?offset=bob&outset=harry`).expect(400).end(done);
+        });
+    });
+
+    it("public/tutorials/categories/query?offset=*&outset=* should return 400, because the given values aren't integers", done => {
+        new App({ path: '.test.env' }).setupServer().then(app => {
+            const agent = supertest(app);
+            agent.get(`/public/tutorials/categories/query?offset="69"&outset="90"`).expect(400).end(done);
         });
     });
 
