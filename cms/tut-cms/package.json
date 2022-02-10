@@ -46,7 +46,7 @@
     "@types/markdown-it": "^10.0.1",
     "@types/react-draft-wysiwyg": "^1.13.0",
     "@types/react-modal": "^3.10.5",
-    "node-sass": "^4.14.1",
+    "node-sass": "^7.0.0",
     "ts-lint": "^4.5.1"
   }
 }
